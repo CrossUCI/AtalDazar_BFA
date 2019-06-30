@@ -16,16 +16,12 @@
 */
 
 #include "GridNotifiers.h"
-#include "ObjectMgr.h"
 #include "AreaTriggerAI.h"
-#include "PassiveAI.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "SpellAuras.h"
 #include "SpellScript.h"
 #include "SpellAuraEffects.h"
-#include "SpellMgr.h"
-#include "Vehicle.h"
 #include "antorus_the_burning_throne.h"
 
 enum Texts
@@ -241,19 +237,19 @@ struct boss_garothi_worldbreaker : public BossAI
                 Creature* decimator = instance->GetCreature(DATA_DECIMATOR);
                 Creature* annihilator = instance->GetCreature(DATA_ANNIHILATOR);
 
-                if ((_lastCanonEntry == NPC_ANNIHILATOR && decimator) || decimator && !annihilator)
+                if ((_lastCanonEntry == NPC_ANNIHILATOR && decimator) || (decimator && !annihilator))
                 {
                     decimator->CastSpell(decimator, SPELL_DECIMATION_SELECTOR, true);
                     Talk(SAY_DECIMATION, decimator);
                     _lastCanonEntry = NPC_DECIMATOR;
                 }
-                else if ((_lastCanonEntry == NPC_DECIMATOR && annihilator) || annihilator && !decimator)
+                else if ((_lastCanonEntry == NPC_DECIMATOR && annihilator) || (annihilator && !decimator))
                 {
                     uint8 count = std::max<uint8>(MIN_TARGETS_SIZE, std::ceil(me->GetMap()->GetPlayersCountExceptGMs() / 5));
                     for (uint8 i = 0; i < count; i++)
                     {
-                        float x = AnnihilationCenterReferencePos.GetPositionX() + cos(frand(0.0f, float(M_PI * 2))) * frand(15.0f, 32.0f);
-                        float y = AnnihilationCenterReferencePos.GetPositionY() + sin(frand(0.0f, float(M_PI * 2))) * frand(15.0f, 32.0f);
+                        float x = AnnihilationCenterReferencePos.GetPositionX() + cos(frand(0.0f, float(M_PI * 2))) * frand(15.0f, 30.0f);
+                        float y = AnnihilationCenterReferencePos.GetPositionY() + sin(frand(0.0f, float(M_PI * 2))) * frand(15.0f, 30.0f);
                         float z = me->GetMap()->GetHeight(me->GetPhaseShift(), x, y, AnnihilationCenterReferencePos.GetPositionZ());
                         annihilator->CastSpell(x, y, z, SPELL_ANNIHILATION_SUMMON, true);
                     }
@@ -291,7 +287,7 @@ struct boss_garothi_worldbreaker : public BossAI
                     events.Reset();
                 events.ScheduleEvent(EVENT_REENGAGE_PLAYERS, 3s + 500ms);
                 HideCannons();
-                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 break;
             default:
                 break;
@@ -305,7 +301,7 @@ struct boss_garothi_worldbreaker : public BossAI
             case DIFFICULTY_MYTHIC_RAID:
             case DIFFICULTY_HEROIC_RAID:
                 if ((me->HealthBelowPctDamaged(65, damage) && _apocalypseDriveCount == 0)
-                    || me->HealthBelowPctDamaged(35, damage) && _apocalypseDriveCount == 1)
+                    || (me->HealthBelowPctDamaged(35, damage) && _apocalypseDriveCount == 1))
                 {
                     me->InterruptNonMeleeSpells(true);
                     events.ScheduleEvent(EVENT_APOCALYPSE_DRIVE, 1ms);
@@ -315,7 +311,7 @@ struct boss_garothi_worldbreaker : public BossAI
             case DIFFICULTY_NORMAL_RAID:
             case DIFFICULTY_LFR_NEW:
                 if ((me->HealthBelowPctDamaged(60, damage) && _apocalypseDriveCount == 0)
-                    || me->HealthBelowPctDamaged(20, damage) && _apocalypseDriveCount == 1)
+                    || (me->HealthBelowPctDamaged(20, damage) && _apocalypseDriveCount == 1))
                 {
                     me->InterruptNonMeleeSpells(true);
                     events.ScheduleEvent(EVENT_APOCALYPSE_DRIVE, 1ms);
@@ -325,12 +321,6 @@ struct boss_garothi_worldbreaker : public BossAI
             default:
                 break;
         }
-    }
-
-    void MovementInform(uint32 type, uint32 id) override
-    {
-        if (type != POINT_MOTION_TYPE && type != EFFECT_MOTION_TYPE)
-            return;
     }
 
     void JustSummoned(Creature* summon) override
@@ -362,7 +352,7 @@ struct boss_garothi_worldbreaker : public BossAI
             case NPC_ANNIHILATOR:
                 me->InterruptNonMeleeSpells(true);
                 me->RemoveAurasDueToSpell(SPELL_APOCALYPSE_DRIVE);
-                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 if (summon->GetEntry() == NPC_ANNIHILATOR)
                     _searingBarrageSpellId = SPELL_SEARING_BARRAGE_ANNIHILATOR;
@@ -417,20 +407,20 @@ struct boss_garothi_worldbreaker : public BossAI
                     DoCastSelf(SPELL_APOCALYPSE_DRIVE_FINAL_DAMAGE);
                     Talk(SAY_ANNOUNCE_APOCALYPSE_DRIVE);
                     Talk(SAY_APOCALYPSE_DRIVE);
-                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                     if (Creature* decimator = instance->GetCreature(DATA_DECIMATOR))
                     {
                         instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, decimator, 2);
-                        decimator->AddUnitFlag(UNIT_FLAG_IN_COMBAT);
-                        decimator->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                        decimator->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_IN_COMBAT);
+                        decimator->RemoveFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     }
 
                     if (Creature* annihilator = instance->GetCreature(DATA_ANNIHILATOR))
                     {
                         instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, annihilator, 2);
-                        annihilator->AddUnitFlag(UNIT_FLAG_IN_COMBAT);
-                        annihilator->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                        annihilator->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_IN_COMBAT);
+                        annihilator->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     }
                     break;
                 case EVENT_REENGAGE_PLAYERS:
@@ -506,13 +496,13 @@ struct boss_garothi_worldbreaker : public BossAI
          if (Creature* decimator = instance->GetCreature(DATA_DECIMATOR))
          {
              instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, decimator);
-             decimator->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_31));
+             decimator->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_31);
          }
 
          if (Creature* annihilator = instance->GetCreature(DATA_ANNIHILATOR))
          {
              instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, annihilator);
-             annihilator->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_31));
+             annihilator->SetFlag(UNIT_NPC_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_UNK_31);
          }
      }
 };
@@ -814,7 +804,7 @@ class spell_garothi_annihilation_triggered : public SpellScript
 {
     PrepareSpellScript(spell_garothi_annihilation_triggered);
 
-    bool Validate(SpellInfo const* spellInfo) override
+    bool Validate(SpellInfo const* /*spellInfo*/) override
     {
         return ValidateSpellInfo({ SPELL_ANNIHILATION_DAMAGE_UNSPLITTED });
     }
