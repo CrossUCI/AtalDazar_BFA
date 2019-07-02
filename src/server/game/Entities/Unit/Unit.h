@@ -1159,7 +1159,7 @@ class TC_GAME_API Unit : public WorldObject
         MountCapabilityEntry const* GetMountCapability(uint32 mountType) const;
 
         void SendDurabilityLoss(Player* receiver, uint32 percent);
-
+        void PlayOneShotAnimKitId(uint16 animKitId);
         void SetAIAnimKitId(uint16 animKitId, bool oneshot = false) override;
         void SetMovementAnimKitId(uint16 animKitId) override;
         void SetMeleeAnimKitId(uint16 animKitId) override;
