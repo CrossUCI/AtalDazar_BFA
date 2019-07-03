@@ -1,4 +1,4 @@
-![bfalogo](https://cdn1.savepice.ru/uploads/2019/4/27/5a9ac9d776be3535e8d1b7c3e8d1914b-full.png)
+https://www.google.com.tr/search?q=battle+for+azeroth&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjynIuqyZjjAhW0xMQBHWdKDmMQ_AUIECgB&biw=1366&bih=657#imgrc=1TmkuRj5Dq9m1M:
 
 
 
