@@ -2867,7 +2867,7 @@ public:
     }
 };
 
-// 155777
+/// Germination - 155777
 class spell_dru_germination : public SpellScriptLoader
 {
 public:
