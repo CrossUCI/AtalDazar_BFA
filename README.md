@@ -1,14 +1,11 @@
-https://www.google.com.tr/search?q=battle+for+azeroth&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjynIuqyZjjAhW0xMQBHWdKDmMQ_AUIECgB&biw=1366&bih=657#imgrc=1TmkuRj5Dq9m1M:
 
-
-
-# BFACore
+# MagicLifeCore_BFA
 
 ## Download
 
--- Repack v10.06.2019 https://drive.google.com/file/d/1SLz1S3R9vygLhauXIFEhTM95rHFwnwVW/view?usp=sharing
+-- Repack v10.06.2019 
 
--- Data for 8.0.1 (28153) http://www.mediafire.com/file/v04d0yei8n19xa0/8.0.1_Data.rar/file
+-- Data for 8.0.1 (28153) 
 
 -- Launcher for Client 8.0.1 (28153) https://mega.nz/#!eB1VyKxb!PpSEbhgJPvlBZwcqon2D2trtYvBzjs-xjar7u5mC1BU  thanks to Arctum team
 
