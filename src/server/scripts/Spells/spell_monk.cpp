@@ -25,13 +25,6 @@
 #include "SpellMgr.h"
 #include "SpellPackets.h"
 #include "SpellScript.h"
-#include "Spell.h"
-#include "SpellInfo.h"
-#include "Item.h"
-#include "Unit.h"
-#include "Player.h"
-#include "Pet.h"
-#include "Creature.h"
 
 enum MonkSpells
 {
@@ -175,32 +168,6 @@ enum MonkSpells
     SPELL_MONK_ZEN_PILGREIMAGE_RETURN_AURA              = 126896,
     SPELL_MONK_ZEN_PULSE_DAMAGE                         = 124081,
     SPELL_MONK_ZEN_PULSE_HEAL                           = 198487,
-
-    //*IMPLEMENTED BY TEAM DEVELOPMENT MAGICLIFECORE AND CCN-CORE*///
-    SPELL_MONK_MARK_OF_THE_CRANE                        = 228287,
-    SPELL_MONK_TIGER_PALM                               = 100780,
-    SPELL_MONK_WHIRLWIND_DRAGON_PUNCH_AURASTATE         = 196742,
-    SPELL_MONK_WHIRLWIND_DRAGON_PUNCH_DAMAGE            = 158221,
-    SPELL_MONK_HEALING_SPHERE                           = 224863,
-    SPELL_MONK_GIFT_OF_THE_OX                           = 124502,
-    SPELL_MONK_GIFT_OF_THE_OX_HEAL                      = 124507,
-    SPELL_MONK_IRONSKIN_BREW_AURASTATE                  = 215479,
-    SPELL_MONK_SPECIAL_DELIVERY                         = 196730,
-    SPELL_MONK_SPECIAL_DELIVERY_TRIGGERED               = 196734,
-    SPELL_MONK_SPECIAL_DELIVERY_DAMAGE                  = 196732,
-    SPELL_MONK_BLACKOUT_COMBO                           = 196736,
-    SPELL_MONK_BLACKOUT_COMBO_AURASTATE                 = 228563,
-    SPELL_MONK_STAGGER_DOT                              = 124255,
-    SPELL_MONK_SONG_OF_CHI_JI_STUN                      = 198909,
-    SPELL_MONK_EFFUSE                                   = 116694,
-    SPELL_MONK_BEAR_HUG                                 = 127361,
-    SPELL_MONK_SPINNING_FIRE_BLOSSOM_DAMAGE             = 123408,
-    SPELL_MONK_CLASH_CHARGE                             = 126452,
-    SPELL_MONK_KEG_SMASH                                = 121253,
-    SPELL_MONK_IRON_SKIN_BREW                           = 115308,
-    SPELL_MONK_RENEWING_MIST                            = 115151,
-    SPELL_MONK_GUST_OF_MIST_HEAL                        = 191894,
-
 };
 
 enum StormEarthAndFireSpells
@@ -412,6 +379,104 @@ public:
     }
 };
 
+// Chi Wave (healing bolt) - 132464
+class spell_monk_chi_wave_healing_bolt : public SpellScriptLoader
+{
+public:
+    spell_monk_chi_wave_healing_bolt() : SpellScriptLoader("spell_monk_chi_wave_healing_bolt") { }
+
+    class spell_monk_chi_wave_healing_bolt_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_monk_chi_wave_healing_bolt_SpellScript);
+
+        void HandleOnHit()
+        {
+            if (!GetOriginalCaster())
+                return;
+
+            if (Player* _player = GetOriginalCaster()->ToPlayer())
+                if (Unit* target = GetHitUnit())
+                    _player->CastSpell(target, SPELL_MONK_CHI_WAVE_HEAL, true);
+        }
+
+        void Register() override
+        {
+            OnHit += SpellHitFn(spell_monk_chi_wave_healing_bolt_SpellScript::HandleOnHit);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_monk_chi_wave_healing_bolt_SpellScript();
+    }
+};
+
+// 132464 - Chi Wave (heal missile)
+class spell_monk_chi_wave_heal_missile : public SpellScriptLoader
+{
+public:
+    spell_monk_chi_wave_heal_missile() : SpellScriptLoader("spell_monk_chi_wave_heal_missile") {}
+
+    class spell_monk_chi_wave_heal_missile_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_monk_chi_wave_heal_missile_AuraScript);
+
+        void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetTarget();
+            if (!target || !caster)
+                return;
+
+            caster->CastSpell(target, 132463, true);
+            // rerun target selector
+            caster->CastCustomSpell(132466, SPELLVALUE_BASE_POINT1, aurEff->GetAmount() - 1, target, true, NULL, aurEff);
+        }
+
+        void Register() override
+        {
+            OnEffectRemove += AuraEffectRemoveFn(spell_monk_chi_wave_heal_missile_AuraScript::OnRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_monk_chi_wave_heal_missile_AuraScript();
+    }
+};
+
+// 132467 - Chi Wave (damage missile)
+class spell_monk_chi_wave_damage_missile : public SpellScriptLoader
+{
+public:
+    spell_monk_chi_wave_damage_missile() : SpellScriptLoader("spell_monk_chi_wave_damage_missile") {}
+
+    class spell_monk_chi_wave_damage_missile_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_monk_chi_wave_damage_missile_AuraScript);
+
+        void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetTarget();
+            if (!target || !caster)
+                return;
+
+            // rerun target selector
+            caster->CastCustomSpell(132466, SPELLVALUE_BASE_POINT1, aurEff->GetAmount() - 1, target, true, NULL, aurEff);
+        }
+
+        void Register() override
+        {
+            OnEffectRemove += AuraEffectRemoveFn(spell_monk_chi_wave_damage_missile_AuraScript::OnRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_monk_chi_wave_damage_missile_AuraScript();
+    }
+};
 
 // Called by Thunder Focus Tea - 116680
 // Item S12 4P - Mistweaver - 124487
@@ -2231,7 +2296,158 @@ public:
     }
 };
 
-//7.3.5
+// 115098 - Chi Wave
+class spell_monk_chi_wave : public SpellScriptLoader
+{
+public:
+    spell_monk_chi_wave() : SpellScriptLoader("spell_monk_chi_wave") {}
+
+    class spell_monk_chi_wave_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_monk_chi_wave_SpellScript);
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetHitUnit();
+            if (!target)
+                return;
+
+            if (caster->IsFriendlyTo(target))
+                caster->CastCustomSpell(132464, SPELLVALUE_BASE_POINT1, GetEffectValue(), target, true);
+            else if (caster->IsValidAttackTarget(target))
+                caster->CastCustomSpell(132467, SPELLVALUE_BASE_POINT1, GetEffectValue(), target, true);
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_monk_chi_wave_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_monk_chi_wave_SpellScript();
+    }
+};
+
+// 132466 - Chi Wave (target selector)
+class spell_monk_chi_wave_target_selector : public SpellScriptLoader
+{
+public:
+    spell_monk_chi_wave_target_selector() : SpellScriptLoader("spell_monk_chi_wave_target_selector") {}
+
+    class DamageUnitCheck
+    {
+    public:
+        DamageUnitCheck(Unit const* source, float range) : m_source(source), m_range(range) {}
+        bool operator()(WorldObject* object)
+        {
+            Unit* unit = object->ToUnit();
+            if (!unit)
+                return true;
+
+            if (m_source->IsValidAttackTarget(unit) && unit->isTargetableForAttack() && m_source->IsWithinDistInMap(unit, m_range))
+            {
+                m_range = m_source->GetDistance(unit);
+                return false;
+            }
+
+            return true;
+        }
+    private:
+        Unit const* m_source;
+        float m_range;
+    };
+
+    class HealUnitCheck
+    {
+    public:
+        HealUnitCheck(Unit const* source) : m_source(source) {}
+        bool operator()(WorldObject* object)
+        {
+            Unit* unit = object->ToUnit();
+            if (!unit)
+                return true;
+
+            if (m_source->IsFriendlyTo(unit))
+                return false;
+
+            return true;
+        }
+    private:
+        Unit const* m_source;
+    };
+
+    class spell_monk_chi_wave_target_selector_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_monk_chi_wave_target_selector_SpellScript);
+
+        bool Load() override
+        {
+            m_shouldHeal = true; // just for initializing
+            return true;
+        }
+
+        void SelectTarget(std::list<WorldObject*>& targets)
+        {
+            if (targets.empty())
+                return;
+
+            SpellInfo const* spellInfo = GetTriggeringSpell();
+            if (spellInfo->Id == 132467) // Triggered by damage, so we need heal selector
+            {
+                targets.remove_if(HealUnitCheck(GetCaster()));
+                targets.sort(Trinity::HealthPctOrderPred(false)); // Reverse order due to target is selected via std::list back
+                m_shouldHeal = true;
+            }
+            else if (spellInfo->Id == 132464) // Triggered by heal, so we need damage selector
+            {
+                targets.remove_if(DamageUnitCheck(GetCaster(), 25.0f));
+                m_shouldHeal = false;
+            }
+
+            if (targets.empty())
+                return;
+
+            WorldObject* target = targets.back();
+            if (!target)
+                return;
+
+            targets.clear();
+            targets.push_back(target);
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            if (!GetEffectValue()) // Ran out of bounces
+                return;
+
+            if (!GetExplTargetUnit() || !GetOriginalCaster())
+                return;
+
+            Unit* target = GetHitUnit();
+            if (m_shouldHeal)
+                GetExplTargetUnit()->CastCustomSpell(132464, SPELLVALUE_BASE_POINT1, GetEffectValue(), target, true, NULL, NULL, GetOriginalCaster()->GetGUID());
+            else
+                GetExplTargetUnit()->CastCustomSpell(132467, SPELLVALUE_BASE_POINT1, GetEffectValue(), target, true, NULL, NULL, GetOriginalCaster()->GetGUID());
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_monk_chi_wave_target_selector_SpellScript::SelectTarget, EFFECT_1, TARGET_UNIT_DEST_AREA_ENTRY);
+            OnEffectHitTarget += SpellEffectFn(spell_monk_chi_wave_target_selector_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+        }
+
+        bool m_shouldHeal;
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_monk_chi_wave_target_selector_SpellScript();
+    }
+};
+
 class spell_monk_fists_of_fury_visual_filter : public SpellScriptLoader
 {
 public:
