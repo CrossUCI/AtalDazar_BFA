@@ -1832,7 +1832,7 @@ CREATE TABLE `realmlist` (
 /*Data for the table `realmlist` */
 
 insert  into `realmlist`(`id`,`name`,`address`,`localAddress`,`localSubnetMask`,`port`,`icon`,`flag`,`timezone`,`allowedSecurityLevel`,`population`,`gamebuild`,`Region`,`Battlegroup`) values 
-(1,'BFACoreN','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,28153,1,1);
+(1,'MagiLifeCore','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,28153,1,1);
 
 /*Table structure for table `updates` */
 
