@@ -3066,7 +3066,6 @@ public:
 
 void AddSC_zone_gilneas_duskhaven()
 {
-    new player_zone_duskhaven();
     new npc_slain_watchman_36205();
     new npc_krennan_aranas_36331();
     new npc_king_genn_greymane_36332();
@@ -3102,7 +3101,6 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_stagecoach_carriage_43337();
     new go_kings_gate_196412();
     new npc_ogre_ambusher_38762();
-    new npc_prince_liam_greymane_37065();
     new npc_crash_survivor_37067();
     new npc_swamp_crocolisk_37078();
     new go_koroths_banner_201594();
