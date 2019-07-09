@@ -991,10 +991,10 @@ namespace WorldPackets
         public:
             StartTimer() : ServerPacket(SMSG_START_TIMER, 12) { }
 
-            enum TimeType: uint8
+            enum TimeType : uint8
             {
                 TIMER_TYPE_BATTLEGROUND = 0,
-                TIMER_TYPE_CHALLENGE    = 1,
+                TIMER_TYPE_CHALLENGE = 1,
             };
 
             WorldPacket const* Write() override;
