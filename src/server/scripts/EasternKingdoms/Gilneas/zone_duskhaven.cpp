@@ -3101,8 +3101,6 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_stagecoach_carriage_43337();
     new go_kings_gate_196412();
     new npc_ogre_ambusher_38762();
-    new npc_crash_survivor_37067();
-    new npc_swamp_crocolisk_37078();
     new go_koroths_banner_201594();
     new at_the_blackwald_6687();
     new npc_dark_scout_37953();
