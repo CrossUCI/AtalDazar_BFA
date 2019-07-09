@@ -464,7 +464,7 @@ class spell_vha_swarn_rockets : public SpellScriptLoader
         }
 };
 
-void AddSC_boss_millificent_manastorm()
+void AddSC_boss_millificient_manastorm()
 {
     new boss_millificent_manastorm();
     new npc_vha_rocket_chicken();

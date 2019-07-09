@@ -598,42 +598,6 @@ void Player::UpdateMastery()
     }
 }
 
-float Player::GetMasteryPct()
-{
-    if (!CanUseMastery())
-    {
-        return 0.0f;
-    }
-
-    float value = GetTotalAuraModifier(SPELL_AURA_MASTERY);
-    float percent = 0.0f;
-
-    value += GetRatingBonusValue(CR_MASTERY);
-
-    ChrSpecializationEntry const* chrSpec = sChrSpecializationStore.LookupEntry(GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID));
-    if (!chrSpec)
-        return 0.0f;
-
-    for (uint32 i = 0; i < MAX_MASTERY_SPELLS; ++i)
-    {
-        if (Aura* aura = GetAura(chrSpec->MasterySpellID[i]))
-        {
-            for (SpellEffectInfo const* effect : aura->GetSpellEffectInfos())
-            {
-                if (!effect)
-                    continue;
-
-                float mult = effect->BonusCoefficient;
-                if (G3D::fuzzyEq(mult, 0.0f))
-                    continue;
-
-                percent = float(value * effect->BonusCoefficient);
-            }
-        }
-    }
-    return percent;
-}
-
 void Player::UpdateVersatilityDamageDone()
 {
     // No proof that CR_VERSATILITY_DAMAGE_DONE is allways = PLAYER_VERSATILITY

@@ -1896,8 +1896,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void UpdateRating(CombatRating cr);
         void UpdateAllRatings();
         void UpdateMastery();
-        float GetMasteryPct();
-		void UpdateVersatilityDamageDone();
+        void UpdateVersatilityDamageDone();
         void UpdateHealingDonePercentMod();
         bool CanUseMastery() const;
         void UpdateAverageItemLevel();

@@ -155,7 +155,43 @@ enum eDuskHaven
     SPELL_PHASE_QUEST_ZONE_SPECIFIC_19 = 74096, // 194
 };
 
+// player
+class player_zone_duskhaven : public PlayerScript
+{
+public:
+    player_zone_duskhaven() : PlayerScript("player_zone_duskhaven") { }
 
+    void OnQuestStatusChange(Player* player, uint32 questId) override
+    {
+        if (player->GetQuestStatus(questId) == QUEST_STATUS_INCOMPLETE ||
+            player->GetQuestStatus(questId) == QUEST_STATUS_COMPLETE)
+            return;
+
+        switch (questId)
+        {
+            case QUEST_TO_GREYMANE_MANOR:
+            case QUEST_THE_KINGS_OBSERVATORY:
+            case QUEST_ALAS_GILNEAS:
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_06);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_07);
+                player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_08, player);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_10);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_11);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_12);
+                break;
+            case QUEST_EXODUS:
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_06);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_07);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_08);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_10);
+                player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_11, player);
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_12);
+                break;
+        }
+    }
+};
 
 // Phase 1/169
 // Phase 4096/181 is used from reward quest 14222 and forward
@@ -2334,6 +2370,278 @@ public:
     }
 };
 
+// 37065
+class npc_prince_liam_greymane_37065 : public CreatureScript
+{
+public:
+    npc_prince_liam_greymane_37065() : CreatureScript("npc_prince_liam_greymane_37065") { }
+
+    enum eNpc
+    {
+        MOVEMENT_KOROTH = 2515531,
+    };
+
+    bool OnQuestReward(Player* player, Creature* creature, Quest const* quest, uint32 /*opt*/) override
+    {
+        switch (quest->GetQuestId())
+        {
+            case QUEST_EXODUS:
+            {
+                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_19);
+                break;
+            }
+            case QUEST_INTRODUCTIONS_ARE_IN_ORDER:
+            {
+                if (Creature* koroth = creature->FindNearestCreature(NPC_KOROTH, 50.0f))
+                {
+                    player->AddAura(SPELL_GENERIC_QUEST_INVISIBLE_DETECTION_10, player);
+                    koroth->SetSpeed(MOVE_RUN, 1.3f);
+                    koroth->SetReactState(REACT_AGGRESSIVE);
+                    koroth->GetMotionMaster()->MovePath(MOVEMENT_KOROTH, false);
+                    creature->AI()->SetGUID(player->GetGUID(), PLAYER_GUID);
+                    creature->AI()->SetGUID(koroth->GetGUID(), koroth->GetEntry());
+                    creature->AI()->DoAction(1);
+                }
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_STORMGLEN)
+        {
+            player->RemoveAura(SPELL_GENERIC_QUEST_INVISIBLE_DETECTION_10);
+        }
+        return true;
+    }
+
+    struct npc_prince_liam_greymane_37065AI : public ScriptedAI
+    {
+        npc_prince_liam_greymane_37065AI(Creature* creature) : ScriptedAI(creature) { }
+
+        EventMap    m_events;
+        ObjectGuid  m_playerGUID;
+        ObjectGuid  m_korothGUID;
+
+        void Reset() override
+        {
+            m_korothGUID = ObjectGuid::Empty;
+            m_playerGUID = ObjectGuid::Empty;
+        }
+
+        void SetGUID(ObjectGuid guid, int32 id) override
+        {
+            switch (id)
+            {
+                case PLAYER_GUID:
+                    m_playerGUID = guid;
+                    break;
+                case NPC_KOROTH:
+                    m_korothGUID = guid;
+                    break;
+            }
+        }
+
+        void DoAction(int32 param) override
+        {
+            switch (param)
+            {
+                case 1:
+                    m_events.ScheduleEvent(EVENT_TALK_PART_00, 2000);
+                    break;
+            }
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == POINT_MOTION_TYPE)
+                switch (id)
+                {
+                    case 1020:
+                    {
+                        m_events.ScheduleEvent(EVENT_TALK_PART_01, 1000);
+                        break;
+                    }
+                }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            m_events.Update(diff);
+
+            while (uint32 eventId = m_events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_TALK_PART_00:
+                    {
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
+                            if (Creature* koroth = ObjectAccessor::GetCreature(*me, m_korothGUID))
+                            {
+                                koroth->AI()->Talk(0, player);
+                                Talk(0, player);
+                            }
+
+                        me->GetMotionMaster()->MovePoint(1020, -2192.868f, 1808.405f, 12.55306f);
+
+                        break;
+                    }
+                    case EVENT_TALK_PART_01:
+                    {
+                        me->CastSpell(me, 70511, true);
+                        m_events.ScheduleEvent(EVENT_TALK_PART_02, 1000);
+                        break;
+                    }
+                    case EVENT_TALK_PART_02:
+                    {
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
+                            Talk(1, player);
+                        m_events.ScheduleEvent(EVENT_TALK_PART_03, 3000);
+                        break;
+                    }
+                    case EVENT_TALK_PART_03:
+                    {
+                        me->GetMotionMaster()->MoveTargetedHome();
+                        m_events.ScheduleEvent(EVENT_TALK_PART_04, 10000);
+                        break;
+                    }
+                    case EVENT_TALK_PART_04:
+                    {
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
+                            if (Creature* asther = me->FindNearestCreature(37806, 50.0f))
+                                asther->AI()->Talk(0, player);
+                        m_events.ScheduleEvent(EVENT_TALK_PART_05, 5000);
+                        break;
+                    }
+                    case EVENT_TALK_PART_05:
+                    {
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
+                            player->RemoveAura(SPELL_GENERIC_QUEST_INVISIBLE_DETECTION_10);
+                        if (Creature* koroth = ObjectAccessor::GetCreature(*me, m_korothGUID))
+                            koroth->GetMotionMaster()->MoveTargetedHome();
+                        break;
+                    }
+                }
+            }
+
+            if (!UpdateVictim())
+                return;
+            else
+                DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_prince_liam_greymane_37065AI(creature);
+    }
+};
+
+// 37067
+class npc_crash_survivor_37067 : public CreatureScript
+{
+public:
+    npc_crash_survivor_37067() : CreatureScript("npc_crash_survivor_37067") { }
+
+    struct npc_crash_survivor_37067AI : public ScriptedAI
+    {
+        npc_crash_survivor_37067AI(Creature* creature) : ScriptedAI(creature) { }
+
+        EventMap m_events;
+
+        void Reset() override
+        {
+            me->SetReactState(REACT_DEFENSIVE);
+            m_events.RescheduleEvent(EVENT_CHECK_FOR_CREATURE, 1000);
+        }
+
+        void AttackStart(Unit* target) override
+        {
+            AttackStartNoMove(target);
+        }
+
+        void DamageTaken(Unit* attacker, uint32& damage) override
+        {
+            if (attacker->GetEntry() == 37078)
+                damage = 0;
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            m_events.Update(diff);
+
+            while (uint32 eventId = m_events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case EVENT_CHECK_FOR_CREATURE:
+                {
+                    if (!me->IsInCombat())
+                        if (Creature* croc = me->FindNearestCreature(37078, 4.0f))
+                        {
+                            me->HandleEmoteCommand(EMOTE_ONESHOT_NONE);
+                            me->SetFacingToObject(croc);
+                            me->Attack(croc, true);
+                        }
+
+                    m_events.ScheduleEvent(EVENT_CHECK_FOR_CREATURE, 1000);
+                    break;
+                }
+                }
+            }
+
+            if (!UpdateVictim())
+                return;
+            else
+                DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_crash_survivor_37067AI(creature);
+    }
+};
+
+// 37078
+class npc_swamp_crocolisk_37078 : public CreatureScript
+{
+public:
+    npc_swamp_crocolisk_37078() : CreatureScript("npc_swamp_crocolisk_37078") { }
+
+    struct npc_swamp_crocolisk_37078AI : public ScriptedAI
+    {
+        npc_swamp_crocolisk_37078AI(Creature* creature) : ScriptedAI(creature) { }
+
+        void Reset() override
+        {
+            me->SetReactState(REACT_DEFENSIVE);
+        }
+
+        void AttackStart(Unit* target) override
+        {
+            if (target->GetEntry() == 37067)
+                AttackStartNoMove(target);
+            else if (me->Attack(target, true))
+                me->GetMotionMaster()->MoveChase(target);
+        }
+
+        void DamageTaken(Unit* attacker, uint32& damage) override
+        {
+            if (attacker->GetEntry() == 37067)
+                damage = 0;
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_swamp_crocolisk_37078AI(creature);
+    }
+};
+
 // 201594
 class go_koroths_banner_201594 : public GameObjectScript
 {
@@ -3066,6 +3374,7 @@ public:
 
 void AddSC_zone_gilneas_duskhaven()
 {
+    new player_zone_duskhaven();
     new npc_slain_watchman_36205();
     new npc_krennan_aranas_36331();
     new npc_king_genn_greymane_36332();
@@ -3101,6 +3410,9 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_stagecoach_carriage_43337();
     new go_kings_gate_196412();
     new npc_ogre_ambusher_38762();
+    new npc_prince_liam_greymane_37065();
+    new npc_crash_survivor_37067();
+    new npc_swamp_crocolisk_37078();
     new go_koroths_banner_201594();
     new at_the_blackwald_6687();
     new npc_dark_scout_37953();
