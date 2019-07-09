@@ -297,7 +297,7 @@ public:
     }
 };
 
-//220367
+// 220367 (wrong=220377)
 class spell_flotsam_getsam_damage : public SpellScriptLoader
 {
 public:
@@ -328,7 +328,7 @@ public:
     }
 };
 
-//223374
+// 223374
 class spell_flotsam_yaksam_target : public SpellScriptLoader
 {
 public:
