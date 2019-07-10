@@ -134,6 +134,31 @@ enum PaladinSpells
     SPELL_PALADIN_WORD_OF_GLORY                 = 210191,
     SPELL_PALADIN_WORD_OF_GLORY_HEAL            = 214894,
     SPELL_PALADIN_BLESSED_HAMMER                = 204019,
+
+    SPELL_PALADIN_CONCENTRACTION_AURA = 19746,
+    SPELL_PALADIN_BLESSING_OF_LOWER_CITY_DRUID = 37878,
+    SPELL_PALADIN_BLESSING_OF_LOWER_CITY_PALADIN = 37879,
+    SPELL_PALADIN_BLESSING_OF_LOWER_CITY_PRIEST = 37880,
+    SPELL_PALADIN_BLESSING_OF_LOWER_CITY_SHAMAN = 37881,
+    SPELL_PALADIN_ITEM_HEALING_TRANCE = 37706,
+    SPELL_PALADIN_ENDURING_LIGHT = 40471,
+    SPELL_PALADIN_ENDURING_JUDGEMENT = 40472,
+    SPELL_PALADIN_RIGHTEOUS_DEFENSE_TAUNT = 31790,
+    SPELL_PALADIN_SACRED_SHIELD = 65148,
+    SPELL_PALADIN_SEAL_OF_RIGHTEOUSNESS = 25742,
+    SPELL_PALADIN_SEAL_OF_RIGHTEOUSNESS_DAMAGE = 101423,
+    SPELL_PALADIN_HOLY_POWER_ARMOR = 28790,
+    SPELL_PALADIN_HOLY_POWER_ATTACK_POWER = 28791,
+    SPELL_PALADIN_HOLY_POWER_SPELL_POWER = 28793,
+    SPELL_PALADIN_HOLY_POWER_MP5 = 28795,
+    SPELL_PALADIN_HOLY_MENDING = 64891,
+    SPELL_PALADIN_HOLY_SHOCK_R1 = 20473,
+    SPELL_PALADIN_HOLY_SHOCK_R1_DAMAGE = 25912,
+    SPELL_PALADIN_HOLY_SHOCK_R1_HEALING = 25914,
+    SPELL_PALADIN_SEAL_OF_COMMAND = 118215,
+    SPELL_PALADIN_EXORCISM = 879,
+    SPELL_PALADIN_ETERNAL_FLAME = 156322,
+    SPELL_PALADIN_DIVINE_PURPOSE_PROC = 90174,
 };
 
 enum PaladinNPCs
@@ -171,7 +196,6 @@ class spell_pal_beacon_of_virtue : public SpellScript
 
     void Register() override
     {
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ALLY);
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ALLY);
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_2, TARGET_UNIT_DEST_AREA_ALLY);
     }
@@ -2176,6 +2200,47 @@ class spell_pal_awakening : public AuraScript
     }
 };
 
+// 231843  - Blade of Wrath!
+class spell_pal_blade_of_wrath : public SpellScriptLoader
+{
+public:
+    spell_pal_blade_of_wrath() : SpellScriptLoader("spell_pal_blade_of_wrath") { }
+
+    class spell_pal_blade_of_wrath_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_pal_blade_of_wrath_AuraScript);
+
+        enum Spells
+        {
+            SPELL_PALADIN_BLADE_OF_WRATH = 184575,
+            SPELL_PALADIN_BLADE_OF_WRATH_RESET_COOLDOWN = 231843,
+        };
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo({ SPELL_PALADIN_BLADE_OF_WRATH, SPELL_PALADIN_BLADE_OF_WRATH_RESET_COOLDOWN });
+        }
+
+        void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Unit* caster = GetCaster())
+            {
+                caster->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_BLADE_OF_WRATH, true);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_pal_blade_of_wrath_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_pal_blade_of_wrath_AuraScript();
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2238,4 +2303,6 @@ void AddSC_paladin_spell_scripts()
 
     // Area Trigger scripts
     RegisterAreaTriggerAI(at_pal_aura_of_sacrifice);
+
+    new spell_pal_blade_of_wrath();
 }
