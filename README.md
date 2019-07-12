@@ -1,5 +1,6 @@
+![bfalogo](https://thumbs.subefotos.com/beadbed3ef506e409794abab418985f3o.jpg)
 
-# MagicLifeCore_BFA
+# AtalDazarCore_BFA
 
 ## Download
 
