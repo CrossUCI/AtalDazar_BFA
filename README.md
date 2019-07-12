@@ -1,4 +1,4 @@
-![bfalogo](https://thumbs.subefotos.com/4fee20abd125f02be014ec1c0c2cfdb0o.jpg)
+![bfalogo](https://thumbs.subefotos.com/eaca674e2e0c5bded649b5d24e44ee65o.jpg)
 
 # AtalDazarCore_BFA
 
