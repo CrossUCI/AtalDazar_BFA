@@ -1,4 +1,4 @@
-![bfalogo](https://savepice.ru/1200px-Atal'Dazar_loading_screen.jpg)
+![bfalogo](https://subefotos.com/ver/?4fee20abd125f02be014ec1c0c2cfdb0o.jpg)
 
 # AtalDazarCore_BFA
 
