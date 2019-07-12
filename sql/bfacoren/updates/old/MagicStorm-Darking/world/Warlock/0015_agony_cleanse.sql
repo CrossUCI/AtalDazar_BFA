@@ -1,1 +1,0 @@
-DELETE FROM spell_dbc_override where spell = 196364;
