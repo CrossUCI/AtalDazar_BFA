@@ -1,3 +1,4 @@
+![bfalogo](https://savepice.ru/1200px-Atal'Dazar_loading_screen.jpg)
 
 # AtalDazarCore_BFA
 
