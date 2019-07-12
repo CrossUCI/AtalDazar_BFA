@@ -1,5 +1,5 @@
 
-# MagicLifeCore_BFA
+# AtalDazarCore_BFA
 
 ## Download
 
