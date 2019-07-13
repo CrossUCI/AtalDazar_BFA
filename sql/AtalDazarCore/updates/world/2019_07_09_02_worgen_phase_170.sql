@@ -12,7 +12,7 @@ UPDATE creature SET PhaseId = '170' WHERE id = 35456;
 UPDATE creature SET PhaseId = '170' WHERE id = 35188;
 UPDATE creature SET PhaseId = '170' WHERE id = 50371;
 UPDATE creature SET PhaseId = '170' WHERE id = 35077;
-UPDATE creature SET PhaseId = '170' WHERE id = 35566;
+
 
 
 DELETE FROM `creature` WHERE `guid`=0;
