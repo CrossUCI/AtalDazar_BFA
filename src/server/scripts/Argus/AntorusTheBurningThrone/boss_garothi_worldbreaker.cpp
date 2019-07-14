@@ -371,7 +371,7 @@ struct boss_garothi_worldbreaker : public BossAI
                 else
                     DoCastSelf(SPELL_ANNIHILATOR_CANNON_EJECT);
 
-                me->PlayOneShotAnimKitId(ANIM_KIT_ID_CANNON_DESTROYED);
+                //me->PlayOneShotAnimKitId(ANIM_KIT_ID_CANNON_DESTROYED);
                 HideCannons();
                 break;
             default:
