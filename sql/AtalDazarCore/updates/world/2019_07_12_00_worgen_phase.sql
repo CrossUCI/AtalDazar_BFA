@@ -5,3 +5,6 @@ UPDATE creature SET PhaseId = '179' WHERE id = 41015;
 UPDATE creature SET PhaseId = '179' WHERE guid = 300000064;
 UPDATE creature SET PhaseId = '181' WHERE id = 36332;
 UPDATE creature SET PhaseId = '181' WHERE id = 36331;
+UPDATE creature SET PhaseId = '181' WHERE id = 36798;
+UPDATE creature SET PhaseId = '181' WHERE id = 36698;
+UPDATE creature SET PhaseId = '181' WHERE id = 36797;
