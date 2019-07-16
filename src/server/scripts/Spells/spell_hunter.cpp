@@ -2123,7 +2123,7 @@ public:
 
         bool CheckProc(ProcEventInfo& eventInfo)
         {
-            if ((eventInfo.GetHitMask() & PROC_HIT_NONE) && eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_LACERATE)
+            if (eventInfo.GetSpellInfo()->Id == SPELL_HUNTER_LACERATE)
                 return true;
 
             return false;
