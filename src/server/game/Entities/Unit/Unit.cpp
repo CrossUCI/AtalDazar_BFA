@@ -4091,7 +4091,13 @@ void Unit::RemoveAurasByType(AuraType auraType, ObjectGuid casterGUID, Aura* exc
     {
         Aura* aura = (*iter)->GetBase();
         AuraApplication * aurApp = aura->GetApplicationOfTarget(GetGUID());
-        ASSERT(aurApp);
+       
+	    
+		if (!aurApp)
+        {
+            ++iter;
+            continue;
+        }
 
         ++iter;
         if (aura != except && (!casterGUID || aura->GetCasterGUID() == casterGUID)
