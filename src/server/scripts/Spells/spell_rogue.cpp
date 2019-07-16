@@ -641,9 +641,9 @@ class spell_rog_cheat_death : public SpellScriptLoader
                     target->SetHealth(1);
                     HealInfo healInfo(target, target, health7, GetSpellInfo(), GetSpellInfo()->GetSchoolMask());
                     target->HealBySpell(healInfo);
-                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_ANIM, true);
-                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_DMG_REDUC, true);
-                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_COOLDOWN, true);
+                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_ANIM, false);
+                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_DMG_REDUC, false);
+                    target->CastSpell(target, SPELL_ROGUE_CHEAT_DEATH_COOLDOWN, false);
                     absorbAmount = dmgInfo.GetDamage();
                 }
             }
