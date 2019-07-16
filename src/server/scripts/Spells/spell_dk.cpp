@@ -2674,6 +2674,57 @@ public:
     }
 };
 
+// AtalDazarCore
+// 207126 Icecap
+/// 7.1.5
+class spell_dk_icecap : public SpellScriptLoader
+{
+public:
+    spell_dk_icecap() : SpellScriptLoader("spell_dk_icecap") { }
+
+    class spell_dk_icecap_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_dk_icecap_AuraScript);
+
+        enum Spells
+        {
+            PillarOfFrost = 51271,
+            FrostStrike = 49143,
+            Obliterate = 49020,
+            Frostscythe = 207230,
+
+        };
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo({
+                Spells::PillarOfFrost,
+                });
+        }
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            return ((eventInfo.GetHitMask() & PROC_HIT_CRITICAL) && (eventInfo.GetSpellInfo()->Id == Spells::FrostStrike || eventInfo.GetSpellInfo()->Id == Spells::Obliterate || eventInfo.GetSpellInfo()->Id == Spells::Frostscythe));
+        }
+
+        void HandleProc(ProcEventInfo& eventInfo)
+        {
+            GetCaster()->GetSpellHistory()->ModifyCooldown(Spells::PillarOfFrost, -GetSpellInfo()->GetEffect(EFFECT_0)->CalcValue() * 100);
+        }
+
+        void Register() override
+        {
+            DoCheckProc += AuraCheckProcFn(spell_dk_icecap_AuraScript::CheckProc);
+            OnProc += AuraProcFn(spell_dk_icecap_AuraScript::HandleProc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_dk_icecap_AuraScript();
+    }
+};
+
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -2741,4 +2792,5 @@ void AddSC_deathknight_spell_scripts()
     RegisterAreaTriggerAI(at_dk_decomposing_aura);
 //////////////////////////////////////////////////////////////
     new spell_dk_outbreakaura();
+    new spell_dk_icecap();
 }

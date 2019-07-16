@@ -1,0 +1,1 @@
+insert into `spell_script_names` (`spell_id`, `ScriptName`) values('207126','spell_dk_icecap');
