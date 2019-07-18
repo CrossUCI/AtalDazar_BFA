@@ -23,6 +23,7 @@
 #include "ScriptMgr.h"
 #include "PassiveAI.h"
 #include "PetAI.h"
+#include "SpellMgr.h"
 #include "ScriptedCreature.h"
 
 enum PriestSpells
@@ -82,9 +83,56 @@ class npc_pet_pri_shadowfiend : public CreatureScript
             return new npc_pet_pri_shadowfiendAI(creature);
         }
 };
+///////////////////////////////////// Wonder WoW-SNET
+// Mindbender - NPC with entry: 62982
+/// Called from spell Mindbender - 200174
+class npc_pet_pri_mindbender : public CreatureScript
+{
+public:
+    npc_pet_pri_mindbender() : CreatureScript("npc_pet_pri_mindbender") { }
+
+    enum eSpells
+    {
+        SPELL_PRIEST_MINDBENDER = 200174
+    };
+
+    struct npc_pet_pri_mindbenderAI : public ScriptedAI
+    {
+        npc_pet_pri_mindbenderAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void Reset() override { }
+
+        // Each time Mindbender attack anyone, give some points of insanity to owner.
+        void DamageDealt(Unit* target, uint32& damage, DamageEffectType /*damageType*/) override
+        {
+            if (Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
+            {
+                if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(eSpells::SPELL_PRIEST_MINDBENDER)) {
+                    int32 plusPower = spellInfo->GetEffect(EFFECT_2)->BasePoints * 100;
+
+                    player->EnergizeBySpell(player, eSpells::SPELL_PRIEST_MINDBENDER, plusPower, Powers::POWER_INSANITY);
+                }
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_pet_pri_mindbenderAI(creature);
+    }
+};
 
 void AddSC_priest_pet_scripts()
 {
     new npc_pet_pri_lightwell();
     new npc_pet_pri_shadowfiend();
+    new npc_pet_pri_mindbender();
 }
