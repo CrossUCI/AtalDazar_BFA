@@ -297,8 +297,9 @@ void BattlegroundAB::_ChangeBanner(uint8 node, uint8 type, uint8 teamIndex, bool
     }
 
 
-    // Update the visual of the banner
+     // Update the visual of the banner & set faction
     AB_banner->SetUInt32Value(GAMEOBJECT_SPELL_VISUAL_ID, SpellVisualID);
+    AB_banner->SetFaction(teamIndex == TEAM_ALLIANCE ? 83 : 84);
 
     // Update the worldstate
     m_BannerWorldState[node] = worldstateValue;
