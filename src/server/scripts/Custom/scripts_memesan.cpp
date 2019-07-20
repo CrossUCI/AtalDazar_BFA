@@ -123,14 +123,73 @@ SCRIPTS A PARTIR DE ACA
 */
 
 
+/*Hacer funcionar el playerchoice de el dh para elegir especializacion*/
+class dh_choice_231 : public PlayerScript
+{
+public:
+    enum
+    {
+        CHOICEID_DH_SPEC = 231,
+        
+    };
+    enum
+    {
+        RESPONSEID_DH_SPEC_DEVASTATION = 478,
+        RESPONSEID_DH_SPEC_VENGEANCE = 479,
+        
+    };
+    enum
+    {
+        QUESTID_DH_SECRETOS_VILES = 40051,
+        
+    };
+    enum
+    {
+        SPELLID_DH_DEVASTATION = 194940,
+        SPELLID_DH_VENGANZA = 194939,
+        
+    };
+        
 
+    dh_choice_231() : PlayerScript("dh_choice_231") {}
+      
 
+    void OnPlayerChoiceResponse(Player* player, uint32 choiceID, uint32 responseID) override
+    {
+        if (choiceID != CHOICEID_DH_SPEC)
+            return;
 
+        player->LearnSpell(200749, false); // permite escoger especializacion
+
+        switch (responseID)
+       {            
+           
+            case RESPONSEID_DH_SPEC_DEVASTATION:
+                player->CastSpell(player, SPELLID_DH_DEVASTATION, true);
+                player->KilledMonsterCredit(99071);
+                break;
+
+            case RESPONSEID_DH_SPEC_VENGEANCE:
+                player->CastSpell(player, SPELLID_DH_VENGANZA, true);
+                player->KilledMonsterCredit(99071);
+
+                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
+                    player->ActivateTalentGroup(spec);
+                break;
+               
+            default:
+                break;
+        }          
+       
+        
+    }
+    
+};
 
 
 //Registro de Scripts (Necesario para que funcionen)
 void AddSC_scripts_memesan()
 {
     // ejemplo  RegisterPlayerScript(quest_29524);
-    
+    RegisterPlayerScript(dh_choice_231);
 }
