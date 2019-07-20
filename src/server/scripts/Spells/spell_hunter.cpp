@@ -1595,23 +1595,26 @@ class spell_hun_throwing_axes : public SpellScript
 {
     PrepareSpellScript(spell_hun_throwing_axes);
 
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_HUNTER_THOWING_AXES_DAMAGE });
+    }
+
     void HandleOnCast()
     {
         Unit* caster = GetCaster();
         Unit* target = GetExplTargetUnit();
+
         if (!caster || !target)
             return;
 
-        ObjectGuid targetGUID = target->GetGUID();
         uint8 throwCount = GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints;
 
         for (uint8 i = 0; i < throwCount; ++i)
         {
-            caster->GetScheduler().Schedule(Milliseconds(500 * i), [targetGUID](TaskContext context)
+            caster->GetScheduler().Schedule(Milliseconds(500 * i), [caster, target](TaskContext context)
             {
-                if (Unit* caster = context.GetUnit())
-                    if (Unit* target = ObjectAccessor::GetCreature(*caster, targetGUID))
-                        caster->CastSpell(target, SPELL_HUNTER_THOWING_AXES_DAMAGE, false);
+                caster->CastSpell(target, SPELL_HUNTER_THOWING_AXES_DAMAGE, false);
             });
         }
     }
