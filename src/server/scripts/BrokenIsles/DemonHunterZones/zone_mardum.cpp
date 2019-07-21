@@ -829,6 +829,30 @@ public:
     }
 };
 
+
+class npc_mardum_dh_learn_spec : public CreatureScript
+{
+public:
+    npc_mardum_dh_learn_spec() : CreatureScript("npc_mardum_dh_learn_spec") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    {
+        player->KilledMonsterCredit(creature->GetEntry());
+
+        if (creature->GetEntry() == 96652)
+        {
+            // TODO Animation power overwhel & kill creature
+        }
+        else
+        {
+            // TODO Animation
+        }
+
+        return true;
+    }
+};
+
+
 enum KaynSunfury
 {
     QUEST_CRY_HAVOC = 39516,
@@ -1637,6 +1661,7 @@ void AddSC_zone_mardum()
     new go_mardum_illidari_banner();
     new go_mardum_tome_of_fel_secrets();
     new PlayerScript_mardum_spec_choice();
+    new npc_mardum_dh_learn_spec();
     new npc_mardum_izal_whitemoon();
     new npc_kayn_tyranna_fight();
     new npc_allari_tyranna_fight();

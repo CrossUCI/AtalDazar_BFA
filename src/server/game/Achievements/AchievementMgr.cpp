@@ -480,6 +480,27 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
     // disable for gamemasters with GM-mode enabled
     if (_owner->IsGameMaster())
         return;
+	
+	// LunarFall FIX. 
+    // Evitar que los logros (de la lista) que saltan al inicio envien emails con objetos al jugador.
+    // Si alguien sabe cómo evitarlo tocando la base de datos, bienvenido sea !!
+    switch (achievement->ID)
+    {
+        case 2398: return;
+        case 3636: return;
+        case 4400: return;
+        case 5863: return;
+        case 6131: return;
+        case 7853: return;
+        case 8820: return;
+        case 9496: return;
+        case 10058: return;
+        case 10741: return;
+        case 11210: return;
+        case 11211: return;
+        case 11848: return;
+    }
+    // FIN LunarFall FIX
 
     if ((achievement->Faction == ACHIEVEMENT_FACTION_HORDE    && referencePlayer->GetTeam() != HORDE) ||
         (achievement->Faction == ACHIEVEMENT_FACTION_ALLIANCE && referencePlayer->GetTeam() != ALLIANCE))
