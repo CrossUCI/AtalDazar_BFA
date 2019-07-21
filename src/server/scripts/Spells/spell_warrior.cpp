@@ -3281,8 +3281,39 @@ class spell_warr_execute_default: public SpellScript
     }
 };
 
+// Avatar - 107574
+class spell_warr_avatar : public SpellScriptLoader
+{
+public:
+    spell_warr_avatar() : SpellScriptLoader("spell_warr_avatar") { }
+
+    class spell_warr_avatar_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_warr_avatar_AuraScript);
+
+        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Player* player = GetCaster()->ToPlayer())
+            {
+                player->RemoveMovementImpairingAuras();
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_warr_avatar_AuraScript::OnApply, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_warr_avatar_AuraScript();
+    }
+};
+
 void AddSC_warrior_spell_scripts()
 {
+	new spell_warr_avatar();
     new spell_warr_berzerker_rage();
     new spell_warr_bladestorm();
     new spell_warr_bladestorm_new();
