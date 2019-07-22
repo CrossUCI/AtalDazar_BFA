@@ -2797,6 +2797,31 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask)
 
     if (aura_effmask)
     {
+		// Select rank for aura with level requirements only in specific cases
+       // Unit has to be target only of aura effect, both caster and target have to be players, target has to be other than unit target
+        SpellInfo const* aurSpellInfo = m_spellInfo;
+        int32 basePoints[MAX_SPELL_EFFECTS];
+        //if (scaleAura)
+        {
+            aurSpellInfo = m_spellInfo->GetAuraRankForLevel(unitTarget->getLevel());
+            if (aurSpellInfo) // Sentencia IF Agregada por Mıstıx para evitar crashes
+            {
+                ASSERT(aurSpellInfo);
+                for (SpellEffectInfo const* effect : aurSpellInfo->GetEffectsForDifficulty(0))
+                {
+                    basePoints[effect->EffectIndex] = effect->BasePoints;
+                    if (SpellEffectInfo const* myEffect = GetEffect(effect->EffectIndex))
+                    {
+                        if (myEffect->Effect != effect->Effect)
+                        {
+                            aurSpellInfo = m_spellInfo;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+		
         if (m_originalCaster)
         {
             int32 basePoints[MAX_SPELL_EFFECTS];
