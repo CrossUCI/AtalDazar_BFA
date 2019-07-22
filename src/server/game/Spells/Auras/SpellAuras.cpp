@@ -286,36 +286,32 @@ uint32 Aura::BuildEffectMaskForOwner(SpellInfo const* spellProto, uint32 availab
 
 Aura* Aura::TryRefreshStackOrCreate(SpellInfo const* spellproto, ObjectGuid castId, uint32 tryEffMask, WorldObject* owner, Unit* caster, int32* baseAmount /*= nullptr*/, Item* castItem /*= nullptr*/, ObjectGuid casterGUID /*= ObjectGuid::Empty*/, bool* refresh /*= nullptr*/, bool resetPeriodicTimer /*= true*/, ObjectGuid castItemGuid /*= ObjectGuid::Empty*/, int32 castItemLevel /*= -1*/, Spell* spell /*= nullptr*/)
 {
-    if (spellproto && owner) // Sentencia IF Agregada por Mıstıx para evitar crashes
+    ASSERT(spellproto);
+    ASSERT(owner);
+    ASSERT(caster || !casterGUID.IsEmpty());
+    ASSERT(tryEffMask <= MAX_EFFECT_MASK);
+    if (refresh)
+        *refresh = false;
+
+    uint32 effMask = Aura::BuildEffectMaskForOwner(spellproto, tryEffMask, owner);
+    if (!effMask)
+        return nullptr;
+
+    if (Aura* foundAura = owner->ToUnit()->_TryStackingOrRefreshingExistingAura(spellproto, effMask, caster, baseAmount, castItem, casterGUID, resetPeriodicTimer, castItemGuid, castItemLevel, spell))
     {
-      ASSERT(spellproto);
-      ASSERT(owner);
-      ASSERT(caster || !casterGUID.IsEmpty());
-      ASSERT(tryEffMask <= MAX_EFFECT_MASK);
-      if (refresh)
-          *refresh = false;
-      
-      uint32 effMask = Aura::BuildEffectMaskForOwner(spellproto, tryEffMask, owner);
-      if (!effMask)
-          return nullptr;
-      
-      if (Aura* foundAura = owner->ToUnit()->_TryStackingOrRefreshingExistingAura(spellproto, effMask, caster, baseAmount, castItem, casterGUID, resetPeriodicTimer, castItemGuid, castItemLevel, spell))
-      {
-          // we've here aura, which script triggered removal after modding stack amount
-          // check the state here, so we won't create new Aura object
-          if (foundAura->IsRemoved())
-              return nullptr;
-      
-          if (refresh)
-              *refresh = true;
-          if (spell)
-              foundAura->SetSpell(spell); // set new spell with new combo costs for later aura duration calculation
-          return foundAura;
-      }
-      else
-          return Create(spellproto, castId, effMask, owner, caster, baseAmount, castItem, casterGUID, castItemGuid, castItemLevel, spell);
-	}
-    return nullptr;
+        // we've here aura, which script triggered removal after modding stack amount
+        // check the state here, so we won't create new Aura object
+        if (foundAura->IsRemoved())
+            return nullptr;
+
+        if (refresh)
+            *refresh = true;
+        if (spell)
+            foundAura->SetSpell(spell); // set new spell with new combo costs for later aura duration calculation
+        return foundAura;
+    }
+    else
+        return Create(spellproto, castId, effMask, owner, caster, baseAmount, castItem, casterGUID, castItemGuid, castItemLevel, spell);
 }
 
 Aura* Aura::TryCreate(SpellInfo const* spellproto, ObjectGuid castId, uint32 tryEffMask, WorldObject* owner, Unit* caster, int32* baseAmount /*= nullptr*/, Item* castItem /*= nullptr*/, ObjectGuid casterGUID /*= ObjectGuid::Empty*/, ObjectGuid castItemGuid /*= ObjectGuid::Empty*/, int32 castItemLevel /*= -1*/, Spell* spell /*= nullptr*/)
