@@ -1049,6 +1049,67 @@ struct npc_imp_mother_laglath : public ScriptedAI
     }
 };
 
+enum QuestZones
+{
+    ZONE_AZUREMYST_ISLE = 8840,
+    ZONE_THE_EXODAR = 8842,
+};
+class zone_azuremyst_isle_phase : public PlayerScript
+{
+public:
+    zone_azuremyst_isle_phase() : PlayerScript("zone_azuremyst_isle_phase") { }
+
+    void OnUpdateArea(Player* player, Area* newArea, Area* /*oldArea*/)
+    {
+        CheckQuestPhase(player, newArea->GetZone()->GetId());
+    }
+
+    void OnQuestStatusChange(Player* player, uint32 quest)
+    {
+        switch (quest)
+        {
+        case QUEST_LIGHTS_EXODUS:
+        case QUEST_THE_VINDICAAR:
+        case QUEST_INTO_THE_NIGHT:
+            if (player && player->GetZoneId())
+                CheckQuestPhase(player, player->GetZoneId());
+            break;
+        default:
+            break;
+        }
+    }
+
+    void CheckQuestPhase(Player* player, uint32 newArea)
+    {
+        if (newArea == QuestZones::ZONE_AZUREMYST_ISLE)
+        {
+            PhasingHandler::AddPhase(player, 169);
+        }
+        if (newArea == QuestZones::ZONE_THE_EXODAR)
+        {
+            PhasingHandler::AddPhase(player, 169);
+            PhasingHandler::RemovePhase(player, DB_PHASE_THE_VINDICAAR);
+            PhasingHandler::RemovePhase(player, DB_PHASE_AFTER_THE_VINDICAAR);
+            if (player->HasQuest(QUEST_LIGHTS_EXODUS) || player->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_NONE || player->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_INCOMPLETE)
+                PhasingHandler::AddPhase(player, DB_PHASE_THE_VINDICAAR);
+
+            if (player->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_INCOMPLETE && player->GetQuestObjectiveData(QUEST_THE_VINDICAAR, 2))
+            {
+                PhasingHandler::AddPhase(player, DB_PHASE_AFTER_THE_VINDICAAR, true);
+                PhasingHandler::RemovePhase(player, DB_PHASE_THE_VINDICAAR, true);
+            }
+            if (player->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_THE_VINDICAAR) == QUEST_STATUS_REWARDED)
+            {
+                PhasingHandler::AddPhase(player, DB_PHASE_AFTER_THE_VINDICAAR, true);
+                PhasingHandler::RemovePhase(player, DB_PHASE_THE_VINDICAAR, true);
+            }
+
+            if (Map* map = sMapMgr->FindMap(1750, 0))
+                map->LoadGrid(-3961.16f, -11977.3f);
+        }
+    }
+};
+
 void AddSC_zone_argus_krokuun()
 {
     new zone_argus_krokuun();
@@ -1064,4 +1125,5 @@ void AddSC_zone_argus_krokuun()
     new npc_prophet_velen_126307();
 
     RegisterCreatureAI(npc_imp_mother_laglath);
+    new zone_azuremyst_isle_phase();
 }
