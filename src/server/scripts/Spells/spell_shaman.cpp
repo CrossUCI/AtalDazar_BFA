@@ -769,7 +769,7 @@ class spell_sha_flametongue : public AuraScript
     }
 };
 
-// 88766 - Fulmination
+// 190493 - Fulmination
 class spell_sha_fulmination : public SpellScriptLoader
 {
     public:
@@ -1396,7 +1396,7 @@ class spell_sha_lava_surge_proc : public SpellScript
     }
 };
 
-// 324 - Lightning Shield
+// 192106 - Lightning Shield
 class spell_sha_lightning_shield : public SpellScriptLoader
 {
 public:
@@ -1528,7 +1528,7 @@ class spell_sha_tidal_waves : public AuraScript
     }
 };
 
-// 8232 - Windfury Weapon
+// 33757 - Windfury Weapon
 class spell_shaman_windfury_weapon : public SpellScriptLoader
 {
 public:

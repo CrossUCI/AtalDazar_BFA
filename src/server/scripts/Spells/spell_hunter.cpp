@@ -384,7 +384,7 @@ public:
     }
 };
 
-// -19572 - Improved Mend Pet
+// 23560 - Improved Mend Pet
 class spell_hun_improved_mend_pet : public SpellScriptLoader
 {
 public:
@@ -1763,7 +1763,7 @@ public:
     }
 };
 
-// Bombardment - 35110
+// Bombardment - 82921
 class spell_hun_bombardment : public SpellScriptLoader
 {
 public:

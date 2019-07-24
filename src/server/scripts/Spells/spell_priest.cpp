@@ -952,7 +952,7 @@ public:
     }
 };
 
-// -47509 - Divine Aegis
+// 67202 - Divine Aegis
 class spell_pri_divine_aegis : public SpellScriptLoader
 {
     public:
@@ -1246,7 +1246,7 @@ class spell_pri_leap_of_faith_effect_trigger : public SpellScriptLoader
         }
 };
 
-// 7001 - Lightwell Renew
+// 166879 - Lightwell Renew
 class spell_pri_lightwell_renew : public SpellScriptLoader
 {
     public:
@@ -1730,7 +1730,7 @@ class spell_pri_dark_archangel : public SpellScript
     }
 };
 
-// -47569 - Phantasm
+// 108942 - Phantasm
 class spell_pri_phantasm : public SpellScriptLoader
 {
     public:

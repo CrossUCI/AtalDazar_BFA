@@ -993,7 +993,7 @@ public:
     }
 };
 
-// -46951 - Sword and Board
+// 199127 - Sword and Board
 class spell_warr_sword_and_board : public SpellScriptLoader
 {
 public:
@@ -1059,7 +1059,7 @@ public:
     }
 };
 
-// 50720 - Vigilance
+// 122710 - Vigilance
 class spell_warr_vigilance : public SpellScriptLoader
 {
 public:
