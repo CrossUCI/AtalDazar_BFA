@@ -1,6 +1,4 @@
-/* Fixed Multiple Crashes and Spell in ScriptName Not existing in DD and Core */
-
-DELETE FROM `spell_script_names` WHERE `spell_id` IN (´-47509,-47569,-46951,-19572,-7235,324,6229,7001,8232,20230,35110,50720,88766,89420);
+DELETE FROM `spell_script_names` WHERE `spell_id` IN (-47509,-47569,-46951,-19572,-7235,324,6229,7001,8232,20230,35110,50720,88766,89420,67202,108942,199127,23560,177763,192106,131624,166879,33757,203538,20230,82921,122710,190493,234153);
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (67202, 'spell_pri_divine_aegis'), 						
 (108942, 'spell_pri_phantasm'), 	
@@ -16,5 +14,6 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (82921, 'spell_hun_bombardment'),					
 (122710, 'spell_warr_vigilance'),												
 (190493, 'spell_sha_fulmination'), 							
-(234153, 'spell_warlock_drain_life'); 					
+(234153, 'spell_warlock_drain_life'); 		
+
 					
