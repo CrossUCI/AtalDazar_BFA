@@ -11,6 +11,8 @@
 #include "Conversation.h"
 #include "CreatureTextMgr.h"
 #include "PhasingHandler.h"
+#include "MapManager.h"
+
 enum
 {
     ZONE_KROKUUN = 8574,
