@@ -153,7 +153,7 @@ enum ProjectWarlockSpells
     SPELL_WARLOCK_SOUL_SWAP_NO_COST                 = 92794,
 
     // Dark Apotheosis spells
-    SPELL_WARLOCK_TWILIGHT_WARD                     = 131624,
+    SPELL_WARLOCK_TWILIGHT_WARD                     = 6229,
     SPELL_WARLOCK_FURY_WARD                         = 119839,
     SPELL_WARLOCK_SOULSHATTER                       = 29858,
     SPELL_WARLOCK_PROVOCATION                       = 97827,
@@ -486,112 +486,6 @@ class spell_warlock_command_demon : public SpellScriptLoader
         {
             return new spell_warlock_command_demon_SpellScript();
         }
-};
-
-//131624 - SPELL_WARLOCK_TWILIGHT_WARD
-class spell_warl_twilight_ward_s12 : public SpellScriptLoader
-{
-public:
-    spell_warl_twilight_ward_s12() : SpellScriptLoader("spell_warl_twilight_ward_s12") { }
-
-    class spell_warl_twilight_ward_s12_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_warl_twilight_ward_s12_SpellScript);
-
-        void HandleOnHit()
-        {
-            if (Player* _player = GetCaster()->ToPlayer())
-            {
-                if (_player->HasAura(SPELL_WARLOCK_ITEM_S12_TIER_4))
-                {
-                    if (GetSpellInfo()->Id == 6229)
-                    {
-                        if (_player->HasAura(GetSpellInfo()->Id))
-                            _player->RemoveAura(GetSpellInfo()->Id);
-
-                        _player->CastSpell(_player, SPELL_WARLOCK_TWILIGHT_WARD_S12, true);
-                    }
-                    else if (GetSpellInfo()->Id == 104048)
-                    {
-                        if (_player->HasAura(GetSpellInfo()->Id))
-                            _player->RemoveAura(GetSpellInfo()->Id);
-
-                        _player->CastSpell(_player, SPELL_WARLOCK_TWILIGHT_WARD_METAMORPHOSIS_S12, true);
-                    }
-                }
-            }
-        }
-
-        void Register() override
-        {
-            OnHit += SpellHitFn(spell_warl_twilight_ward_s12_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_warl_twilight_ward_s12_SpellScript();
-    }
-};
-
-////// 159609- SPELL MOLTEN CORE DOT
-///Update Versıon 6.0.1
-class spell_warl_molten_core_dot : public SpellScriptLoader
-{
-public:
-    spell_warl_molten_core_dot() : SpellScriptLoader("spell_warl_molten_core_dot") { }
-
-    class spell_warl_molten_core_dot_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warl_molten_core_dot_AuraScript);
-
-        void OnTick(const AuraEffect* aurEff)
-        {
-            if (GetCaster())
-            {
-                if (GetCaster()->HasAura(SPELL_WARLOCK_MOLTEN_CORE_AURA))
-                    if (roll_chance_i(8))
-                        GetCaster()->CastSpell(GetCaster(), SPELL_WARLOCK_MOLTEN_CORE, true);
-
-                GetCaster()->EnergizeBySpell(GetCaster(), aurEff->GetSpellInfo()->Id, 2, POWER_DEMONIC_FURY);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_warl_molten_core_dot_AuraScript::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_warl_molten_core_dot_AuraScript();
-    }
-};
-
-// 177763 - Shadow Ward
-class spell_warl_shadow_ward : public AuraScript
-{
-    PrepareAuraScript(spell_warl_shadow_ward);
-
-    void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& canBeRecalculated)
-    {
-        canBeRecalculated = false;
-        if (Unit* caster = GetCaster())
-        {
-            // +80.68% from sp bonus
-            float bonus = 0.8068f;
-
-            bonus *= caster->SpellBaseHealingBonusDone(GetSpellInfo()->GetSchoolMask());
-
-            amount += int32(bonus);
-        }
-    }
-
-    void Register() override
-    {
-        DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_shadow_ward::CalculateAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
-    }
 };
 
 // Dark Bargain - 110913
@@ -6434,9 +6328,7 @@ void AddSC_warlock_spell_scripts()
 
 
     // ADDED IN LEGION
-    new spell_warl_twilight_ward_s12();   
-    new spell_warl_molten_core_dot();
-	new spell_warlock_artifact_dimensional_rift();
+    new spell_warlock_artifact_dimensional_rift();
     new spell_warlock_immolate_dot();
     new spell_warlock_channel_demonfire();
     new spell_warlock_artifact_deadwind_harvest();
@@ -6493,7 +6385,6 @@ void AddSC_warlock_spell_scripts()
     new spell_warlock_infernal_meteor_strike();
     new spell_warlock_agony();
     RegisterAuraScript(aura_warlock_soul_shard_driver);
-    RegisterAuraScript(spell_warl_shadow_ward);  
     new spell_warlock_deathbolt();
     new spell_warlock_dark_pact();
     RegisterSpellScript(spell_warlock_shadow_bolt);
