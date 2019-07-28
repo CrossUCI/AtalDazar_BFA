@@ -465,7 +465,7 @@ struct npc_valarjar_paying_respect_to_odyn : ScriptedAI
         case POINT_ODYN:
             _scheduler.Schedule(1s, 3s, [this](TaskContext /*context*/)
             {
-                me->PlayOneShotAnimKitId(1431);
+                //me->PlayOneShotAnimKitId(1431);
                 _scheduler.Schedule(3s, 10s, [this](TaskContext /*context*/)
                 {
                     me->GetMotionMaster()->MoveSmoothPath(POINT_DESPAWN, GetPathToDespawnPoint(), GetPathToDespawnPointSize());

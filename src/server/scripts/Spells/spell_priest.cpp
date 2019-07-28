@@ -216,59 +216,6 @@ enum MiscSpells
     SHADOWY_APPARITION_TRAVEL_SPEED = 6
 };
 
-// 101398 - Psyfiend
-// 7.3.5
-class npc_pri_psyfiend : public CreatureScript
-{
-public:
-    npc_pri_psyfiend() : CreatureScript("npc_pri_psyfiend") { }
-
-    struct npc_pri_psyfiend_voidAI : public ScriptedAI
-    {
-        npc_pri_psyfiend_voidAI(Creature* creature) : ScriptedAI(creature) { }
-
-        void IsSummonedBy(Unit* /*summoner*/) override
-        {
-            me->SetReactState(REACT_PASSIVE);
-            me->SetControlled(true, UNIT_STATE_ROOT);
-        }
-
-        void KilledUnit(Unit* /*victim*/) override
-        {
-            canCast = true;
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (canSetHealth)
-            {
-                me->SetMaxHealth(sSpellMgr->GetSpellInfo(SPELL_PSYFIEND_BASE)->GetEffect(EFFECT_0)->BasePoints);
-                canSetHealth = false;
-            }
-
-            if (canCast)
-                if (me->GetOwner() && me->GetOwner()->ToPlayer())
-                {
-                    if (Unit* unit = me->GetOwner()->ToPlayer()->GetSelectedUnit())
-                        if (unit->IsPlayer())
-                        {
-                            me->CastCustomSpell(SPELL_PSYFLAY_DAMAGE, SPELLVALUE_BASE_POINT0, unit->CountPctFromMaxHealth(sSpellMgr->GetSpellInfo(SPELL_PSYFLAY_DAMAGE)->GetEffect(EFFECT_0)->BasePoints), me, TRIGGERED_FULL_MASK);
-                            canCast = false;
-                        }
-                }
-        }
-
-    private:
-        bool canSetHealth = true;
-        bool canCast = true;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_pri_psyfiend_voidAI(creature);
-    }
-};
-
 
 //7.3.2.25549
 // 17 - Power Word: Shield
@@ -952,7 +899,7 @@ public:
     }
 };
 
-// 67202 - Divine Aegis
+// -47509 - Divine Aegis
 class spell_pri_divine_aegis : public SpellScriptLoader
 {
     public:
@@ -1246,7 +1193,7 @@ class spell_pri_leap_of_faith_effect_trigger : public SpellScriptLoader
         }
 };
 
-// 166879 - Lightwell Renew
+// 7001 - Lightwell Renew
 class spell_pri_lightwell_renew : public SpellScriptLoader
 {
     public:
@@ -1730,7 +1677,7 @@ class spell_pri_dark_archangel : public SpellScript
     }
 };
 
-// 108942 - Phantasm
+// -47569 - Phantasm
 class spell_pri_phantasm : public SpellScriptLoader
 {
     public:
@@ -3239,7 +3186,4 @@ void AddSC_priest_spell_scripts()
     RegisterAuraScript(spell_pri_shadowy_insight);
 
     RegisterSpellAndAuraScriptPair(spell_pri_power_word_shield, spell_pri_power_word_shield_AuraScript);
-
-    // NPC Scripts
-    new npc_pri_psyfiend();
 }
