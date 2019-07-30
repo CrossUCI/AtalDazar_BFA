@@ -3044,13 +3044,6 @@ void DeleteSpellFromAllPlayers(uint32 spellId)
 
 bool Player::AddTalent(TalentEntry const* talent, uint8 spec, bool learning)
 {
-	// Only work with talent's of active spec (or 0 - All spec talents)
-    if (talent->SpecID != 0)
-    {
-        if (talent->SpecID != GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
-            return false;
-    }
-	
     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(talent->SpellID);
     if (!spellInfo)
     {
@@ -3776,13 +3769,6 @@ bool Player::ResetTalents(bool noCost)
         // to prevent unexpected lost normal learned spell skip another class talents
         if (talentInfo->ClassID != getClass())
             continue;
-        
-		// Only work with talent's of active spec (or 0 - All spec talents)
-        if (talentInfo->SpecID != 0)
-        {
-            if (talentInfo->SpecID != spec->ID)
-                continue;
-        }
 
         // skip non-existent talent ranks
         if (talentInfo->SpellID == 0)
