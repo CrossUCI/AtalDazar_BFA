@@ -465,6 +465,11 @@ class spell_dk_blood_boil : public SpellScriptLoader
         }
 };
 
+enum death_and_decay_entrys 
+{
+    NPC_DEATH_AND_DECAY = 3000000
+};
+
 // 43265 - Death and Decay
 /// 6.x
 class spell_dk_death_and_decay : public SpellScriptLoader
