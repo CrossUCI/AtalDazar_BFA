@@ -120,7 +120,7 @@ enum PriestSpells
     SPELL_PRIEST_MIND_BOMB_STUN                     = 226943,
     SPELL_PRIEST_MIND_SEAR_INSANITY                 = 208232,
     SPELL_PRIEST_MISERY                             = 238558,
-    SPELL_PRIEST_NPC_PSYFIEND                       = 59190,
+    SPELL_PRIEST_NPC_PSYFIEND                       = 101398,
     SPELL_PRIEST_NPC_SHADOWY_APPARITION             = 46954,
     SPELL_PRIEST_SHADOWY_APPARITION_MISSILE         = 147193,
     SPELL_PRIEST_NPC_VOID_TENDRILS                  = 65282,
