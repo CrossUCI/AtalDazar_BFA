@@ -170,6 +170,7 @@ enum DeathKnightSpells
     SPELL_DK_PESTILENT_PUSTULES                 = 194917,
     SPELL_DK_CASTIGATOR                         = 207305,
     SPELL_DK_UNHOLY_VIGOR                       = 196263,
+<<<<<<< HEAD
 
    //////////////////////////////////////////////////////
    SPELL_DK_DEATH_COIL = 47541,
@@ -179,6 +180,16 @@ enum DeathKnightSpells
    SPELL_DK_DEBILITATING_INFESTATION = 207316,
    SPELL_DK_DEBILITATING_INFESTATION_AURA = 208278,
    SPELL_DK_MARK_OF_BLOOD_HEAL = 206945,
+=======
+    /////////////////////////////////////////////////////
+    SPELL_DK_DEATH_COIL = 47541,
+    SPELL_DK_DARK_SUCCOR_AURA = 101568,
+    SPELL_DK_DEATH_STRIKE = 49998,
+    SPELL_DK_ASPHYXIATE_STUN = 93422,
+    SPELL_DK_DEBILITATING_INFESTATION = 207316,
+    SPELL_DK_DEBILITATING_INFESTATION_AURA = 208278,
+    SPELL_DK_MARK_OF_BLOOD_HEAL = 206945,
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 };
 
 enum GhoulSpells
@@ -470,11 +481,20 @@ class spell_dk_blood_boil : public SpellScriptLoader
         }
 };
 
+<<<<<<< HEAD
 enum death_and_decay_entrys
+=======
+enum death_and_decay_entrys 
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 {
     NPC_DEATH_AND_DECAY = 3000000
 };
 
+<<<<<<< HEAD
+=======
+// 43265 - Death and Decay
+/// 6.x
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 class spell_dk_death_and_decay : public SpellScriptLoader
 {
 public:
@@ -528,6 +548,11 @@ public:
 };
 
 enum PetGuardianEntry
+{
+    PET_DK_ENTRY_NECROFAGO = 26125
+};
+
+enum PetGuardianEntry 
 {
     PET_DK_ENTRY_NECROFAGO = 26125
 };
@@ -2757,7 +2782,11 @@ public:
     }
 };
 
+<<<<<<< HEAD
 
+=======
+///101568
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 class spell_dk_dark_succor : public SpellScriptLoader
 {
 public:
@@ -3428,6 +3457,10 @@ public:
         return new spell_dk_crimson_scourge_AuraScript();
     }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -3493,7 +3526,11 @@ void AddSC_deathknight_spell_scripts()
     RegisterAreaTriggerAI(at_dk_defile);
     RegisterSpellScript(spell_dk_blighted_rune_weapon);
     RegisterAreaTriggerAI(at_dk_decomposing_aura);
+<<<<<<< HEAD
 //////////////////////////////////////////////////////////////
+=======
+    //////////////////////////////////////////////////////////////
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     new spell_dk_dark_succor();
     new spell_dk_virulent_plague();
     new spell_dk_outbreakaura();

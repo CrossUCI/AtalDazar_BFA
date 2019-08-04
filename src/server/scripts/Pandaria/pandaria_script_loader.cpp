@@ -211,7 +211,11 @@ void AddPandariaScripts()
     AddSC_instance_throne_of_thunder();
     AddSC_throne_of_thunder();
 
+<<<<<<< HEAD
     //SiegeOfOrgrimmar
+=======
+     //SiegeOfOrgrimmar
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     AddSC_boss_fallen_protectors();
     AddSC_boss_galakras();
     AddSC_boss_garrosh_hellscream();
@@ -232,7 +236,11 @@ void AddPandariaScripts()
     AddSC_siege_of_orgrimmar_part_2();
     AddSC_siege_of_orgrimmar_part_3();
     AddSC_siege_of_orgrimmar_part_4();
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     // Mogu'Shan Vault
     AddSC_boss_stone_guard();
     AddSC_boss_feng();

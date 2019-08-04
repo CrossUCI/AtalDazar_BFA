@@ -90,7 +90,8 @@ enum RogueSpells
     SPELL_ROGUE_MASTER_OF_SUBTLETY_PASSIVE          = 31223,
     SPELL_ROGUE_MASTER_POISONER_AURA                = 58410,
     SPELL_ROGUE_MASTER_POISONER_DEBUFF              = 93068,
-    SPELL_ROGUE_MIND_NUMBLING_POISON                = 5761,
+    SPELL_ROGUE_CRUELDAD                            = 14161,
+	SPELL_ROGUE_MIND_NUMBLING_POISON                = 5761,
     SPELL_ROGUE_MIND_PARALYSIS                      = 115194,
     SPELL_ROGUE_NERVE_STRIKE_AURA                   = 108210,
     SPELL_ROGUE_NERVE_STRIKE_REDUCE_DAMAGE_DONE     = 112947,
@@ -327,8 +328,14 @@ class spell_rog_between_the_eyes :public SpellScript
         if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
             if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_VANISH))
                 caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_VANISH, -500 * _cp);
+<<<<<<< HEAD
     }
 
+=======
+
+    }
+
+>>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     void CalcDamage(SpellEffIndex /*effIndex*/)
     {
         int32 finalDamage = GetHitDamage();
