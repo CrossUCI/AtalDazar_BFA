@@ -68,6 +68,7 @@ enum RogueSpells
     SPELL_ROGUE_GARROTE_DOT                         = 703,
     SPELL_ROGUE_GARROTE_SILENCE                     = 1330,
     SPELL_ROGUE_GLYPH_OF_EXPOSE_ARMOR               = 56803,
+    SPELL_ROGUE_CRUELDAD                            = 14161,
     SPELL_ROGUE_GLYPH_OF_HEMORRHAGE                 = 56807,
     SPELL_ROGUE_GLYPH_OF_PREPARATION                = 56819,
     SPELL_ROGUE_GLYPH_OF_REGENERATE                 = 146625,
@@ -293,23 +294,57 @@ class spell_rog_between_the_eyes :public SpellScript
         if (powerCost.Power == POWER_COMBO_POINTS)
             _cp = powerCost.Amount;
     }
-
     void HandleAfterHit()
     {
+        Unit* caster = GetCaster();
+        Unit* target = GetHitUnit();
+        if (!target)
+            return;
         if (Unit* target = GetHitUnit())
-        {
             if (Aura* aura = target->GetAura(SPELL_ROGUE_BETWEEN_THE_EYES, GetCaster()->GetGUID()))
-                aura->SetDuration(_cp * IN_MILLISECONDS);
+                aura->SetDuration(_cp * 1000);
 
-            if (GetCaster()->HasAura(SPELL_ROGUE_PREY_ON_THE_WEAK))
-                GetCaster()->CastSpell(target, SPELL_ROGUE_PREY_ON_THE_WEAK_DEBUFF, true);
-        }
+        uint8 cp = caster->GetPower(POWER_COMBO_POINTS);
+        if (caster->HasAura(SPELL_ROGUE_CRUELDAD))
+            if (roll_chance_i(20 * _cp))
+                caster->SetPower(POWER_COMBO_POINTS, +1);
+
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_SPRINT))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_SPRINT, -500 * _cp);
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_GRAPPLING_HOOK))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_GRAPPLING_HOOK, -500 * _cp);
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_BETWEEN_THE_EYES))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_BETWEEN_THE_EYES, -500 * _cp);
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_ADRENALINE_RUSH))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_ADRENALINE_RUSH, -500 * _cp);
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_KILLING_SPREE))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_KILLING_SPREE, -500 * _cp);
+        if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_VANISH))
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_VANISH, -500 * _cp);
+    }
+
+    void CalcDamage(SpellEffIndex /*effIndex*/)
+    {
+        int32 finalDamage = GetHitDamage();
+
+
+        finalDamage *= _cp;
+
+        SetHitDamage(finalDamage);
     }
 
     void Register() override
     {
         OnTakePower += SpellOnTakePowerFn(spell_rog_between_the_eyes::HandleTakePower);
+        OnEffectHitTarget += SpellEffectFn(spell_rog_between_the_eyes::CalcDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         AfterHit += SpellHitFn(spell_rog_between_the_eyes::HandleAfterHit);
+
     }
 private:
     uint8 _cp = 0;

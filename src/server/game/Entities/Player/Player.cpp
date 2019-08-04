@@ -3780,7 +3780,7 @@ bool Player::ResetTalents(bool noCost)
 		// Only work with talent's of active spec (or 0 - All spec talents)
         if (talentInfo->SpecID != 0)
         {
-            if (talentInfo->SpecID != spec->ID)
+            //if (talentInfo->SpecID != spec->ID)
                 continue;
         }
 

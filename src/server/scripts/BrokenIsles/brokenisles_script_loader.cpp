@@ -36,6 +36,9 @@ void AddSC_zone_argus_macaree();
 void AddSC_zone_mardum();
 void AddSC_zone_vault_of_wardens();
 
+////SCENARIO
+//void AddSC_scenario_the_violet_hold_Dh();
+
 // Class Halls
 void AddSC_class_hall_dh();
 void AddSC_class_hall_dk();
@@ -234,6 +237,9 @@ void AddBrokenIslesScripts()
     // Demon Hunter start zone
     AddSC_zone_mardum();
     AddSC_zone_vault_of_wardens();
+
+    /////////- SCENARIO
+    //AddSC_scenario_the_violet_hold_Dh();
 
     // Class Halls
     AddSC_class_hall_dh();
