@@ -1287,11 +1287,7 @@ public:
                     Talk(TEXT_ALLOW_ENTER, me->GetOwner());
                     _events.ScheduleEvent(EVENT_START_MOVE, 4000);
                     break;
-<<<<<<< HEAD
-                }
-=======
                 }   
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
                 case EVENT_START_MOVE: {
                     _events.ScheduleEvent(EVENT_MOVE_TO_GATES, 2000);
                     me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
@@ -1328,19 +1324,11 @@ public:
         {
             switch (id)
             {
-<<<<<<< HEAD
-            case DATA_START_EVENT:
-            {
-                _events.ScheduleEvent(EVENT_TELEPORT_VIOLETHOLD, 3000);
-                break;
-            }
-=======
                 case DATA_START_EVENT:
                 {
                     _events.ScheduleEvent(EVENT_TELEPORT_VIOLETHOLD, 3000);
                     break;
                 }
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
             }
         }
 
