@@ -68,7 +68,6 @@ enum RogueSpells
     SPELL_ROGUE_GARROTE_DOT                         = 703,
     SPELL_ROGUE_GARROTE_SILENCE                     = 1330,
     SPELL_ROGUE_GLYPH_OF_EXPOSE_ARMOR               = 56803,
-    SPELL_ROGUE_CRUELDAD                            = 14161,
     SPELL_ROGUE_GLYPH_OF_HEMORRHAGE                 = 56807,
     SPELL_ROGUE_GLYPH_OF_PREPARATION                = 56819,
     SPELL_ROGUE_GLYPH_OF_REGENERATE                 = 146625,
@@ -328,14 +327,9 @@ class spell_rog_between_the_eyes :public SpellScript
         if (caster->HasAura(SPELL_ROGUE_RESTLESS_BLADES))
             if (caster->GetSpellHistory()->HasCooldown(SPELL_ROGUE_VANISH))
                 caster->GetSpellHistory()->ModifyCooldown(SPELL_ROGUE_VANISH, -500 * _cp);
-<<<<<<< HEAD
-    }
-
-=======
 
     }
 
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     void CalcDamage(SpellEffIndex /*effIndex*/)
     {
         int32 finalDamage = GetHitDamage();
