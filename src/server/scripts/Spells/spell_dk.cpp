@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -463,6 +463,11 @@ class spell_dk_blood_boil : public SpellScriptLoader
         {
             return new spell_dk_blood_boil_SpellScript();
         }
+};
+
+enum death_and_decay_entrys 
+{
+    NPC_DEATH_AND_DECAY = 3000000
 };
 
 // 43265 - Death and Decay
