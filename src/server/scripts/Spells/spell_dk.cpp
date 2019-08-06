@@ -32,10 +32,6 @@
 #include "SpellAuraEffects.h"
 #include "SpellHistory.h"
 #include "Containers.h"
-#include "WorldPacket.h"
-#include "ObjectAccessor.h"
-#include "ScriptedCreature.h"
-#include "Pet.h"
 
 enum DeathKnightSpells
 {
@@ -170,17 +166,6 @@ enum DeathKnightSpells
     SPELL_DK_PESTILENT_PUSTULES                 = 194917,
     SPELL_DK_CASTIGATOR                         = 207305,
     SPELL_DK_UNHOLY_VIGOR                       = 196263,
-<<<<<<< HEAD
-
-   //////////////////////////////////////////////////////
-   SPELL_DK_DEATH_COIL = 47541,
-   SPELL_DK_DARK_SUCCOR_AURA = 101568,
-   SPELL_DK_DEATH_STRIKE = 49998,
-   SPELL_DK_ASPHYXIATE_STUN = 93422,
-   SPELL_DK_DEBILITATING_INFESTATION = 207316,
-   SPELL_DK_DEBILITATING_INFESTATION_AURA = 208278,
-   SPELL_DK_MARK_OF_BLOOD_HEAL = 206945,
-=======
     /////////////////////////////////////////////////////
     SPELL_DK_DEATH_COIL = 47541,
     SPELL_DK_DARK_SUCCOR_AURA = 101568,
@@ -189,7 +174,6 @@ enum DeathKnightSpells
     SPELL_DK_DEBILITATING_INFESTATION = 207316,
     SPELL_DK_DEBILITATING_INFESTATION_AURA = 208278,
     SPELL_DK_MARK_OF_BLOOD_HEAL = 206945,
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 };
 
 enum GhoulSpells
@@ -481,75 +465,60 @@ class spell_dk_blood_boil : public SpellScriptLoader
         }
 };
 
-<<<<<<< HEAD
-enum death_and_decay_entrys
-=======
 enum death_and_decay_entrys 
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 {
     NPC_DEATH_AND_DECAY = 3000000
 };
 
-<<<<<<< HEAD
-=======
 // 43265 - Death and Decay
 /// 6.x
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 class spell_dk_death_and_decay : public SpellScriptLoader
 {
-public:
-    spell_dk_death_and_decay() : SpellScriptLoader("spell_dk_death_and_decay") { }
+    public:
+        spell_dk_death_and_decay() : SpellScriptLoader("spell_dk_death_and_decay") { }
 
-    class spell_dk_death_and_decay_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_dk_death_and_decay_SpellScript);
-
-        void function(SpellEffIndex effIndex)
+        class spell_dk_death_and_decay_SpellScript : public SpellScript
         {
-            if (!GetCaster())
-                return;
+            PrepareSpellScript(spell_dk_death_and_decay_SpellScript);
 
-            if (WorldLocation* pos = GetHitDest())
-                GetCaster()->SummonCreature(NPC_DEATH_AND_DECAY, *pos, TEMPSUMMON_TIMED_DESPAWN, 10000);
+            void HandleDummy(SpellEffIndex /*effIndex*/)
+            {
+                if (GetCaster()->HasAura(SPELL_DK_GLYPH_OF_DEATH_AND_DECAY))
+                    if (WorldLocation const* pos = GetExplTargetDest())
+                        GetCaster()->CastSpell(pos->GetPositionX(), pos->GetPositionY(), pos->GetPositionZ(), SPELL_DK_DEATH_AND_DECAY_SLOW, true);
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_dk_death_and_decay_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        class spell_dk_death_and_decay_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_dk_death_and_decay_AuraScript);
+
+            void HandleDummyTick(AuraEffect const* aurEff)
+            {
+                if (Unit* caster = GetCaster())
+                    caster->CastCustomSpell(SPELL_DK_DEATH_AND_DECAY_DAMAGE, SPELLVALUE_BASE_POINT0, aurEff->GetAmount(), GetTarget(), true, NULL, aurEff);
+            }
+
+            void Register() override
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_dk_death_and_decay_AuraScript::HandleDummyTick, EFFECT_2, SPELL_AURA_PERIODIC_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_dk_death_and_decay_SpellScript();
         }
 
-        void Register() override
+        AuraScript* GetAuraScript() const override
         {
-            OnEffectLaunch += SpellEffectFn(spell_dk_death_and_decay_SpellScript::function, EFFECT_0, SPELL_EFFECT_DUMMY);
+            return new spell_dk_death_and_decay_AuraScript();
         }
-    };
-
-    class spell_dk_death_and_decay_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_dk_death_and_decay_AuraScript);
-
-        void HandleDummyTick(AuraEffect const* aurEff)
-        {
-            if (Unit* caster = GetCaster())
-                if (Creature* healingRainTrigger = caster->GetSummonedCreatureByEntry(NPC_DEATH_AND_DECAY))
-                    caster->CastSpell(healingRainTrigger->GetPosition(), SPELL_DK_DEATH_AND_DECAY_DAMAGE, true);
-        }
-
-        void Register() override
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_dk_death_and_decay_AuraScript::HandleDummyTick, EFFECT_2, SPELL_AURA_PERIODIC_DUMMY);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dk_death_and_decay_SpellScript();
-    }
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_dk_death_and_decay_AuraScript();
-    }
-};
-
-enum PetGuardianEntry
-{
-    PET_DK_ENTRY_NECROFAGO = 26125
 };
 
 enum PetGuardianEntry 
@@ -2782,11 +2751,7 @@ public:
     }
 };
 
-<<<<<<< HEAD
-
-=======
 ///101568
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 class spell_dk_dark_succor : public SpellScriptLoader
 {
 public:
@@ -3457,10 +3422,7 @@ public:
         return new spell_dk_crimson_scourge_AuraScript();
     }
 };
-<<<<<<< HEAD
-=======
 
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -3526,11 +3488,7 @@ void AddSC_deathknight_spell_scripts()
     RegisterAreaTriggerAI(at_dk_defile);
     RegisterSpellScript(spell_dk_blighted_rune_weapon);
     RegisterAreaTriggerAI(at_dk_decomposing_aura);
-<<<<<<< HEAD
-//////////////////////////////////////////////////////////////
-=======
     //////////////////////////////////////////////////////////////
->>>>>>> 11aa2f07f613867b8f7e8f600d8f36a326bc58ec
     new spell_dk_dark_succor();
     new spell_dk_virulent_plague();
     new spell_dk_outbreakaura();
