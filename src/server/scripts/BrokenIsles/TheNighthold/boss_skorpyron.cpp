@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -29,7 +46,7 @@ public:
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
         if (_caster && _target && _caster->IsInWorld() && _target->IsInWorld())
-			_caster->SendPlaySpellVisual(_target->GetGUID(), _spellVisualId, 0.f, 0.f, 40.0f, false);
+            _caster->SendPlaySpellVisual(_target->GetGUID(), _spellVisualId, 0.f, 0.f, 40.0f, false);
 
         return true;
     }
@@ -884,7 +901,7 @@ public:
         if (_caster)
         {
             uint32 visual = RAND(SPELL_VISUAL_FOCUSED_BLAST_1, SPELL_VISUAL_FOCUSED_BLAST_2, SPELL_VISUAL_FOCUSED_BLAST_3);
-			_caster->SendPlaySpellVisual(_position, 0.f, visual, 0.f, 0.f, 1.0f, false);
+            _caster->SendPlaySpellVisual(_position, 0.f, visual, 0.f, 0.f, 1.0f, false);
         }
 
         return true;

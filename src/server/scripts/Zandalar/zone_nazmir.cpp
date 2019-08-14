@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -17,33 +17,6 @@
 
 #include "ScriptedCreature.h"
 
-//after https://www.wowhead.com/spell=257255/play-chapter-1-movie-dnt do https://www.wowhead.com/spell=242682/summon-talanjis-ride-dnt
-
-// 257255
-class spell_play_chapter_1 : public AuraScript
-{
-    PrepareAuraScript(spell_play_chapter_1);
-
-    void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
-    {
-        Unit* caster = GetCaster();
-        if (!caster)
-            return;
-
-        caster->CastSpell(caster, 242682);
-        if (Creature* tzena = caster->FindNearestCreature(121530, 5))
-        {
-            caster->CastSpell(tzena, 46598);
-        }
-    }
-
-    void Register() override
-    {
-        AfterEffectRemove += AuraEffectRemoveFn(spell_play_chapter_1::OnRemove, EFFECT_2, SPELL_AURA_PLAY_SCENE, AURA_EFFECT_HANDLE_REAL);
-    }
-};
-
 void AddSC_zone_nazmir()
 {
-    RegisterAuraScript(spell_play_chapter_1);
 }

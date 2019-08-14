@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+* Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -113,11 +113,11 @@ enum Other
 
 enum AreaIds
 {
-    AREA_1          = 5764, // ??? ?????
-    AREA_2          = 5821, // ???? ??
-    AREA_3          = 5766, // ???? ???
-    AREA_4          = 5791, // ??? ???? ????
-    AREA_5          = 5765, // ???? ???
+    AREA_1          = 5764, // Логово Бет'тилак
+    AREA_2          = 5821, // Порочный путь
+    AREA_3          = 5766, // Каменный Венец
+    AREA_4          = 5791, // Гряда Древнего Пламени
+    AREA_5          = 5765, // Огненный портал
 };
 
 const Position dogPos[2] =
@@ -478,7 +478,7 @@ class npc_shannox_riplimb : public CreatureScript
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     events.Reset();
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                     me->SetStandState(UNIT_STAND_STATE_DEAD);
                     me->RemoveAllAuras();
                     events.ScheduleEvent(EVENT_RESURRECT, 30000);
@@ -592,7 +592,7 @@ class npc_shannox_riplimb : public CreatureScript
                             break;
                         case EVENT_RESURRECT:
                             me->SetReactState(REACT_AGGRESSIVE);
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL);
+                            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_REMOVE_CLIENT_CONTROL));
                             me->SetStandState(UNIT_STAND_STATE_STAND);
                             me->SetHealth(me->GetMaxHealth());
                             me->GetMotionMaster()->MoveChase(me->GetVictim());
@@ -801,8 +801,8 @@ class npc_shannox_spear_of_shannox : public CreatureScript
                         {
                             if (Creature* pFocus = (*itr)->ToCreature())
                             {
-                                pFocus->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                                pFocus->SetFlag(UNIT_FIELD_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                pFocus->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+                                pFocus->AddNpcFlag(UNIT_NPC_FLAG_GOSSIP);
                                 pFocus->CastSpell(pFocus, SPELL_TRANSFORM_CHARGED_EMBERSTONE_FOCUS, true);
                             }
                         }

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef DEF_ASSAULT_ON_VIOLET_HOLD_H
 #define DEF_ASSAULT_ON_VIOLET_HOLD_H
 
@@ -91,7 +108,7 @@ struct PlayerFilter
     {
         if (target->ToPlayer())
             return false;
-        
+
         return true;
     }
 };
@@ -108,20 +125,20 @@ struct HealerSelector : public std::unary_function<Unit*, bool>
     {
         if (!target)
             return false;
-        
+
         if (!target->ToPlayer() || !_playerOnly)
             return false;
-        
-        switch (target->ToPlayer()->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
+
+        switch (target->ToPlayer()->GetSpecializationId())
         {
             case TALENT_SPEC_DRUID_RESTORATION:
             case TALENT_SPEC_SHAMAN_RESTORATION:
-            case TALENT_SPEC_MONK_MISTWEAVER:   
+            case TALENT_SPEC_MONK_MISTWEAVER:
             case TALENT_SPEC_PALADIN_HOLY:
             case TALENT_SPEC_PRIEST_DISCIPLINE:
             case TALENT_SPEC_PRIEST_HOLY:
                 return true;
-            
+
             default : return false;
         }
     }

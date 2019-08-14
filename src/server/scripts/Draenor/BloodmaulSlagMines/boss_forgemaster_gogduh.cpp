@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -254,7 +254,7 @@ namespace Instances { namespace Bloodmaul
                 boss_AI(Creature* creature) : BossAI(creature, BossIds::BossForgemasterGogduh)
                 {
                     me->SetControlled(true, UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+                    me->AddUnitFlag(UNIT_FLAG_PACIFIED);
                     me->SetReactState(REACT_PASSIVE);
 
                     if (instance)
@@ -275,7 +275,7 @@ namespace Instances { namespace Bloodmaul
                 void JustReachedHome() override
                 {
                     me->SetControlled(true, UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+                    me->AddUnitFlag(UNIT_FLAG_PACIFIED);
                     me->SetReactState(REACT_PASSIVE);
                     _JustReachedHome();
 
@@ -331,7 +331,7 @@ namespace Instances { namespace Bloodmaul
                             instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
 
                         me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+                        me->RemoveUnitFlag(UNIT_FLAG_PACIFIED);
 
                         if (Unit* l_Victim = me->SelectNearestPlayer(VISIBLE_RANGE))
                             AttackStart(l_Victim);
@@ -1054,16 +1054,16 @@ namespace Instances { namespace Bloodmaul
                 switch ((Spells)at->GetSpellId())
                 {
                     case Spells::ShatterEarthNW:
-                        orientation = float(M_PI) / 4.f; // 45?
+                        orientation = float(M_PI) / 4.f; // 45°
                         break;
                     case Spells::ShatterEarthSW:
-                        orientation = float(M_PI) / 4.f * 3.f; // 135?
+                        orientation = float(M_PI) / 4.f * 3.f; // 135°
                         break;
                     case  Spells::ShatterEarthSE:
-                        orientation = float(M_PI) / 4.f * 5.f; // 225?
+                        orientation = float(M_PI) / 4.f * 5.f; // 225°
                         break;
                     case Spells::ShatterEarthNE:
-                        orientation = float(M_PI) / 4.f * 7.f; // 315?
+                        orientation = float(M_PI) / 4.f * 7.f; // 315°
                         break;
                     default:
                         orientation = 0.f;
@@ -1127,16 +1127,16 @@ namespace Instances { namespace Bloodmaul
                 switch ((Spells)at->GetSpellId())
                 {
                     case Spells::VolcanicTrantrumNW:
-                        orientation = float(M_PI) / 4.f; // 45?
+                        orientation = float(M_PI) / 4.f; // 45°
                         break;
                     case Spells::VolcanicTrantrumSW:
-                        orientation = float(M_PI) / 4.f * 3.f; // 135?
+                        orientation = float(M_PI) / 4.f * 3.f; // 135°
                         break;
                     case Spells::VolcanicTrantrumSE:
-                        orientation = float(M_PI) / 4.f * 5.f; // 225?
+                        orientation = float(M_PI) / 4.f * 5.f; // 225°
                         break;
                     case Spells::VolcanicTrantrumNE:
-                        orientation = float(M_PI) / 4.f * 7.f; // 315?
+                        orientation = float(M_PI) / 4.f * 7.f; // 315°
                         break;
                     default:
                         orientation = 0.f;

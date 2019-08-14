@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -33,7 +33,7 @@ enum AreaTriggerFlags
     AREATRIGGER_FLAG_HAS_DYNAMIC_SHAPE          = 0x00002, // Implemented for Spheres
     AREATRIGGER_FLAG_HAS_ATTACHED               = 0x00004,
     AREATRIGGER_FLAG_HAS_FACE_MOVEMENT_DIR      = 0x00008,
-    AREATRIGGER_FLAG_HAS_FOLLOWS_TERRAIN        = 0x00010, 
+    AREATRIGGER_FLAG_HAS_FOLLOWS_TERRAIN        = 0x00010, // NYI
     AREATRIGGER_FLAG_UNK1                       = 0x00020,
     AREATRIGGER_FLAG_HAS_TARGET_ROLL_PITCH_YAW  = 0x00040,
     AREATRIGGER_FLAG_HAS_ANIM_ID                = 0x00080,

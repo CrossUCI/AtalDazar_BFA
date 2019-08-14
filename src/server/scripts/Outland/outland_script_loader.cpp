@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -128,7 +128,6 @@ void AddSC_blades_edge_mountains();
 void AddSC_boss_doomlordkazzak();
 void AddSC_boss_doomwalker();
 void AddSC_hellfire_peninsula();
-void AddSC_stair_of_destiny();
 void AddSC_nagrand();
 void AddSC_netherstorm();
 void AddSC_shadowmoon_valley();
@@ -252,7 +251,6 @@ void AddOutlandScripts()
     AddSC_boss_doomlordkazzak();
     AddSC_boss_doomwalker();
     AddSC_hellfire_peninsula();
-    AddSC_stair_of_destiny();
     AddSC_nagrand();
     AddSC_netherstorm();
     AddSC_shadowmoon_valley();

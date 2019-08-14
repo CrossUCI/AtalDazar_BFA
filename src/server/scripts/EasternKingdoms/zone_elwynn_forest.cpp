@@ -145,7 +145,7 @@ public:
 class npc_stormwind_injured_soldier : public CreatureScript
 {
 public:
-    npc_stormwind_injured_soldier() : CreatureScript("npc_stormwind_injured_soldier") {}
+    npc_stormwind_injured_soldier() : CreatureScript("npc_stormwind_injured_soldier") { }
 
     CreatureAI* GetAI(Creature* creature) const override
     {
@@ -154,17 +154,13 @@ public:
 
     struct npc_stormwind_injured_soldierAI : public npc_escortAI
     {
-        npc_stormwind_injured_soldierAI(Creature* creature) : npc_escortAI(creature)
-        {
-            me->SetHealth(me->GetMaxHealth() * 0.1);
-            me->setRegeneratingHealth(false);
-        }
+        npc_stormwind_injured_soldierAI(Creature* creature) : npc_escortAI(creature) {}
 
         void Reset() override
         {
             _clicker = nullptr;
 
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             me->SetStandState(UNIT_STAND_STATE_DEAD);
         }
 
@@ -173,10 +169,9 @@ public:
             if (!Clicker->IsPlayer())
                 return;
 
-            me->SetHealth(me->GetMaxHealth());
             _clicker = Clicker;
             me->CastSpell(me, SPELL_HEAL_VISUAL, true);
-            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
             me->SetStandState(UNIT_STAND_STATE_STAND);
 
             me->GetScheduler().Schedule(Milliseconds(1000), [this](TaskContext /*task*/)
@@ -195,7 +190,7 @@ public:
 
         void WaypointReached(uint32 waypointId) override
         {
-            if (waypointId == 3)
+            if (waypointId == 5)
             {
                 me->DespawnOrUnsummon(1000);
                 me->SetRespawnDelay(10);
@@ -540,7 +535,7 @@ struct npc_hogger : public ScriptedAI
         _alreadyEaten = false;
         _isEating = false;
 
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->SetReactState(REACT_AGGRESSIVE);
         me->SetWalk(false);
     }
@@ -599,7 +594,7 @@ struct npc_hogger : public ScriptedAI
         _events.Reset();
 
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->StopMoving();
         me->AttackStop();
 

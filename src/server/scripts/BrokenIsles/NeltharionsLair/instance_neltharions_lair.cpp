@@ -97,7 +97,7 @@ struct instance_neltharions_lair : public InstanceScript
                 break;
             case GO_NARAXAS_LOOT:
                 naraxasLootGUID = go->GetGUID();
-                go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE | GO_FLAG_NODESPAWN);
+                go->AddFlag(GameObjectFlags(GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE | GO_FLAG_NODESPAWN));
                 break;
         }
     }

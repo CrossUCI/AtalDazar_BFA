@@ -160,7 +160,7 @@ public:
                 PhasingHandler::AddPhase(barrier, 3, true);
 
             if (GameObject* naraxasLoot = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_NARAXAS_LOOT)))
-                naraxasLoot->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE | GO_FLAG_NODESPAWN);
+                naraxasLoot->RemoveFlag(GameObjectFlags(GO_FLAG_LOCKED | GO_FLAG_NOT_SELECTABLE | GO_FLAG_NODESPAWN));
 
             instance->SetData(DATA_NARAXAS, DONE);
         }

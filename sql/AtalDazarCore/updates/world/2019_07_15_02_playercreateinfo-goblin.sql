@@ -1,9 +1,0 @@
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','1','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','3','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','4','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','9','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','6','609','4298','2355.05','-5661.7','426.026','3.93485');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','7','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','8','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','5','648','4765','-8423.81','1361.3','104.671','1.55428');
-REPLACE into `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) values('9','10','1','5691','-1171.45','-5263.65','0.847728','5.78945');

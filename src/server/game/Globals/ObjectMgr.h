@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -102,10 +102,10 @@ enum ScriptCommands
 {
     SCRIPT_COMMAND_TALK                  = 0,                // source/target = Creature, target = any, datalong = talk type (0=say, 1=whisper, 2=yell, 3=emote text, 4=boss emote text), datalong2 & 1 = player talk (instead of creature), dataint = string_id
     SCRIPT_COMMAND_EMOTE                 = 1,                // source/target = Creature, datalong = emote id, datalong2 = 0: set emote state; > 0: play emote state
-    SCRIPT_COMMAND_FIELD_SET             = 2,                // source/target = Creature, datalong = field id, datalog2 = value
+    SCRIPT_COMMAND_FIELD_SET_DEPRECATED  = 2,
     SCRIPT_COMMAND_MOVE_TO               = 3,                // source/target = Creature, datalong2 = time to reach, x/y/z = destination
-    SCRIPT_COMMAND_FLAG_SET              = 4,                // source/target = Creature, datalong = field id, datalog2 = bitmask
-    SCRIPT_COMMAND_FLAG_REMOVE           = 5,                // source/target = Creature, datalong = field id, datalog2 = bitmask
+    SCRIPT_COMMAND_FLAG_SET_DEPRECATED   = 4,
+    SCRIPT_COMMAND_FLAG_REMOVE_DEPRECATED= 5,
     SCRIPT_COMMAND_TELEPORT_TO           = 6,                // source/target = Creature/Player (see datalong2), datalong = map_id, datalong2 = 0: Player; 1: Creature, x/y/z = destination, o = orientation
     SCRIPT_COMMAND_QUEST_EXPLORED        = 7,                // target/source = Player, target/source = GO/Creature, datalong = quest id, datalong2 = distance or 0
     SCRIPT_COMMAND_KILL_CREDIT           = 8,                // target/source = Player, datalong = creature entry, datalong2 = 0: personal credit, 1: group credit
@@ -494,13 +494,6 @@ struct InstanceDifficultyMultiplier
     float damageMultiplier;
 };
 
-struct ItemAddon
-{
-    uint32 itemId;
-    bool disableSelling;
-};
-typedef std::unordered_map<uint32, ItemAddon> ItemAddonContainer;
-
 typedef std::map<ObjectGuid, ObjectGuid> LinkedRespawnContainer;
 typedef std::unordered_map<uint32, CreatureTemplate> CreatureTemplateContainer;
 typedef std::unordered_map<uint32, CreatureAddon> CreatureTemplateAddonContainer;
@@ -551,6 +544,8 @@ struct PlayerChoiceResponseLocale
 {
     std::vector<std::string> Answer;
     std::vector<std::string> Header;
+    std::vector<std::string> SubHeader;
+    std::vector<std::string> ButtonTooltip;
     std::vector<std::string> Description;
     std::vector<std::string> Confirmation;
 };
@@ -814,18 +809,24 @@ struct PlayerChoiceResponse
     int32 ChoiceArtFileId;
     int32 Flags;
     uint32 WidgetSetID;
+    uint32 UiTextureAtlasElementID = 0;
+    uint32 SoundKitID = 0;
     uint8 GroupID;
-    std::string Header;
     std::string Answer;
+    std::string Header;
+    std::string SubHeader;
+    std::string ButtonTooltip;
     std::string Description;
     std::string Confirmation;
     Optional<PlayerChoiceResponseReward> Reward;
+    Optional<uint32> RewardQuestID;
 };
 
 struct PlayerChoice
 {
     int32 ChoiceId;
     int32 UiTextureKitId;
+    uint32 SoundKitId;
     std::string Question;
     std::vector<PlayerChoiceResponse> Responses;
     bool HideWarboardHeader;
@@ -903,16 +904,6 @@ struct DungeonEncounter
 
 typedef std::list<DungeonEncounter const*> DungeonEncounterList;
 typedef std::unordered_map<uint64, DungeonEncounterList> DungeonEncounterContainer;
-
-struct DungeonCreditEncounter
-{
-    DungeonCreditEncounter(uint32 _dbcEntry, uint32 _creditEntry)
-        : dbcEntry(_dbcEntry), creditEntry(_creditEntry) { }
-    uint32 dbcEntry;
-    uint32 creditEntry;
-};
-
-typedef std::unordered_map<uint32, DungeonCreditEncounter*> DungeonCreditEncounterMap;
 
 struct TerrainSwapInfo
 {
@@ -1029,8 +1020,6 @@ class TC_GAME_API ObjectMgr
 
         void GetPlayerLevelInfo(uint32 race, uint32 class_, uint8 level, PlayerLevelInfo* info) const;
 
-        static ObjectGuid GetPlayerGUIDByName(std::string const& name);
-
         std::vector<uint32> const* GetGameObjectQuestItemList(uint32 id) const
         {
             GameObjectQuestItemMap::const_iterator itr = _gameObjectQuestItemStore.find(id);
@@ -1048,25 +1037,6 @@ class TC_GAME_API ObjectMgr
             return nullptr;
         }
         CreatureQuestItemMap const* GetCreatureQuestItemMap() const { return &_creatureQuestItemStore; }
-
-        /**
-        * Retrieves the player name by guid.
-        *
-        * If the player is online, the name is retrieved immediately otherwise
-        * a database query is done.
-        *
-        * @remark Use sWorld->GetCharacterNameData because it doesn't require a database query when player is offline
-        *
-        * @param guid player full guid
-        * @param name returned name
-        *
-        * @return true if player was found, false otherwise
-        */
-        static bool GetPlayerNameByGUID(ObjectGuid const& guid, std::string& name);
-        static bool GetPlayerNameAndClassByGUID(ObjectGuid const& guid, std::string& name, uint8& _class);
-        static uint32 GetPlayerTeamByGUID(ObjectGuid const& guid);
-        static uint32 GetPlayerAccountIdByGUID(ObjectGuid const& guid);
-        static uint32 GetPlayerAccountIdByPlayerName(std::string const& name);
 
         uint32 GetNearestTaxiNode(float x, float y, float z, uint32 mapid, uint32 team);
         void GetTaxiPath(uint32 source, uint32 destination, uint32 &path, uint32 &cost);
@@ -1277,7 +1247,6 @@ class TC_GAME_API ObjectMgr
         void LoadPointOfInterestLocales();
         void LoadInstanceTemplate();
         void LoadInstanceEncounters();
-        uint32 GetDungeonEncounterID(uint32 creatureEntry);
         void LoadMailLevelRewards();
         void LoadVehicleTemplateAccessories();
         void LoadVehicleAccessories();
@@ -1317,7 +1286,6 @@ class TC_GAME_API ObjectMgr
         void LoadGossipMenuItems();
 
         void LoadVendors();
-        void LoadItemAddons();
 
         /* OLD SYSTEM TEMP PURPOSE */
         void LoadTrainerSpell();
@@ -1518,14 +1486,6 @@ class TC_GAME_API ObjectMgr
         {
             auto itr = _instanceDifficultyMultipliers.find(std::pair<uint32, uint32>(mapId, difficultyId));
             if (itr == _instanceDifficultyMultipliers.end()) return nullptr;
-            return &itr->second;
-        }
-
-        ItemAddon const* GetItemAddon(uint32 itemId) const
-        {
-            ItemAddonContainer::const_iterator itr = _itemAddonStore.find(itemId);
-            if (itr == _itemAddonStore.end())
-                return nullptr;
             return &itr->second;
         }
 
@@ -1745,7 +1705,6 @@ class TC_GAME_API ObjectMgr
         AreaTriggerScriptContainer _areaTriggerScriptStore;
         AccessRequirementContainer _accessRequirementStore;
         DungeonEncounterContainer _dungeonEncounterStore;
-        DungeonCreditEncounterMap _DungeonCreditEncounters;
 
         RepRewardRateContainer _repRewardRateStore;
         RepOnKillContainer _repOnKillStore;
@@ -1861,8 +1820,6 @@ class TC_GAME_API ObjectMgr
 
         InstanceDifficultyMultiplierContainer _instanceDifficultyMultipliers;
 
-        ItemAddonContainer _itemAddonStore;
-
         TrinityStringContainer _trinityStringStore;
 
         CacheVendorItemContainer _cacheVendorItemStore;
@@ -1895,11 +1852,6 @@ class TC_GAME_API ObjectMgr
 
         std::set<uint32> _transportMaps; // Helper container storing map ids that are for transports only, loaded from gameobject_template
 };
-
-namespace Trinity
-{
-    bool IsPositionInZone(const Position &test, const std::vector<Position> &polygon);
-}
 
 #define sObjectMgr ObjectMgr::instance()
 

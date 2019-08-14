@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,6 +16,7 @@
  */
 
 #include "ScriptMgr.h"
+#include "BattlegroundSA.h"
 #include "BattlegroundIC.h"
 #include "Creature.h"
 #include "Player.h"
@@ -110,6 +111,23 @@ class achievement_bg_ic_mowed_down : public AchievementCriteriaScript
         }
 };
 
+class achievement_bg_sa_artillery : public AchievementCriteriaScript
+{
+    public:
+        achievement_bg_sa_artillery() : AchievementCriteriaScript("achievement_bg_sa_artillery") { }
+
+        bool OnCheck(Player* source, Unit* /*target*/) override
+        {
+            if (Creature* vehicle = source->GetVehicleCreatureBase())
+            {
+                if (vehicle->GetEntry() == NPC_ANTI_PERSONNAL_CANNON)
+                    return true;
+            }
+
+            return false;
+        }
+};
+
 class achievement_arena_kills : public AchievementCriteriaScript
 {
     public:
@@ -172,6 +190,20 @@ class achievement_bg_av_perfection : public AchievementCriteriaScript
         {
             if (Battleground* bg = source->GetBattleground())
                 return bg->CheckAchievementCriteriaMeet(BG_CRITERIA_CHECK_AV_PERFECTION, source, target);
+
+            return false;
+        }
+};
+
+class achievement_bg_sa_defense_of_ancients : public AchievementCriteriaScript
+{
+    public:
+        achievement_bg_sa_defense_of_ancients() : AchievementCriteriaScript("achievement_bg_sa_defense_of_ancients") { }
+
+        bool OnCheck(Player* source, Unit* target) override
+        {
+            if (Battleground* bg = source->GetBattleground())
+                return bg->CheckAchievementCriteriaMeet(BG_CRITERIA_CHECK_DEFENSE_OF_THE_ANCIENTS, source, target);
 
             return false;
         }
@@ -265,12 +297,14 @@ void AddSC_achievement_scripts()
     new achievement_bg_ic_resource_glut();
     new achievement_bg_ic_glaive_grave();
     new achievement_bg_ic_mowed_down();
+    new achievement_bg_sa_artillery();
     new achievement_sickly_gazelle();
     new achievement_everything_counts();
     new achievement_bg_av_perfection();
     new achievement_arena_kills("achievement_arena_2v2_kills", SLOT_ARENA_2V2);
     new achievement_arena_kills("achievement_arena_3v3_kills", SLOT_ARENA_3V3);
     new achievement_arena_kills("achievement_arena_5v5_kills", SLOT_ARENA_5V5);
+    new achievement_bg_sa_defense_of_ancients();
     new achievement_tilted();
     new achievement_not_even_a_scratch();
     new achievement_flirt_with_disaster_perf_check();

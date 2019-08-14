@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -472,7 +472,7 @@ struct TC_GAME_API SpellArea
     uint8 flags;                                            // if SPELL_AREA_FLAG_AUTOCAST then auto applied at area enter, in other case just allowed to cast
                                                             // if SPELL_AREA_FLAG_AUTOREMOVE then auto removed inside area (will allways be removed on leaving even without flag)
                                                             // if SPELL_AREA_FLAG_AUTOAPPLY then auto applied after quest status change
-    uint8 isAura;                                          // if 1 use spellId as aura, or 0 like before
+
     // helpers
     bool IsFitToRequirements(Player const* player, uint32 newZone, uint32 newArea) const;
 };

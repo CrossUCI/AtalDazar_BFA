@@ -1,8 +1,25 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "violet_hold_assault.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
-const uint32 DemonMinions [] = 
+const uint32 DemonMinions [] =
 {
     NPC_CORROSIVE_FELHOUND    ,
     NPC_EREDAR_INVADER        ,
@@ -38,7 +55,7 @@ class npc_vha_demon_portal : public CreatureScript
                 {
                     if (!summon)
                         return;
-                    
+
                     if (summon->GetEntry() == NPC_PORTAL_INQUISITOR || summon->GetEntry() == NPC_PORTAL_DREADLORD ||
                         summon->GetEntry() == NPC_PORTAL_FELGUARD || summon->GetEntry() == NPC_PORTAL_JAILER)
                         {
@@ -64,7 +81,7 @@ class npc_vha_demon_portal : public CreatureScript
                             }
                             else
                                 DoSummon(entry, me->GetPosition(), 10 * IN_MILLISECONDS, TEMPSUMMON_CORPSE_TIMED_DESPAWN);
-                            
+
                             _events.ScheduleEvent(EVENT_SPAWN_MINION, Seconds(15));
                         }
                     }

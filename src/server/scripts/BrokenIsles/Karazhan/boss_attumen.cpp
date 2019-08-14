@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -157,7 +174,7 @@ class boss_attumen_new : public CreatureScript
                 {
                     case ACTION_MOUNT_MIDNIGHT:
                     {
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         events.CancelEventGroup(PHASE_TWO);
                         me->GetMotionMaster()->MovePoint(POINT_HOME, me->GetHomePosition());
                         break;
@@ -166,7 +183,7 @@ class boss_attumen_new : public CreatureScript
                     case ACTION_DISMOUNT_MIDNIGHT:
                     {
                         Talk(SAY_FOOT_PHASE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         events.CancelEventGroup(PHASE_ONE);
                         events.ScheduleEvent(EVENT_MORTAL_STRIKE, Seconds(10), PHASE_TWO);
                         events.ScheduleEvent(EVENT_SHARED_SUFFERING, Seconds(15), PHASE_TWO);

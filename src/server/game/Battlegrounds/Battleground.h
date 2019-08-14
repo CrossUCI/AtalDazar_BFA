@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -185,70 +185,6 @@ enum BattlegroundStatus
     STATUS_WAIT_JOIN    = 2,                                // this means, that BG has already started and it is waiting for more players
     STATUS_IN_PROGRESS  = 3,                                // means bg is running
     STATUS_WAIT_LEAVE   = 4                                 // means some faction has won BG and it is ending
-};
-
-enum class BattlegroundBracketType : uint8
-{
-    Arena2v2            = 0,
-    Arena3v3            = 1,
-    Arena5v5            = 2,
-    Battleground10v10   = 3,
-    ArenaSkirmish       = 4,
-    RandomBattleground  = 5,
-    Unk0                = 6, //? Brawl
-    Unk1                = 7, //? Brawl
-    EpicBattleground    = 8,
-    Max                 = 9,
-};
-
-static std::unordered_map<uint8, uint32> HonorRewardPerBracket =
-{
-    { (uint8)BattlegroundBracketType::RandomBattleground, 150 },
-    { (uint8)BattlegroundBracketType::ArenaSkirmish,       80 },
-    { (uint8)BattlegroundBracketType::Arena2v2,           100 },
-    { (uint8)BattlegroundBracketType::Arena3v3,           100 },
-    { (uint8)BattlegroundBracketType::Battleground10v10,  300 },
-    { (uint8)BattlegroundBracketType::EpicBattleground,   225 }
-};
-
-static std::unordered_map<uint8, uint32> ConquestRewardPerBracket =
-{
-    { (uint8)BattlegroundBracketType::RandomBattleground, 40 },
-    { (uint8)BattlegroundBracketType::ArenaSkirmish,      15 },
-    { (uint8)BattlegroundBracketType::Arena2v2,           35 },
-    { (uint8)BattlegroundBracketType::Arena3v3,           50 },
-    { (uint8)BattlegroundBracketType::Battleground10v10, 150 },
-    { (uint8)BattlegroundBracketType::EpicBattleground,   65 }
-};
-
-static std::unordered_map<uint8, uint32> AzeriteRewardPerBracket =
-{
-    { (uint8)BattlegroundBracketType::RandomBattleground, 151 },
-    { (uint8)BattlegroundBracketType::ArenaSkirmish,       16 },
-    { (uint8)BattlegroundBracketType::Arena2v2,           121 },
-    { (uint8)BattlegroundBracketType::Arena3v3,           151 },
-    { (uint8)BattlegroundBracketType::Battleground10v10,  526 },
-    { (uint8)BattlegroundBracketType::EpicBattleground,   301 }
-};
-
-enum class Rank : uint8
-{
-    Unranked    = 0,
-    Combatant   = 1,
-    Challenger  = 2,
-    Rival       = 3,
-    Duelist     = 4,
-    Gladiator   = 5,
-    Max         = 6
-};
-
-static std::unordered_map<uint8, uint32> TopRank =
-{
-    { (uint8)Rank::Combatant,  1400 },
-    { (uint8)Rank::Challenger, 1600 },
-    { (uint8)Rank::Rival,      1800 },
-    { (uint8)Rank::Duelist,    2100 },
-    { (uint8)Rank::Gladiator,  2400 }
 };
 
 struct BattlegroundPlayer

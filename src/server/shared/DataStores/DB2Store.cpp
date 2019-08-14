@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -91,12 +91,10 @@ bool DB2StorageBase::Load(std::string const& path, uint32 locale, char**& indexT
 {
     indexTable = nullptr;
     DB2FileLoader db2;
-    {
-        DB2FileSystemSource source(path + _fileName);
-        // Check if load was successful, only then continue
-        if (!db2.Load(&source, _loadInfo))
-            return false;
-    }
+    DB2FileSystemSource source(path + _fileName);
+    // Check if load was successful, only then continue
+    if (!db2.Load(&source, _loadInfo))
+        return false;
 
     _fieldCount = db2.GetCols();
     _tableHash = db2.GetTableHash();
@@ -123,12 +121,10 @@ bool DB2StorageBase::LoadStringsFrom(std::string const& path, uint32 locale, cha
         return false;
 
     DB2FileLoader db2;
-    {
-        DB2FileSystemSource source(path + _fileName);
-        // Check if load was successful, only then continue
-        if (!db2.Load(&source, _loadInfo))
-            return false;
-    }
+    DB2FileSystemSource source(path + _fileName);
+    // Check if load was successful, only then continue
+    if (!db2.Load(&source, _loadInfo))
+        return false;
 
     // load strings from another locale db2 data
     if (_loadInfo->GetStringFieldCount(true))
@@ -144,24 +140,6 @@ void DB2StorageBase::LoadFromDB(char**& indexTable)
     _dataTableEx = DB2DatabaseLoader(_fileName, _loadInfo).Load(_indexTableSize, indexTable, extraStringHolders, _stringPool);
     if (extraStringHolders)
         _stringPool.push_back(extraStringHolders);
-
-    uint32 type = 0;
-    if (_fileName == "ItemSparse.db2")
-        type = 1;
-    else if (_fileName == "Item.db2")
-        type = 2;
-    else if (_fileName == "ItemEffect.db2")
-        type = 3;
-    else if (_fileName == "ItemModifiedAppearance.db2")
-        type = 4;
-
-    if (type)
-    {
-        BeginEntry = _indexTableSize;
-        _dataTableEx = DB2DatabaseLoader(_fileName, _loadInfo).LoadW(_indexTableSize, indexTable, type, EndEntry, extraStringHolders, _stringPool);
-        if (extraStringHolders)
-            _stringPool.push_back(extraStringHolders);
-    }
 }
 
 void DB2StorageBase::LoadStringsFromDB(uint32 locale, char** indexTable)

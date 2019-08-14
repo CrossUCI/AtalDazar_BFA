@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -20,16 +20,11 @@
 
 #include "Define.h"
 #include "ObjectGuid.h"
-#include "Guild.h"
 #include <unordered_map>
 #include <vector>
 
 class Guild;
 struct GuildReward;
-
-typedef std::unordered_map<uint32, GuildReward> GuildRewardMap;
-
-#define GUILD_REPUTATION 1168
 
 class TC_GAME_API GuildMgr
 {
@@ -61,19 +56,14 @@ public:
     ObjectGuid::LowType GenerateGuildId();
     void SetNextGuildId(ObjectGuid::LowType Id) { NextGuildId = Id; }
 
-    GuildRewardMap const& GetGuildRewards() const { return GuildRewards; }
-    GuildReward* GetReward(uint32 entry)
-    {
-        GuildRewardMap::iterator itr = GuildRewards.find(entry);
-        return itr == GuildRewards.end() ? nullptr : &itr->second;
-    }
+    std::vector<GuildReward> const& GetGuildRewards() const { return GuildRewards; }
 
     void ResetTimes(bool week);
 protected:
     typedef std::unordered_map<ObjectGuid::LowType, Guild*> GuildContainer;
     ObjectGuid::LowType NextGuildId;
     GuildContainer GuildStore;
-    GuildRewardMap GuildRewards;
+    std::vector<GuildReward> GuildRewards;
 };
 
 #define sGuildMgr GuildMgr::instance()

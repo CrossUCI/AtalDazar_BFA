@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -665,12 +665,7 @@ void BattlegroundEY::EventPlayerDroppedFlag(Player* player)
     m_FlagState = BG_EY_FLAG_STATE_ON_GROUND;
     m_FlagsTimer = BG_EY_FLAG_RESPAWN_TIME;
     player->CastSpell(player, SPELL_RECENTLY_DROPPED_FLAG, true);
-    //player->CastSpell(player, BG_EY_PLAYER_DROPPED_FLAG_SPELL, true); // no longer exists in bfa
-
-    AddObject(BG_EY_OBJECT_FLAG_DROPPED, BG_OBJECT_FLAG3_EY_ENTRY,player->GetPosition(), 0.0f, 0.0f, 0.0f, 0.0f);
-    if (GameObject* flag = GetBGObject(BG_EY_OBJECT_FLAG_DROPPED))
-        SetDroppedFlagGUID(flag->GetGUID());
-
+    player->CastSpell(player, BG_EY_PLAYER_DROPPED_FLAG_SPELL, true);
     //this does not work correctly :((it should remove flag carrier name)
     UpdateWorldState(NETHERSTORM_FLAG_STATE_HORDE, BG_EY_FLAG_STATE_WAIT_RESPAWN);
     UpdateWorldState(NETHERSTORM_FLAG_STATE_ALLIANCE, BG_EY_FLAG_STATE_WAIT_RESPAWN);

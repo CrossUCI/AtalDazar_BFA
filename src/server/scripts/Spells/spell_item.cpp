@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -4666,40 +4666,6 @@ class aura_item_burning_essence : public AuraScript
     }
 };
 
-
-
-// 188021 -  Avalanche Elixir
-enum AvalancheElixir
-{
-    SPELL_AVALANCHE_ELIXIR_BUFF = 188414,
-    SPELL_AVALANCHE_ELIXIR      = 188021
-};
-
-class aura_item_avalanche_elixir : public AuraScript
-{
-    PrepareAuraScript(aura_item_avalanche_elixir);
-
-    bool Validate(SpellInfo const* /*spellInfo*/) override
-    {
-        return ValidateSpellInfo({ SPELL_AVALANCHE_ELIXIR_BUFF, SPELL_AVALANCHE_ELIXIR });
-    }
-
-    void HandleEffectPeriodic(AuraEffect const* aurEff)
-    {
-        if (Player* target = GetTarget()->ToPlayer())
-            if (target->HasAura(SPELL_AVALANCHE_ELIXIR) && target->IsFalling())
-            {
-                target->RemoveAurasDueToSpell(SPELL_AVALANCHE_ELIXIR);
-                target->CastSpell(target, SPELL_AVALANCHE_ELIXIR_BUFF, true);
-            }
-    }
-
-    void Register() override
-    {
-        OnEffectPeriodic += AuraEffectPeriodicFn(aura_item_avalanche_elixir::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-    }
-};
-
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -4817,5 +4783,4 @@ void AddSC_item_spell_scripts()
     new spell_item_water_strider();
     new spell_item_brutal_kinship();
     RegisterAuraScript(aura_item_burning_essence);
-    RegisterAuraScript(aura_item_avalanche_elixir);
 }

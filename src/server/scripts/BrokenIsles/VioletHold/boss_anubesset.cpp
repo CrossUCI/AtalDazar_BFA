@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -32,17 +49,17 @@ enum Events
     EVENT_MANDIBLE_STRIKE   = 1,
     EVENT_IMPALE            = 2,
     EVENT_CALL_OF_THE_SWARN = 3,
-    
+
     // Spitting Scarab
     EVENT_POISON_SPIT       = 4,
-    
+
     // Blistering Bettle
     EVENT_BLISTERING_OOZE   = 5,
 };
 
 enum Adds
 {
-    NPC_SPITTING_SCARAB     = 102271, 
+    NPC_SPITTING_SCARAB     = 102271,
     NPC_BLISTERING_BETTLES  = 102540,
     NPC_IMPALE_DUMMY        = 999850,
 };
@@ -68,7 +85,7 @@ class boss_anubesset : public CreatureScript
     public:
         boss_anubesset() : CreatureScript("boss_anubesset")
         {}
-    
+
         struct boss_anubesset_AI : public BossAI
         {
             boss_anubesset_AI(Creature* creature) : BossAI(creature, DATA_ANUBESSET)
@@ -110,10 +127,10 @@ class boss_anubesset : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-                
+
                 events.Update(diff);
-            
-                if (me->HasUnitState(UNIT_STATE_CASTING))   
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -128,7 +145,7 @@ class boss_anubesset : public CreatureScript
                             }
                             events.ScheduleEvent(EVENT_IMPALE, 23 * IN_MILLISECONDS);
                             break;
-                        
+
                         case EVENT_MANDIBLE_STRIKE:
                             if (Unit* victim = me->GetVictim())
                             {
@@ -137,7 +154,7 @@ class boss_anubesset : public CreatureScript
                             }
                             events.ScheduleEvent(EVENT_MANDIBLE_STRIKE, 23 * IN_MILLISECONDS);
                             break;
-                        
+
                         case EVENT_CALL_OF_THE_SWARN:
                             Talk(SAY_CALL_OF_SWARN);
                             DoCast(me, SPELL_CALL_OF_SWARN);
@@ -200,7 +217,7 @@ class npc_vha_spitting_scarab : public CreatureScript
 
             if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
-            
+
             if (_poisonTimer >= 3 * IN_MILLISECONDS && _anubesset)
             {
                 if (Unit* target = _anubesset->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
@@ -272,7 +289,7 @@ class npc_vha_blistering_bettle : public CreatureScript
             {
                 if (!_target)
                     return;
-                
+
                 me->GetMotionMaster()->MoveFollow(_target, 0, 0);
                 if (me->IsWithinMeleeRange(_target))
                     _target->Kill(me);
@@ -291,14 +308,14 @@ class npc_vha_blistering_bettle : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 if (_initTimer >= 5 * IN_MILLISECONDS && !_prepared)
                 {
                     _prepared = true;
                     FindNewTarget();
 
                 }
-                
+
                 if (_fixateTimer >= 10 * IN_MILLISECONDS)
                     FindNewTarget();
 
@@ -306,7 +323,7 @@ class npc_vha_blistering_bettle : public CreatureScript
                     FindNewTarget();
 
                 CheckDistForExplode();
-                
+
             }
 
             private:
@@ -344,7 +361,7 @@ class npc_vha_impale_dummy : public CreatureScript
             {
                 if (type != POINT_MOTION_TYPE)
                     return;
-                
+
                 if (id == POINT_REACHED)
                     me->DespawnOrUnsummon();
             }
@@ -385,7 +402,7 @@ class spell_anubesset_impale : public SpellScriptLoader
                 {
                     if (!GetCaster() || !GetHitUnit())
                         return;
-                    
+
                     if (Creature* dummy = GetCaster()->SummonCreature(NPC_IMPALE_DUMMY, GetCaster()->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 10000))
                         dummy->GetMotionMaster()->MovePoint(POINT_REACHED, GetHitUnit()->GetPosition());
                 }
@@ -395,7 +412,7 @@ class spell_anubesset_impale : public SpellScriptLoader
                     OnEffectHitTarget += SpellEffectFn(spell_anubesset_impale_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
                 }
         };
-        
+
         SpellScript* GetSpellScript() const
         {
             return new spell_anubesset_impale_SpellScript();
@@ -417,7 +434,7 @@ class spell_anubesset_call_of_swarm : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     if (Map* map = GetCaster()->GetMap())
                     {
                         if (map->IsHeroic())
@@ -442,7 +459,7 @@ class spell_anubesset_summon_blistering_ooze : public SpellScriptLoader
     public:
         spell_anubesset_summon_blistering_ooze() : SpellScriptLoader("spell_anubesset_summon_blistering_ooze")
         {}
-        
+
 
         class spell_anubesset_summon_blistering_ooze_SpellScript : public SpellScript
         {
@@ -461,12 +478,12 @@ class spell_anubesset_summon_blistering_ooze : public SpellScriptLoader
                 {
                     if (targets.empty())
                         return;
-                    
+
                     targets.remove_if([] (WorldObject*& target)
                     {
                         if (target && target->ToPlayer())
                             return false;
-                        
+
                         return true;
                     });
                 }
@@ -499,7 +516,7 @@ class at_blistering_ooze : public AreaTriggerEntityScript
             {
                 if (!target)
                     return;
-                
+
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
                     target->CastSpell(target, SPELL_BLISTERING_OOZE_DMG, true);
             }

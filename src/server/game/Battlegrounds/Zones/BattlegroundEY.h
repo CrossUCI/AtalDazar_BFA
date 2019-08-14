@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -63,7 +63,7 @@ enum BG_EY_WorldStates
 enum BG_EY_ProgressBarConsts
 {
     BG_EY_POINT_MAX_CAPTURERS_COUNT     = 5,
-    BG_EY_POINT_RADIUS                  = 50,
+    BG_EY_POINT_RADIUS                  = 70,
     BG_EY_PROGRESS_BAR_DONT_SHOW        = 0,
     BG_EY_PROGRESS_BAR_SHOW             = 1,
     BG_EY_PROGRESS_BAR_PERCENT_GREY     = 40,
@@ -205,21 +205,20 @@ enum EYBattlegroundObjectTypes
     BG_EY_OBJECT_FLAG_BLOOD_ELF                 = 44,
     BG_EY_OBJECT_FLAG_DRAENEI_RUINS             = 45,
     BG_EY_OBJECT_FLAG_MAGE_TOWER                = 46,
-    BG_EY_OBJECT_FLAG_DROPPED                   = 47,
     //buffs
-    BG_EY_OBJECT_SPEEDBUFF_FEL_REAVER          = 48,
-    BG_EY_OBJECT_REGENBUFF_FEL_REAVER          = 49,
-    BG_EY_OBJECT_BERSERKBUFF_FEL_REAVER        = 51,
-    BG_EY_OBJECT_SPEEDBUFF_BLOOD_ELF            = 51,
-    BG_EY_OBJECT_REGENBUFF_BLOOD_ELF            = 52,
-    BG_EY_OBJECT_BERSERKBUFF_BLOOD_ELF          = 53,
-    BG_EY_OBJECT_SPEEDBUFF_DRAENEI_RUINS        = 54,
-    BG_EY_OBJECT_REGENBUFF_DRAENEI_RUINS        = 55,
-    BG_EY_OBJECT_BERSERKBUFF_DRAENEI_RUINS      = 56,
-    BG_EY_OBJECT_SPEEDBUFF_MAGE_TOWER           = 57,
-    BG_EY_OBJECT_REGENBUFF_MAGE_TOWER           = 58,
-    BG_EY_OBJECT_BERSERKBUFF_MAGE_TOWER         = 59,
-    BG_EY_OBJECT_MAX                            = 60
+    BG_EY_OBJECT_SPEEDBUFF_FEL_REAVER          = 47,
+    BG_EY_OBJECT_REGENBUFF_FEL_REAVER          = 48,
+    BG_EY_OBJECT_BERSERKBUFF_FEL_REAVER        = 49,
+    BG_EY_OBJECT_SPEEDBUFF_BLOOD_ELF            = 50,
+    BG_EY_OBJECT_REGENBUFF_BLOOD_ELF            = 51,
+    BG_EY_OBJECT_BERSERKBUFF_BLOOD_ELF          = 52,
+    BG_EY_OBJECT_SPEEDBUFF_DRAENEI_RUINS        = 53,
+    BG_EY_OBJECT_REGENBUFF_DRAENEI_RUINS        = 54,
+    BG_EY_OBJECT_BERSERKBUFF_DRAENEI_RUINS      = 55,
+    BG_EY_OBJECT_SPEEDBUFF_MAGE_TOWER           = 56,
+    BG_EY_OBJECT_REGENBUFF_MAGE_TOWER           = 57,
+    BG_EY_OBJECT_BERSERKBUFF_MAGE_TOWER         = 58,
+    BG_EY_OBJECT_MAX                            = 59
 };
 
 #define BG_EY_NotEYWeekendHonorTicks    260
@@ -381,7 +380,7 @@ struct BattlegroundEYScore final : public BattlegroundScore
             }
         }
 
-        void BuildPvPLogPlayerDataPacket(WorldPackets::Battleground::PVPLogData::PlayerData& playerData) const override
+        void BuildPvPLogPlayerDataPacket(WorldPackets::Battleground::PVPLogData::PVPMatchPlayerStatistics& playerData) const override
         {
             BattlegroundScore::BuildPvPLogPlayerDataPacket(playerData);
 

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -73,7 +90,7 @@ class boss_blood_princess_thalena : public CreatureScript
                 DoCast(me, SPELL_SHROUD_OF_SORROW, true);
                 events.ScheduleEvent(EVENT_VAMPIRIC_KISS, Seconds(15));
                 events.ScheduleEvent(EVENT_BLOOD_SWARN, Seconds(20));
-                
+
                 if (IsHeroic())
                     events.ScheduleEvent(EVENT_BLOOD_CALL, Seconds(30));
             }
@@ -152,12 +169,12 @@ class npc_vha_congealing_blood : public CreatureScript
             {
                 if (!summoner)
                     return;
-                    
+
                 _princess = me->FindNearestCreature(BOSS_BLOOD_PRINCESS, 500.f);
 
                 if (_princess)
                 {
-                    
+
                     me->GetMotionMaster()->MoveFollow(_princess, 0, 0);
                     _events.ScheduleEvent(EVENT_CHECK_DISTANCE, Seconds(1));
                     _events.ScheduleEvent(EVENT_FOLLOW_SUMMONER, Seconds(5));
@@ -168,7 +185,7 @@ class npc_vha_congealing_blood : public CreatureScript
             {
                 if (!_princess)
                     return;
-                
+
                 if (me->IsWithinDist(_princess, 3.f))
                 {
                     _events.Reset();
@@ -226,7 +243,7 @@ class spell_thalena_vampiric_kiss : public SpellScriptLoader
                 {
                     if (!GetHitUnit() || !GetCaster())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_VAMPIRIC_KISS_DMG, true);
                 }
 
@@ -256,7 +273,7 @@ class spell_thalena_vampiric_kiss_player : public SpellScriptLoader
             {
                 if (!GetExplTargetUnit())
                     return SPELL_FAILED_NO_VALID_TARGETS;
-                
+
                 if (GetExplTargetUnit()->HasAura(SPELL_ESSENCE_OF_BLOOD_PRINCESS))
                     return SPELL_FAILED_BAD_TARGETS;
 
@@ -270,7 +287,7 @@ class spell_thalena_vampiric_kiss_player : public SpellScriptLoader
             {
                 if (!GetCaster())
                     return;
-                
+
                 GetCaster()->RemoveAurasDueToSpell(SPELL_FRENZIED_BLOODTHIRST);
                 GetCaster()->CastSpell(GetCaster(), SPELL_ESSENCE_OF_BLOOD_PRINCESS, true);
             }
@@ -340,7 +357,7 @@ class spell_thalena_blood_swarn : public SpellScriptLoader
                 {
                     if (!GetHitUnit() || !GetCaster())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_BLOOD_SWARN_DMG, true);
                 }
 
@@ -371,12 +388,12 @@ class spell_thalena_shroud_of_sorrow_dmg : public SpellScriptLoader
                 {
                     if (targets.empty())
                         return;
-                    
+
                     targets.remove_if([] (WorldObject* target)
                     {
                         if (target->ToUnit()->HasAura(SPELL_ESSENCE_OF_BLOOD_PRINCESS))
                             return true;
-                        
+
                         return false;
                     });
                 }
@@ -417,7 +434,7 @@ class spell_thalena_frenzied_bloodthirst : public SpellScriptLoader
                 {
                     if (!GetUnitOwner() || !GetCaster())
                         return;
-                    
+
                     Unit* owner = GetUnitOwner();
                     Unit* caster = GetCaster();
 
@@ -458,7 +475,7 @@ class at_vha_blood_swarn : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->CastSpell(unit, SPELL_BLOOD_SWARN_AREA, true);
             }
@@ -467,7 +484,7 @@ class at_vha_blood_swarn : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->RemoveAurasDueToSpell(SPELL_BLOOD_SWARN_AREA);
             }

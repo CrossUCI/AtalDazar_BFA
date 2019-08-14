@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "SpellMgr.h"
@@ -74,7 +91,7 @@ const Position BeltrugExecutionPos  = { 4682.18f, 4014.705f, 91.88149f, 3.086201
 const Position ExecutionPlayerPos   = { 4673.836f, 4015.167f, 91.80103f, 6.213372f};
 const Position RoomInitialPos       = { 4588.694f, 4017.831f, 83.48485f, 3.240514f};
 
-const Position CrystalStasisPos[2] = 
+const Position CrystalStasisPos[2] =
 {
     { 4673.836f, 4011.167f, 91.78947f, 4.712389f },
     { 4673.836f, 4019.167f, 91.93404f, 1.570796f },
@@ -224,7 +241,7 @@ class npc_vha_stasis_crystal : public CreatureScript
                     return;
 
                 _summoner = summoner;
-                
+
                 DoCast(me, SPELL_STASIS_CRYSTAL_VISUAL, true);
                 _events.ScheduleEvent(EVENT_BORN, Seconds(1));
             }
@@ -233,7 +250,7 @@ class npc_vha_stasis_crystal : public CreatureScript
             {
                 if (!attacker || !_summoner)
                     return;
-                
+
                 if (_summoner->GetGUID() == attacker->GetGUID())
                     damage = 0;
             }
@@ -242,7 +259,7 @@ class npc_vha_stasis_crystal : public CreatureScript
             {
                 if (!_summoner)
                     return;
-                
+
                 if (!_summoner->HasAura(SPELL_STASIS_CRYSTAL_VEC_RIGHT))
                     _summoner->RemoveAurasDueToSpell(SPELL_EXECUTION_AURA);
 
@@ -284,7 +301,7 @@ class spell_betrug_chaotic_energy : public SpellScriptLoader
                 {
                     if (targets.empty())
                         return;
-                    
+
                     targets.remove_if(PlayerFilter());
                 }
 
@@ -292,7 +309,7 @@ class spell_betrug_chaotic_energy : public SpellScriptLoader
                 {
                     if (!GetCaster() || !GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_CHAOTIC_ENERGY_MISSILE, true);
                 }
 
@@ -330,12 +347,12 @@ class spell_betrug_mighty_slash : public SpellScriptLoader
                 {
                     if (targets.empty())
                         return;
-                    
+
                     targets.remove_if(PlayerFilter());
 
                     if (targets.empty())
                         return;
-                    
+
                     _executeTarget = Trinity::Containers::SelectRandomContainerElement(targets)->ToUnit();
                 }
 
@@ -350,7 +367,7 @@ class spell_betrug_mighty_slash : public SpellScriptLoader
 
                         _executeTarget->CastStop();
                         _executeTarget->CastSpell(_executeTarget, SPELL_MIGHTY_SLASH_JUMP_EXEC, true);
-                        
+
                         for (uint8 i = 0; i < 2; ++i)
                             auto* crystal = _executeTarget->SummonCreature(NPC_STASIS_CRYSTAL, CrystalStasisPos[i], TEMPSUMMON_TIMED_DESPAWN, 40 * IN_MILLISECONDS);
 
@@ -390,7 +407,7 @@ class spell_betrug_mighty_slash_jump : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     WorldLocation pos;
 
                     if (GetSpellInfo()->Id == SPELL_MIGHTY_SLASH_JUMP_EXEC)
@@ -430,7 +447,7 @@ class spell_betrug_execution : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     GetCaster()->GetAI()->DoAction(ACTION_EXECUTED_FINISHED);
                 }
 
@@ -461,7 +478,7 @@ class spell_betrug_seed_of_destruction : public SpellScriptLoader
                 {
                     if (!GetUnitOwner() || !GetCaster())
                         return;
-                    
+
                     Unit* caster = GetCaster();
                     Unit* owner = GetUnitOwner();
                     Position pos = owner->GetPosition();
@@ -474,7 +491,7 @@ class spell_betrug_seed_of_destruction : public SpellScriptLoader
 
                         if (spellInfo)
                             caster->CastSpell(targets, spellInfo, nullptr, TRIGGERED_NONE, nullptr, nullptr, ObjectGuid::Empty);
-                                                    
+
                         pos.SetOrientation(pos.GetOrientation() + (float(M_PI)/2.0f));
                     }
                 }
@@ -506,7 +523,7 @@ class at_vha_wake_of_destruction : public AreaTriggerEntityScript
             {
                 if (!at->GetCaster())
                     return;
-                
+
                 std::vector<G3D::Vector3> points;
                 float dist = 100.f;
 
@@ -543,7 +560,7 @@ class at_vha_wake_of_destruction : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER && _attack)
                     at->GetCaster()->CastSpell(unit, SPELL_WAKE_OF_DESTRUCTION_DMG, true);
             }
@@ -554,10 +571,10 @@ class at_vha_wake_of_destruction : public AreaTriggerEntityScript
                     return;
 
                 _timerAttack += diff;
-                
+
                 if (_timerAttack >= 500)
                     _attack = true;
-                    
+
             }
 
             private:

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "GameObject.h"
@@ -382,7 +399,7 @@ class boss_opera_toe_knee : public CreatureScript
             {
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->RemoveAllAreaTriggers();
                 CreatureAI::EnterEvadeMode(why);
             }
@@ -396,7 +413,7 @@ class boss_opera_toe_knee : public CreatureScript
             void MovementInform(uint32 type, uint32 id) override
             {
                 if (type == POINT_MOTION_TYPE && id == 0)
-                    me->SetInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_KNEEL);
+                    me->SetEmoteState(Emote::EMOTE_STATE_KNEEL);
             }
 
             void DamageTaken(Unit* /**/, uint32 & /**/) override
@@ -406,7 +423,7 @@ class boss_opera_toe_knee : public CreatureScript
                     _secondPhase = true;
                     events.Reset();
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     me->GetMotionMaster()->MovePoint(0, me->GetHomePosition());
@@ -432,8 +449,8 @@ class boss_opera_toe_knee : public CreatureScript
                 {
                     Talk(SAY_TOE_THIRD_PHASE);
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-                    me->SetInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_NONE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->SetEmoteState(Emote::EMOTE_STATE_NONE);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_AGGRESSIVE);
                     events.ScheduleEvent(EVENT_BURNING_LEG_SWEEP, Seconds(8));
                 }
@@ -509,7 +526,7 @@ class boss_opera_mrrgria : public CreatureScript
             {
                 _thirdPhase = false;
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 _Reset();
             }
 
@@ -518,7 +535,7 @@ class boss_opera_mrrgria : public CreatureScript
                 if (action == ACTION_THE_FINS)
                 {
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     DoZoneInCombat();
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
                     events.ScheduleEvent(EVENT_THUNDER_RITUAL, Seconds(10));
@@ -1240,7 +1257,7 @@ class npc_kara_gang_ruffian : public CreatureScript
             void Reset() override
             {
                 _events.Reset();
-                me->SetInt32Value(UNIT_NPC_EMOTESTATE, 0);
+                me->SetEmoteState(EMOTE_ONESHOT_NONE);
             }
 
             void EnterCombat(Unit* /**/) override
@@ -1252,7 +1269,7 @@ class npc_kara_gang_ruffian : public CreatureScript
             void MovementInform(uint32 type, uint32 id) override
             {
                 if (type == POINT_MOTION_TYPE  && id == 0)
-                    me->SetInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_DANCE);
+                    me->SetEmoteState(Emote::EMOTE_STATE_DANCE);
             }
 
             void DamageTaken(Unit* /**/, uint32 & damage) override
@@ -1262,7 +1279,7 @@ class npc_kara_gang_ruffian : public CreatureScript
                     damage = 0;
                     _events.Reset();
                     me->SetHealth(me->GetMaxHealth() * 0.01f);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_PASSIVE);
                     me->GetMotionMaster()->MovePoint(0, me->GetHomePosition());
                 }
@@ -1387,8 +1404,8 @@ class npc_kara_shoreline_speaker : public CreatureScript
             {
                 _events.Reset();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                me->SetInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_NONE);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetEmoteState(Emote::EMOTE_STATE_NONE);
             }
 
             void EnterCombat(Unit* /**/) override
@@ -1399,7 +1416,7 @@ class npc_kara_shoreline_speaker : public CreatureScript
             void MovementInform(uint32 type, uint32 id) override
             {
                 if (id == 0 && type == POINT_MOTION_TYPE)
-                    me->SetInt32Value(UNIT_NPC_EMOTESTATE, Emote::EMOTE_STATE_DANCE);
+                    me->SetEmoteState(Emote::EMOTE_STATE_DANCE);
             }
 
             void DamageTaken(Unit* /**/, uint32 & damage) override
@@ -1409,7 +1426,7 @@ class npc_kara_shoreline_speaker : public CreatureScript
                     damage = 0;
                     _events.Reset();
                     me->SetHealth(me->GetMaxHealth() * 0.01f);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetReactState(REACT_PASSIVE);
                     me->GetMotionMaster()->MovePoint(0, me->GetHomePosition());
                 }
@@ -1420,7 +1437,7 @@ class npc_kara_shoreline_speaker : public CreatureScript
                 if (action == ACTION_THE_FINS)
                 {
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     _events.ScheduleEvent(EVENT_BUBBLE_BLAST, Seconds(10));
                 }
             }

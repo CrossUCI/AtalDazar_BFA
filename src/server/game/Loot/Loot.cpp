@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -58,11 +58,11 @@ LootItem::LootItem(LootStoreItem const& li)
 
         needs_quest = li.needs_quest;
 
-        randomSuffix = GenerateEnchSuffixFactor(itemid);
-        randomPropertyId = GenerateItemRandomPropertyId(itemid);
         upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     }
 
+    randomBonusListId = GenerateItemRandomBonusListId(itemid);
+    upgradeId = sDB2Manager.GetRulesetItemUpgrade(itemid);
     context = 0;
     count = 0;
     is_looted = 0;
@@ -125,7 +125,7 @@ Loot::~Loot()
 void Loot::DeleteLootItemFromContainerItemDB(Player* player, uint32 itemID)
 {
     // Deletes a single item associated with an openable item from the DB
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEMCONTAINER_ITEM);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEMCONTAINER_ITEM);
     stmt->setUInt64(0, containerID.GetCounter());
     stmt->setUInt32(1, itemID);
     CharacterDatabase.Execute(stmt);
@@ -144,7 +144,7 @@ void Loot::DeleteLootItemFromContainerItemDB(Player* player, uint32 itemID)
 void Loot::DeleteLootMoneyFromContainerItemDB()
 {
     // Deletes money loot associated with an openable item from the DB
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEMCONTAINER_MONEY);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEMCONTAINER_MONEY);
     stmt->setUInt64(0, containerID.GetCounter());
     CharacterDatabase.Execute(stmt);
 }
@@ -160,7 +160,7 @@ void Loot::clear()
     _itemContext = 0;
 }
 
-uint32 Loot::GetUnlootedCount(Player* player /*= nullptr*/) const
+uint32 Loot::GetUnlootedCount(Player const* player /*= nullptr*/) const
 {
     uint32 unlootedCount = 0;
 
@@ -281,7 +281,6 @@ bool Loot::FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bo
         if (dungeonEntry->Flags[0] & lfg::LfgFlags::LFG_FLAG_TIMEWALKER)
             _itemContext = uint8(ItemContext::TimeWalker);
 
-
     LootTemplate const* tab = store.GetLootFor(lootId);
 
     if (!tab)
@@ -400,7 +399,7 @@ bool Loot::hasItemForAll() const
 }
 
 // return true if there is any FFA, quest or conditional item for the player.
-bool Loot::hasItemFor(Player* player) const
+bool Loot::hasItemFor(Player const* player) const
 {
     return items.find(player->GetGUID()) != items.end();
 }

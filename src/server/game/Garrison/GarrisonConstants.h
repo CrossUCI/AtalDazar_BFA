@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -317,13 +317,6 @@ namespace GarrisonMission
     {
         Normal  = 0,
         Bonus   = 1,
-    };
-
-    enum MissionRewardType
-    {
-        Item     = 0,
-        Currency = 1,
-        Gold     = 2,
     };
 }
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -31,14 +31,12 @@ public:
     explicit BattlePetMgr(WorldSession* owner);
 
     void LoadFromDB(PreparedQueryResult pets, PreparedQueryResult slots);
-    void SaveToDB(SQLTransaction& trans);
+    void SaveToDB(LoginDatabaseTransaction& trans);
 
     BattlePet* GetPet(ObjectGuid guid);
     void AddPet(BattlePet* battlePet);
     void AddPet(uint32 species, uint32 creatureId, uint16 breed, uint8 quality, uint16 level = 1);
     void RemovePet(ObjectGuid guid);
-
-    std::unordered_map<uint64 /*battlePetGuid*/, BattlePet> const& GetPets() const { return _pets; }
 
     uint8 GetPetCount(bool aliveOnly = false) const;
     uint8 GetPetCount(uint32 species) const;

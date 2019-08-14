@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2011 - 2012 ArkCORE <http://www.arkania.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -76,7 +76,7 @@ struct npc_zapnozzle : public ScriptedAI
         me->SetFlying(true);
         me->SetSwim(true);
         me->GetMotionMaster()->MovePoint(1, 538.785034f, 3271.091797f, -1.082726f);
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
     }
 
     void IsSummonedBy(Unit* summoner) override
@@ -140,7 +140,7 @@ struct npc_zapnozzle : public ScriptedAI
             Schedule(37s, [this](TaskContext /*context*/)
             {
                 Talk(4, GetSummoner());
-                me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
             });
     }
 
@@ -1017,33 +1017,6 @@ public:
     }
 };
 
-
-class npc_cluster_egg_gob : public CreatureScript
-{
-public:
-    npc_cluster_egg_gob() : CreatureScript("npc_cluster_egg_gob") { }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_cluster_egg_gobAI(creature);
-    }
-
-    struct npc_cluster_egg_gobAI : public ScriptedAI
-    {
-        npc_cluster_egg_gobAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void Reset() override
-        {
-            if (GameObject* go = me->FindNearestGameObject(GO_PIEGE, 5))
-            {
-                if (Creature *c = go->FindNearestCreature(38187, 20))
-                    c->AI()->DoAction(1);
-            }
-        }
-
-    };
-};
-
 class npc_raptore_gob : public CreatureScript
 {
 public:
@@ -1068,8 +1041,9 @@ public:
         {
             if (id == 42 && !start)
             {
-                me->CastSpell(me, 66726, true);
-                me->KillSelf();
+                if (Player *player = me->SelectNearestPlayer(20))
+                    player->SummonGameObject(201974, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, QuaternionData(), 10*IN_MILLISECONDS);
+                me->Kill(me);
             }
         }
 
@@ -1134,6 +1108,22 @@ public:
     {
         if (player->GetQuestStatus(24817) == QUEST_STATUS_INCOMPLETE)
         {
+            /*if (Creature* t = player->SummonCreature(38318, go->GetPositionX(), go->GetPositionY(),  go->GetPositionZ() + 2,  go->GetOrientation(), TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30*IN_MILLISECONDS))
+            {
+
+                std::list<Unit*> temp;
+                SparkSearcher check(t, 100.0f);
+                Trinity::UnitListSearcher<SparkSearcher> searcher(t, temp, check);
+                Cell::VisitAllObjects(t, searcher, 25.0f);
+                for (std::list<Unit*>::iterator itr = temp.begin(); itr != temp.end(); ++itr)
+                    if ((*itr)->ToTempSummon())
+                        if ((*itr)->ToTempSummon()->GetSummoner())
+                            if ((*itr)->ToTempSummon()->GetSummoner()->GetTypeId() == TYPEID_PLAYER)
+                                if ((*itr)->ToTempSummon()->GetSummoner()->GetGUID() == player->GetGUID() && (*itr)->GetGUID() != t->GetGUID())
+                                    (*itr)->ToTempSummon()->DespawnOrUnsummon();
+                player->EnterVehicle(t);
+            }
+            return true;*/
             player->KilledMonsterCredit(38318);
             player->CastSpell(nullptr, 71648);
         }
@@ -1389,7 +1379,7 @@ public:
                     mui_event  = 4000;
                     me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
 
-                    naga->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    naga->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     if (Player *player = ObjectAccessor::GetPlayer(*me, playerGUID))
                         naga->JumpTo(player, 20);
                 }
@@ -1525,6 +1515,7 @@ public:
                     if (Player* player = charmer->ToPlayer())
                     {
                         player->KilledMonsterCredit(38536);
+                        //caster->Kill(me);
                     }
                 }
             }
@@ -1537,15 +1528,15 @@ class npc_ceint : public CreatureScript
 public:
     npc_ceint() : CreatureScript("npc_ceint") { }
 
-    //bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
-    /*{
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    {
         if (quest->GetQuestId() == 24952)
         {
-            //player->GetMotionMaster()->MoveJump(1480.31f, 1269.97f, 110.0f, 50.0f, 50.0f, 300.0f);
-            //player->KilledMonsterCredit(38842);
+            player->GetMotionMaster()->MoveJump(1480.31f, 1269.97f, 110.0f, 50.0f, 50.0f, 300.0f);
+            player->KilledMonsterCredit(38842);
         }
         return true;
-    }*/
+    }
 
     bool OnQuestReward(Player* player, Creature* /*creature*/, const Quest* quest, uint32 ) override
     {
@@ -1574,6 +1565,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellEntry*/) override
         {
+            //st = false;
             return true;
         }
 
@@ -1585,6 +1577,8 @@ public:
 
         void HandleOnHit()
         {
+            //if (Player* caster = GetCaster()->ToPlayer)
+               //
             if (Unit* caster = GetCaster())
                 if (caster->GetTypeId() == TYPEID_PLAYER)
                 {
@@ -1617,12 +1611,12 @@ public:
     {
         if (quest->GetQuestId() == 25023)
         {
-            //hackfix teleport since the wp isn't implemented
+            //hackfix teleport since the wp isn't implemented and instead of mount the second seat the player just makes the npc dismount and gets into the first one
             player->NearTeleportTo(1581.0f, 2722.0f, 83.20f, 0, true);
             /*
             if (Creature *airplane = player->SummonCreature(38929, creature->GetPositionX(), creature->GetPositionY(),  creature->GetPositionZ(),  creature->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN))
             {
-                airplane->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                airplane->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                 player->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 2, airplane, false);
                 if (Creature *t = player->SummonCreature(38869, creature->GetPositionX(),  creature->GetPositionY(),  creature->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 750000))
                     t->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, airplane, false);
@@ -1957,6 +1951,8 @@ public:
                 {
                     t->CastSpell(t, 93569, true);
                     t->CastSpell(t, 71094, true);
+                    //set phase 184
+
                 }
                 me->DespawnOrUnsummon();
                 if (Unit *player = me->ToTempSummon()->GetSummoner())
@@ -2276,7 +2272,7 @@ public:
       }
       else if (player->HasQuest(25266))
       {
-          player->TeleportTo(1, 1468, -5012.0f, 13.0f, 3.26f);
+          player->TeleportTo(1468, -5012.f, 13.f, 3.26f);
       }
       return true;
   }
@@ -2289,12 +2285,11 @@ public:
     {
         me->SetCanFly(true);
         me->SetReactState(REACT_PASSIVE);
-        //He still doesn't want to change his flying speed
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
         me->SetSpeed(MOVE_FLIGHT, 26);
         me->SetSpeed(MOVE_RUN, 26);
         me->SetSpeed(MOVE_WALK, 26);
     }
-
 
     void OnCharmed(bool /*apply*/) override
     {

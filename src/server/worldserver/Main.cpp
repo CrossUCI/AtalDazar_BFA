@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -47,6 +47,7 @@
 #include "ScriptMgr.h"
 #include "ScriptReloadMgr.h"
 #include "TCSoap.h"
+#include "RESTService.h"
 #include "World.h"
 #include "WorldSocket.h"
 #include "WorldSocketMgr.h"
@@ -325,6 +326,16 @@ extern int main(int argc, char** argv)
         return 1;
     }
 
+    if (sConfigMgr->GetBoolDefault("WorldREST.Enabled", false))
+    {
+        if (!sRestService.Start())
+        {
+            TC_LOG_ERROR("server.worldserver", "Failed to initialize Rest service");
+            return 1;
+        }
+    }
+
+    std::shared_ptr<void> sRestServiceHandle(nullptr, [](void*) { sRestService.Stop(); });
 
     std::shared_ptr<void> sWorldSocketMgrHandle(nullptr, [](void*)
     {
@@ -382,6 +393,8 @@ extern int main(int argc, char** argv)
     threadPool.reset();
 
     sLog->SetSynchronous();
+
+    sRestService.Stop();
 
     sScriptMgr->OnShutdown();
 
@@ -667,8 +680,7 @@ bool StartDB()
         .AddDatabase(LoginDatabase, "Login")
         .AddDatabase(CharacterDatabase, "Character")
         .AddDatabase(WorldDatabase, "World")
-        .AddDatabase(HotfixDatabase, "Hotfix")
-        .AddDatabase(ShopDatabase, "Shop");
+        .AddDatabase(HotfixDatabase, "Hotfix");
 
     if (!loader.Load())
         return false;

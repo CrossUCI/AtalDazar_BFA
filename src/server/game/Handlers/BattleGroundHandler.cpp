@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 
 void WorldSession::HandleBattlemasterHelloOpcode(WorldPackets::NPC::Hello& hello)
 {
-    Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(hello.Unit, UNIT_NPC_FLAG_BATTLEMASTER);
+    Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(hello.Unit, UNIT_NPC_FLAG_BATTLEMASTER, UNIT_NPC_FLAG_2_NONE);
     if (!unit)
         return;
 
@@ -62,8 +62,13 @@ void WorldSession::HandleBattlemasterHelloOpcode(WorldPackets::NPC::Hello& hello
 void WorldSession::HandleBattlemasterJoinOpcode(WorldPackets::Battleground::BattlemasterJoin& battlemasterJoin)
 {
     bool isPremade = false;
-    Group* grp = NULL;
-    uint32 bgTypeId_ = battlemasterJoin.QueueID & 0xFFFF;
+    if (battlemasterJoin.QueueIDs.empty())
+    {
+        TC_LOG_ERROR("network", "Battleground: no bgtype received. possible cheater? %s", _player->GetGUID().ToString().c_str());
+        return;
+    }
+
+    uint32 bgTypeId_ = battlemasterJoin.QueueIDs[0] & 0xFFFF;
     if (!sBattlemasterListStore.LookupEntry(bgTypeId_))
     {
         TC_LOG_ERROR("network", "Battleground: invalid bgtype (%u) received. possible cheater? %s", bgTypeId_, _player->GetGUID().ToString().c_str());
@@ -98,8 +103,10 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPackets::Battleground::Batt
 
     GroupJoinBattlegroundResult err = ERR_BATTLEGROUND_NONE;
 
+    Group* grp = _player->GetGroup();
+
     // check queue conditions
-    if (!battlemasterJoin.JoinAsGroup)
+    if (!grp)
     {
         if (GetPlayer()->isUsingLfg())
         {
@@ -169,11 +176,6 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPackets::Battleground::Batt
     }
     else
     {
-        grp = _player->GetGroup();
-
-        if (!grp)
-            return;
-
         if (grp->GetLeaderGUID() != _player->GetGUID())
             return;
 
@@ -732,12 +734,12 @@ void WorldSession::HandleRequestRatedBattlefieldInfo(WorldPackets::Battleground:
 void WorldSession::HandleGetPVPOptionsEnabled(WorldPackets::Battleground::GetPVPOptionsEnabled& /*getPvPOptionsEnabled*/)
 {
     WorldPackets::Battleground::PVPOptionsEnabled pvpOptionsEnabled;
-    pvpOptionsEnabled.WargameArenas = true;
+    pvpOptionsEnabled.WargameArenas = false;
     pvpOptionsEnabled.RatedArenas = true;
     pvpOptionsEnabled.WargameBattlegrounds = false;
     pvpOptionsEnabled.ArenaSkirmish = true;
     pvpOptionsEnabled.PugBattlegrounds = true;
-    pvpOptionsEnabled.RatedBattlegrounds = true;
+    pvpOptionsEnabled.RatedBattlegrounds = false;
     SendPacket(pvpOptionsEnabled.Write());
 }
 
@@ -797,21 +799,3 @@ void WorldSession::HandleHearthAndResurrect(WorldPackets::Battleground::HearthAn
     _player->ResurrectPlayer(1.0f);
     _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
 }
-
-void WorldSession::HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& /*requestConquestFormulaConstants*/)
-{
-    WorldPackets::Battleground::ConquestFormulaContants packet;
-    packet.PvpMinCPPerWeek = uint32(ArenaHelper::g_PvpMinCPPerWeek);
-    packet.PvpMaxCPPerWeek = uint32(ArenaHelper::g_PvpMaxCPPerWeek);
-    packet.PvpCPBaseCoefficient = float(ArenaHelper::g_PvpCPNumerator);
-    packet.PvpCPExpCoefficient = float(ArenaHelper::g_PvpCPBaseCoefficient);
-    packet.PvpCPNumerato = float(ArenaHelper::g_PvpCPExpCoefficient);
-    SendPacket(packet.Write());
-}
-
-void WorldSession::HandleRequestPvpBrawlInfo(WorldPackets::Battleground::RequestPvpBrawlInfo& /*pvpBrawlInfo*/)
-{
-    WorldPackets::Battleground::SendPvpBrawlInfo packet;
-    SendPacket(packet.Write());
-}
-

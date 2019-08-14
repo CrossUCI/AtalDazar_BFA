@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -178,38 +178,6 @@ bool DBUpdater<HotfixDatabaseConnection>::IsEnabled(uint32 const updateMask)
 
 template<>
 BaseLocation DBUpdater<HotfixDatabaseConnection>::GetBaseLocationType()
-{
-    return LOCATION_DOWNLOAD;
-}
-
-// Shop Database
-template<>
-std::string DBUpdater<ShopDatabaseConnection>::GetConfigEntry()
-{
-    return "Updates.Shop";
-}
-
-template<>
-std::string DBUpdater<ShopDatabaseConnection>::GetTableName()
-{
-    return "Shop";
-}
-
-template<>
-std::string DBUpdater<ShopDatabaseConnection>::GetBaseFile()
-{
-    return "";
-}
-
-template<>
-bool DBUpdater<ShopDatabaseConnection>::IsEnabled(uint32 const updateMask)
-{
-    // This way silences warnings under msvc
-    return (updateMask & DatabaseLoader::DATABASE_SHOP) ? true : false;
-}
-
-template<>
-BaseLocation DBUpdater<ShopDatabaseConnection>::GetBaseLocationType()
 {
     return LOCATION_DOWNLOAD;
 }
@@ -458,4 +426,3 @@ template class TC_DATABASE_API DBUpdater<LoginDatabaseConnection>;
 template class TC_DATABASE_API DBUpdater<WorldDatabaseConnection>;
 template class TC_DATABASE_API DBUpdater<CharacterDatabaseConnection>;
 template class TC_DATABASE_API DBUpdater<HotfixDatabaseConnection>;
-template class TC_DATABASE_API DBUpdater<ShopDatabaseConnection>;

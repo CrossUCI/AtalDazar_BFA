@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -38,7 +38,6 @@ public:
     DB2DatabaseLoader(std::string const& storageName, DB2LoadInfo const* loadInfo) : _storageName(storageName), _loadInfo(loadInfo) { }
 
     char* Load(uint32& records, char**& indexTable, char*& stringHolders, std::vector<char*>& stringPool);
-    char* LoadW(uint32& records, char**& indexTable, uint32 type, uint32& EndEntry, char*& stringHolders, std::vector<char*>& stringPool);
     void LoadStrings(uint32 locale, uint32 records, char** indexTable, std::vector<char*>& stringPool);
     static char* AddString(char const** holder, std::string const& value);
 

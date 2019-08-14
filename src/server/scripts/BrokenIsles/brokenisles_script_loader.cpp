@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -35,9 +35,6 @@ void AddSC_zone_argus_macaree();
 // Demon Hunter start zone
 void AddSC_zone_mardum();
 void AddSC_zone_vault_of_wardens();
-
-////SCENARIO
-//void AddSC_scenario_the_violet_hold_Dh();
 
 // Class Halls
 void AddSC_class_hall_dh();
@@ -212,7 +209,7 @@ void AddSC_boss_harjatan();
 void AddSC_boss_tos_kiljaeden();
 void AddSC_boss_maiden_of_vigilance();
 void AddSC_boss_sasszine();
-void AddSC_boss_sisters_of_the_moon();
+void AddSC_boss_sisters_of_moon();
 void AddSC_tomb_of_sargeras();
 void AddSC_instance_tomb_of_sargeras();
 
@@ -237,9 +234,6 @@ void AddBrokenIslesScripts()
     // Demon Hunter start zone
     AddSC_zone_mardum();
     AddSC_zone_vault_of_wardens();
-
-    /////////- SCENARIO
-    //AddSC_scenario_the_violet_hold_Dh();
 
     // Class Halls
     AddSC_class_hall_dh();
@@ -414,7 +408,7 @@ void AddBrokenIslesScripts()
     AddSC_boss_tos_kiljaeden();
     AddSC_boss_maiden_of_vigilance();
     AddSC_boss_sasszine();
-    AddSC_boss_sisters_of_the_moon();
+    AddSC_boss_sisters_of_moon();
     AddSC_tomb_of_sargeras();
     AddSC_instance_tomb_of_sargeras();
 }

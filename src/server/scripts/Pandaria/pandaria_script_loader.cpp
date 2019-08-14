@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -54,53 +54,6 @@ void AddSC_boss_lorewalker_stonestep();
 void AddSC_boss_sha_of_doubt();
 void AddSC_boss_wise_mari();
 void AddSC_instance_temple_of_jade_serpent();
-
-//Terrace of Endless Spring
-void AddSC_boss_lei_shi();
-void AddSC_boss_protectors_of_the_endless();
-void AddSC_boss_sha_of_fear();
-void AddSC_boss_tsulong();
-void AddSC_instance_terrace_of_endless_spring();
-void AddSC_terrace_of_endless_spring();
-
-//Throne of Thunder
-void AddSC_boss_council_of_elders();
-void AddSC_boss_dark_animus();
-void AddSC_boss_durumu();
-void AddSC_boss_horridon();
-void AddSC_boss_iron_qon();
-void AddSC_boss_ji_kun();
-void AddSC_boss_jinrokh_the_breaker();
-void AddSC_boss_lei_shen();
-void AddSC_boss_megaera();
-void AddSC_boss_primordius();
-void AddSC_boss_ra_den();
-void AddSC_boss_tortos();
-void AddSC_boss_twin_consorts();
-void AddSC_instance_throne_of_thunder();
-void AddSC_throne_of_thunder();
-
-//SiegeOfOrgrimmar
-void AddSC_boss_fallen_protectors();
-void AddSC_boss_galakras();
-void AddSC_boss_garrosh_hellscream();
-void AddSC_boss_general_nazgrim();
-void AddSC_boss_immerseus();
-//void AddSC_boss_iron_jaggernaut();
-void AddSC_boss_korkron_dark_shaman();
-void AddSC_boss_malkorok();
-void AddSC_boss_norushen();
-void AddSC_boss_paragons_of_the_klaxxi();
-void AddSC_boss_sha_of_pride();
-void AddSC_boss_siegecrafter_blackfuse();
-void AddSC_boss_spoils_of_pandaria();
-void AddSC_boss_thok_the_bloodthirsty();
-void AddSC_instance_siege_of_orgrimmar();
-//void AddSC_siege_of_orgrimmar();
-void AddSC_siege_of_orgrimmar_part_1();
-void AddSC_siege_of_orgrimmar_part_2();
-void AddSC_siege_of_orgrimmar_part_3();
-void AddSC_siege_of_orgrimmar_part_4();
 
 // Mogu'Shan Vault
 void AddSC_boss_stone_guard();
@@ -185,54 +138,6 @@ void AddPandariaScripts()
     AddSC_boss_sha_of_doubt();
     AddSC_boss_wise_mari();
     AddSC_instance_temple_of_jade_serpent();
-
-    //Terrace of Endless Spring
-    AddSC_boss_lei_shi();
-    AddSC_boss_protectors_of_the_endless();
-    AddSC_boss_sha_of_fear();
-    AddSC_boss_tsulong();
-    AddSC_instance_terrace_of_endless_spring();
-    AddSC_terrace_of_endless_spring();
-
-    //Throne of Thunder
-    AddSC_boss_council_of_elders();
-    AddSC_boss_dark_animus();
-    AddSC_boss_durumu();
-    AddSC_boss_horridon();
-    AddSC_boss_iron_qon();
-    AddSC_boss_ji_kun();
-    AddSC_boss_jinrokh_the_breaker();
-    AddSC_boss_lei_shen();
-    AddSC_boss_megaera();
-    AddSC_boss_primordius();
-    AddSC_boss_ra_den();
-    AddSC_boss_tortos();
-    AddSC_boss_twin_consorts();
-    AddSC_instance_throne_of_thunder();
-    AddSC_throne_of_thunder();
-
-   
-     //SiegeOfOrgrimmar
-    AddSC_boss_fallen_protectors();
-    AddSC_boss_galakras();
-    AddSC_boss_garrosh_hellscream();
-    AddSC_boss_general_nazgrim();
-    AddSC_boss_immerseus();
-    //AddSC_boss_iron_jaggernaut();
-    AddSC_boss_korkron_dark_shaman();
-    AddSC_boss_malkorok();
-    AddSC_boss_norushen();
-    AddSC_boss_paragons_of_the_klaxxi();
-    AddSC_boss_sha_of_pride();
-    AddSC_boss_siegecrafter_blackfuse();
-    AddSC_boss_spoils_of_pandaria();
-    AddSC_boss_thok_the_bloodthirsty();
-    AddSC_instance_siege_of_orgrimmar();
-    //AddSC_siege_of_orgrimmar();
-    AddSC_siege_of_orgrimmar_part_1();
-    AddSC_siege_of_orgrimmar_part_2();
-    AddSC_siege_of_orgrimmar_part_3();
-    AddSC_siege_of_orgrimmar_part_4();
 
     // Mogu'Shan Vault
     AddSC_boss_stone_guard();

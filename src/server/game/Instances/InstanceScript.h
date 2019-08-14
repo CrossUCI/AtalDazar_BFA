@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -99,8 +99,6 @@ enum DoorType
 enum ChallengeMode
 {
     GOB_CHALLENGER_DOOR     = 239408,
-    GOB_CHALLENGER_DOOR_LINE235 = 239323,
-    GO_FONT_OF_POWER        = 246779,
 
     SPELL_CHALLENGER_MIGHT  = 206150,
     SPELL_CHALLENGER_BURDEN = 206151
@@ -264,9 +262,6 @@ class TC_GAME_API InstanceScript : public ZoneScript
         // Play scene by packageId on all players in instance
         void DoPlayScenePackageIdOnPlayers(uint32 scenePackageId);
 
-        // Play scene by Id on all players in instance
-        void DoPlaySceneOnPlayers(uint32 sceneId);
-
         // Remove all movement forces related to forceGuid
         void DoRemoveForcedMovementsOnPlayers(ObjectGuid forceGuid);
 
@@ -275,8 +270,6 @@ class TC_GAME_API InstanceScript : public ZoneScript
         void DoModifyPlayerCurrencies(uint32 id, int32 value);
 
         void DoNearTeleportPlayers(const Position pos, bool casting = false);
-
-        void DoTeleportPlayers(uint32 mapId, const Position pos);
 
         void DoKilledMonsterKredit(uint32 questId, uint32 entry, ObjectGuid guid = ObjectGuid::Empty);
 
@@ -288,9 +281,6 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         // Add aura on all players in instance
         void DoAddAuraOnPlayers(uint32 spell);
-
-        /// Do combat stop on all players in instance
-        void DoCombatStopOnPlayers();
 
         // Start movie for all players in instance
         void DoStartMovie(uint32 movieId);
@@ -396,16 +386,6 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         void SetChallengeDoorPos(Position pos) { _challengeModeDoorPosition = pos; }
         virtual void SpawnChallengeModeRewardChest() { }
-		
-		void SetFontOfPowerPos(Position pos) { _challengeModeFontOfPowerPosition = pos; }
-        void SetFontOfPowerPos2(Position pos) { _challengeModeFontOfPowerPosition2 = pos; }
-        void SpawnFontOfPower();
-
-        virtual void ShowChallengeDoor() { }
-        virtual void HideChallengeDoor() { }
-
-        void SetCheckPointPos(Position pos) { _checkPointPosition = pos; }
-        Optional<Position> GetCheckPoint() { return _checkPointPosition; }
 
     protected:
         void SetHeaders(std::string const& dataHeaders);
@@ -464,9 +444,6 @@ class TC_GAME_API InstanceScript : public ZoneScript
         uint32 _challengeModeStartTime;
         uint32 _challengeModeDeathCount;
         Optional<Position> _challengeModeDoorPosition;
-        Optional<Position> _challengeModeFontOfPowerPosition;
-        Optional<Position> _challengeModeFontOfPowerPosition2;
-        Optional<Position> _checkPointPosition;
 
     #ifdef TRINITY_API_USE_DYNAMIC_LINKING
         // Strong reference to the associated script module

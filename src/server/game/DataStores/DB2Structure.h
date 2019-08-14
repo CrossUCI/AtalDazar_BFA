@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -41,6 +41,7 @@ struct AchievementEntry
     int32 Flags;
     int16 UiOrder;
     int32 IconFileID;
+    int32 RewardItemID;
     uint32 CriteriaTree;
     int16 SharesCriteria;                                           // referenced achievement (counting of all completed criterias)
 };
@@ -48,9 +49,9 @@ struct AchievementEntry
 struct AnimationDataEntry
 {
     uint32 ID;
-    uint16 Fallback;
+    uint16 BehaviorID;
     uint8 BehaviorTier;
-    int32 BehaviorID;
+    int32 Fallback;
     int32 Flags[2];
 };
 
@@ -75,7 +76,7 @@ struct AdventureJournalEntry
     int32 ItemID;
     uint32 ItemQuantity;
     uint16 CurrencyType;
-    uint8 CurrencyQuantity;
+    uint32 CurrencyQuantity;
     uint16 UiMapID;
     int32 BonusPlayerConditionID[2];
     uint8 BonusValue[2];
@@ -216,6 +217,7 @@ struct ArtifactAppearanceEntry
     uint32 UiAltItemAppearanceID;
     uint8 Flags;
     uint16 UiCameraID;
+    uint32 UsablePlayerConditionID;
 };
 
 struct ArtifactAppearanceSetEntry
@@ -324,8 +326,10 @@ struct AzeriteItemEntry
 struct AzeriteItemMilestonePowerEntry
 {
     uint32      ID;
-    uint8       RequiredLevel;
-    int16       AzeritePowerID;
+    int32       RequiredLevel;
+    int32       AzeritePowerID;
+    int32       Unk1;
+    int32       Unk2;
 };
 
 struct AzeritePowerEntry
@@ -340,11 +344,11 @@ struct AzeritePowerEntry
 struct AzeritePowerSetMemberEntry
 {
     uint32      ID;
-    uint16      AzeritePowerID;
-    uint8       Class;
-    uint8       Tier;
-    uint8       OrderIndex;
-    uint16      AzeritePowerSetID;
+    int32       AzeritePowerSetID;
+    int32       AzeritePowerID;
+    int32       Class;
+    int32       Tier;
+    int32       OrderIndex;
 };
 
 struct AzeriteTierUnlockEntry
@@ -408,7 +412,7 @@ struct BattlePetAbilityEffectEntry
 struct BattlePetAbilityStateEntry
 {
     uint32 ID;
-    uint8 BattlePetStateID;
+    uint32 BattlePetStateID;
     int32 Value;
     uint16 BattlePetAbilityID;
 };
@@ -456,7 +460,7 @@ struct BattlePetSpeciesEntry
 struct BattlePetSpeciesStateEntry
 {
     uint32 ID;
-    uint8 BattlePetStateID;
+    uint16 BattlePetStateID;
     int32 Value;
     uint16 BattlePetSpeciesID;
 };
@@ -593,6 +597,7 @@ struct ChrClassesEntry
     uint32 IconFileDataID;
     uint32 LowResScreenFileDataID;
     int32 StartingLevel;
+    uint32 SpellTextureBlobFileDataID;
     uint16 Flags;
     uint16 CinematicSequenceID;
     uint16 DefaultSpec;
@@ -707,8 +712,14 @@ struct ContentTuningEntry
     int32 MinLevel;
     int32 MaxLevel;
     int32 Flags;
+    int32 ExpansionID;
+};
+
+struct ContentTuningXExpectedEntry
+{
+    uint32 ID;
     int32 ExpectedStatModID;
-    int32 DifficultyESMID;
+    int32 ContentTuningID;
 };
 
 struct ConversationLineEntry
@@ -815,6 +826,9 @@ struct CreatureModelDataEntry
     float OverrideNameScale;
     float OverrideSelectionRadius;
     float TamedPetBaseScale;
+    int8 Unknown820_1;                                              // scale related
+    float Unknown820_2;                                             // scale related
+    float Unknown820_3[2];                                          // scale related
 };
 
 struct CreatureTypeEntry
@@ -921,9 +935,6 @@ struct CriteriaEntry
         // CRITERIA_TYPE_FISH_IN_GAMEOBJECT     = 72
         int32 GameObjectID;
 
-        //CRITERIA_TYPE_SEND_EVENT              = 73
-        uint32 EventID;
-
         //CRITERIA_TYPE_SEND_EVENT_SCENARIO     = 92
         uint32 ScenarioEventID;
 
@@ -1006,6 +1017,7 @@ struct CurrencyTypesEntry
     uint32 Flags;
     int8 Quality;
     int32 FactionID;
+    int32 ItemGroupSoundsID;
 };
 
 struct CurveEntry
@@ -1060,7 +1072,7 @@ struct DifficultyEntry
     uint8 FallbackDifficultyID;
     uint8 MinPlayers;
     uint8 MaxPlayers;
-    uint8 Flags;
+    uint16 Flags;
     uint8 ItemContext;
     uint8 ToggleDifficultyID;
     uint16 GroupSizeHealthCurveID;
@@ -1075,10 +1087,12 @@ struct DungeonEncounterEntry
     int16 MapID;
     int8 DifficultyID;
     int32 OrderIndex;
+    int32 CompleteWorldStateID;
     int8 Bit;
     int32 CreatureDisplayID;
     uint8 Flags;
     int32 SpellIconFileID;
+    int32 Faction;
 };
 
 struct DurabilityCostsEntry
@@ -1164,7 +1178,7 @@ struct FactionEntry
     int16 ReputationIndex;
     uint16 ParentFactionID;
     uint8 Expansion;
-    uint8 FriendshipRepID;
+    uint32 FriendshipRepID;
     uint8 Flags;
     uint16 ParagonFactionID;
     int16 ReputationClassMask[4];
@@ -1340,8 +1354,8 @@ struct GarrFollowerEntry
     int32 AllianceCreatureID;
     uint8 HordeGarrFollRaceID;
     uint8 AllianceGarrFollRaceID;
-    uint8 HordeGarrClassSpecID;
-    uint8 AllianceGarrClassSpecID;
+    int32 HordeGarrClassSpecID;
+    int32 AllianceGarrClassSpecID;
     uint8 Quality;
     uint8 FollowerLevel;
     uint16 ItemLevelWeapon;
@@ -1515,9 +1529,9 @@ struct GlyphPropertiesEntry
 {
     uint32 ID;
     uint32 SpellID;
-    uint16 SpellIconID;
     uint8 GlyphType;
     uint8 GlyphExclusiveCategoryID;
+    int32 SpellIconFileDataID;
 };
 
 struct GlyphRequiredSpecEntry
@@ -1567,12 +1581,12 @@ struct HeirloomEntry
     int8 SourceTypeEnum;
     uint8 Flags;
     int32 LegacyItemID;
-    int32 UpgradeItemID[3];
-    uint16 UpgradeItemBonusListID[3];
+    int32 UpgradeItemID[4];
+    uint16 UpgradeItemBonusListID[4];
 };
 
 #define MAX_HOLIDAY_DURATIONS 10
-#define MAX_HOLIDAY_DATES 16
+#define MAX_HOLIDAY_DATES 26
 #define MAX_HOLIDAY_FLAGS 10
 
 struct HolidaysEntry
@@ -1678,11 +1692,29 @@ struct ItemBonusEntry
     uint8 OrderIndex;
 };
 
+// new item upgrade system
+//struct ItemBonusListGroupEntryEntry
+//{
+//    uint32 ID;
+//    int32 ItemBonusListID;
+//    int32 ItemLevelSelectorID;
+//    int32 OrderIndex;
+//    int32 ItemExtendedCostID;
+//    int32 ItemBonusListGroupID;
+//};
+
 struct ItemBonusListLevelDeltaEntry
 {
     int16 ItemLevelDelta;
     uint32 ID;
 };
+
+//struct ItemBonusSequenceSpellEntry
+//{
+//    uint32 ID;
+//    int32 SpellID;
+//    int32 ItemID;
+//};
 
 struct ItemBonusTreeNodeEntry
 {
@@ -1697,9 +1729,9 @@ struct ItemBonusTreeNodeEntry
 struct ItemChildEquipmentEntry
 {
     uint32 ID;
+    int32 ParentItemID;
     int32 ChildItemID;
     uint8 ChildItemEquipSlot;
-    int32 ParentItemID;
 };
 
 struct ItemClassEntry
@@ -1801,6 +1833,7 @@ struct ItemLevelSelectorEntry
     uint32 ID;
     uint16 MinItemLevel;
     uint16 ItemLevelSelectorQualitySetID;
+    uint16 AzeriteUnlockMappingSet;
 };
 
 struct ItemLevelSelectorQualityEntry
@@ -1850,23 +1883,6 @@ struct ItemPriceBaseEntry
     uint16 ItemLevel;
     float Armor;
     float Weapon;
-};
-
-#define MAX_ITEM_RANDOM_PROPERTIES 5
-
-struct ItemRandomPropertiesEntry
-{
-    uint32 ID;
-    LocalizedString* Name;
-    uint16 Enchantment[MAX_ITEM_RANDOM_PROPERTIES];
-};
-
-struct ItemRandomSuffixEntry
-{
-    uint32 ID;
-    LocalizedString* Name;
-    uint16 Enchantment[MAX_ITEM_RANDOM_PROPERTIES];
-    uint16 AllocationPct[MAX_ITEM_RANDOM_PROPERTIES];
 };
 
 struct ItemSearchNameEntry
@@ -1944,8 +1960,6 @@ struct ItemSparseEntry
     uint16 InstanceBound;
     uint16 ZoneBound;
     uint16 ItemSet;
-    uint16 ItemRandomSuffixGroupID;
-    uint16 RandomSelect;
     uint16 LockID;
     uint16 StartQuestID;
     uint16 PageID;
@@ -2019,6 +2033,7 @@ struct JournalEncounterEntry
     LocalizedString* Description;
     float Map[2];
     uint16 JournalInstanceID;
+    uint16 Unk815;
     uint32 OrderIndex;
     uint16 FirstSectionID;
     uint16 UiMapId;
@@ -2201,13 +2216,13 @@ struct MapEntry
     uint8 MaxPlayers;
     int16 WindSettingsID;
     int32 ZmpFileDataID;
+    int32 WdtFileDataID;
     int32 Flags[2];
 
     // Helpers
     uint8 Expansion() const { return ExpansionID; }
 
     bool IsDungeon() const { return (InstanceType == MAP_INSTANCE || InstanceType == MAP_RAID || InstanceType == MAP_SCENARIO) && !IsGarrison() && !IsWorldPvPMap(); }
-    bool IsScenario() const { return (InstanceType == MAP_SCENARIO); }
     bool IsNonRaidDungeon() const { return InstanceType == MAP_INSTANCE; }
     bool Instanceable() const { return InstanceType == MAP_INSTANCE || InstanceType == MAP_RAID || InstanceType == MAP_BATTLEGROUND || InstanceType == MAP_ARENA || InstanceType == MAP_SCENARIO; }
     bool IsRaid() const { return InstanceType == MAP_RAID; }
@@ -2250,15 +2265,15 @@ struct MapDifficultyEntry
 {
     uint32 ID;
     LocalizedString* Message;                               // m_message_lang (text showed when transfer to map failed)
-    uint32 ItemContextPickerID;
+    int32 DifficultyID;
+    int32 LockID;
+    int8 ResetInterval;
+    int32 MaxPlayers;
+    int32 ItemContext;
+    int32 ItemContextPickerID;
+    int32 Flags;
     int32 ContentTuningID;
-    uint8 DifficultyID;
-    uint8 LockID;
-    uint8 ResetInterval;
-    uint8 MaxPlayers;
-    uint8 ItemContext;
-    uint8 Flags;
-    uint16 MapID;
+    int32 MapID;
 
     uint32 GetRaidDuration() const
     {
@@ -2276,7 +2291,7 @@ struct ModifierTreeEntry
     uint32 Parent;
     int8 Operator;
     int8 Amount;
-    uint8 Type;
+    int32 Type;
     int32 Asset;
     int32 SecondaryAsset;
     int8 TertiaryAsset;
@@ -2309,6 +2324,7 @@ struct MountCapabilityEntry
     int32 ReqSpellKnownID;
     int32 ModSpellAuraID;
     int16 ReqMapID;
+    int32 PlayerConditionID;
 };
 
 struct MountTypeXCapabilityEntry
@@ -2597,6 +2613,7 @@ struct QuestV2CliTaskEntry
     int16 WorldStateExpressionID;
     uint32 QuestInfoID;
     int32 ContentTuningID;
+    int32 Unk820[3];
     uint32 FiltCompletedQuest[3];
 };
 
@@ -2638,6 +2655,7 @@ struct RandPropPointsEntry
 {
     uint32 ID;
     int32 DamageReplaceStat;
+    int32 DamageSecondary;
     uint32 Epic[5];
     uint32 Superior[5];
     uint32 Good[5];
@@ -2847,7 +2865,7 @@ struct SkillRaceClassInfoEntry
 struct SoundKitEntry
 {
     uint32 ID;
-    uint8 SoundType;
+    int32 SoundType;
     float VolumeFloat;
     uint16 Flags;
     float MinDistance;
@@ -3041,9 +3059,9 @@ struct SpellItemEnchantmentEntry
     LocalizedString* HordeName;
     uint32 EffectArg[MAX_ITEM_ENCHANTMENT_EFFECTS];
     float EffectScalingPoints[MAX_ITEM_ENCHANTMENT_EFFECTS];
+    uint32 TransmogPlayerConditionID;
     uint32 TransmogCost;
     uint32 IconFileDataID;
-    uint32 TransmogPlayerConditionID;
     int16 EffectPointsMin[MAX_ITEM_ENCHANTMENT_EFFECTS];
     uint16 ItemVisual;
     uint16 Flags;
@@ -3102,6 +3120,7 @@ struct SpellMiscEntry
     float MinDuration;
     int32 SpellIconFileDataID;
     int32 ActiveIconFileDataID;
+    int32 ContentTuningID;
     int32 Attributes[14];
     int32 SpellID;
 };
@@ -3299,10 +3318,11 @@ struct TaxiNodesEntry
     DBCPosition2D FlightMapOffset;
     uint32 ID;
     uint16 ContinentID;
-    uint16 ConditionID;
+    int32 ConditionID;
     uint16 CharacterBitNumber;
     uint8 Flags;
     int32 UiTextureKitID;
+    int32 MinimapAtlasMemberID;
     float Facing;
     uint32 SpecialIconConditionID;
     uint32 VisibilityConditionID;
@@ -3326,8 +3346,8 @@ struct TaxiPathNodeEntry
     uint16 ContinentID;
     uint8 Flags;
     uint32 Delay;
-    uint16 ArrivalEventID;
-    uint16 DepartureEventID;
+    int32 ArrivalEventID;
+    int32 DepartureEventID;
 };
 
 struct TotemCategoryEntry
@@ -3363,7 +3383,9 @@ struct TransmogSetEntry
     uint32 TransmogSetGroupID;
     int32 ItemNameDescriptionID;
     uint16 ParentTransmogSetID;
+    uint8 Unknown810;
     uint8 ExpansionID;
+    int32 PatchID;
     int16 UiOrder;
 };
 
@@ -3437,6 +3459,8 @@ struct UiMapLinkEntry
     int32 ParentUiMapID;
     int32 OrderIndex;
     int32 ChildUiMapID;
+    int32 OverrideHighlightFileDataID;
+    int32 OverrideHighlightAtlasID;
 };
 
 struct UiMapXMapArtEntry
@@ -3598,7 +3622,7 @@ struct WorldEffectEntry
     uint32 ID;
     uint32 QuestFeedbackEffectID;
     uint8 WhenToDisplay;
-    uint8 TargetType;
+    int8 TargetType;
     int32 TargetAsset;
     uint32 PlayerConditionID;
     uint16 CombatConditionID;

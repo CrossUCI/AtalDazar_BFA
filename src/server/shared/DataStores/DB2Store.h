@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -48,9 +48,6 @@ public:
     virtual bool LoadStringsFrom(std::string const& path, uint32 locale) = 0;
     virtual void LoadFromDB() = 0;
     virtual void LoadStringsFromDB(uint32 locale) = 0;
-
-    uint32 BeginEntry = 0;
-    uint32 EndEntry = 0;
 
 protected:
     void WriteRecordData(char const* entry, uint32 locale, ByteBuffer& buffer) const;

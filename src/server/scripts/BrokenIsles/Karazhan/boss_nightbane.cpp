@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -99,7 +116,7 @@ class boss_nightbane_new : public CreatureScript
                 else
                 {
                     me->SetVisible(false);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 }
 
                 _Reset();
@@ -125,7 +142,7 @@ class boss_nightbane_new : public CreatureScript
                 if (action == ACTION_NIGHTBANE_READY)
                 {
                     me->SetVisible(true);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     Talk(SAY_INTRO);
                 }
             }
@@ -156,7 +173,7 @@ class boss_nightbane_new : public CreatureScript
                     me->GetMotionMaster()->MoveLand(5, me->GetPosition());
 
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_JAGGED_SHARDS);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->RemoveAllAreaTriggers();
                 me->SetCanFly(false);
                 me->SetDisableGravity(false);
@@ -185,7 +202,7 @@ class boss_nightbane_new : public CreatureScript
                 {
                     if (id == POINT_AIR_PHASE)
                     {
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         DoCastSelf(SPELL_CHARRED_EARTH_AURA, true);
                         DoCastSelf(SPELL_RAIN_OF_BONES);
                         events.ScheduleEvent(EVENT_RESTLESS_BONES, Seconds(urand(8,12)), AIR_PHASE);
@@ -193,7 +210,7 @@ class boss_nightbane_new : public CreatureScript
                     else if (POINT_GROUND_PHASE)
                     {
                         me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         events.ScheduleEvent(EVENT_CINDER_BREATH, Seconds(8));
                         events.ScheduleEvent(EVENT_CONCENTRATED_POWER, Seconds(urand(15,18)));
                         events.ScheduleEvent(EVENT_INFERNAL_POWER, Seconds(30));

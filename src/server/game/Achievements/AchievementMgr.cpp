@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -216,9 +216,9 @@ void PlayerAchievementMgr::Reset()
 
 void PlayerAchievementMgr::DeleteFromDB(ObjectGuid const& guid)
 {
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT);
     stmt->setUInt64(0, guid.GetCounter());
     trans->Append(stmt);
 
@@ -274,7 +274,7 @@ void PlayerAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Pre
                 // Removing non-existing criteria data for all characters
                 TC_LOG_ERROR("criteria.achievement", "Non-existing achievement criteria %u data has been removed from the table `character_achievement_progress`.", id);
 
-                PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEV_PROGRESS_CRITERIA);
+                CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEV_PROGRESS_CRITERIA);
                 stmt->setUInt32(0, id);
                 CharacterDatabase.Execute(stmt);
 
@@ -292,7 +292,7 @@ void PlayerAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Pre
     }
 }
 
-void PlayerAchievementMgr::SaveToDB(SQLTransaction& trans)
+void PlayerAchievementMgr::SaveToDB(CharacterDatabaseTransaction& trans)
 {
     if (!_completedAchievements.empty())
     {
@@ -301,7 +301,7 @@ void PlayerAchievementMgr::SaveToDB(SQLTransaction& trans)
             if (!iter->second.Changed)
                 continue;
 
-            PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT_BY_ACHIEVEMENT);
+            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT_BY_ACHIEVEMENT);
             stmt->setUInt32(0, iter->first);
             stmt->setUInt64(1, _owner->GetGUID().GetCounter());
             trans->Append(stmt);
@@ -323,7 +323,7 @@ void PlayerAchievementMgr::SaveToDB(SQLTransaction& trans)
             if (!iter->second.Changed)
                 continue;
 
-            PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT_PROGRESS_BY_CRITERIA);
+            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_ACHIEVEMENT_PROGRESS_BY_CRITERIA);
             stmt->setUInt64(0, _owner->GetGUID().GetCounter());
             stmt->setUInt32(1, iter->first);
             trans->Append(stmt);
@@ -480,27 +480,6 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
     // disable for gamemasters with GM-mode enabled
     if (_owner->IsGameMaster())
         return;
-	
-	// LunarFall FIX. 
-    // Evitar que los logros (de la lista) que saltan al inicio envien emails con objetos al jugador.
-    // Si alguien sabe cómo evitarlo tocando la base de datos, bienvenido sea !!
-    switch (achievement->ID)
-    {
-        case 2398: return;
-        case 3636: return;
-        case 4400: return;
-        case 5863: return;
-        case 6131: return;
-        case 7853: return;
-        case 8820: return;
-        case 9496: return;
-        case 10058: return;
-        case 10741: return;
-        case 11210: return;
-        case 11211: return;
-        case 11848: return;
-    }
-    // FIN LunarFall FIX
 
     if ((achievement->Faction == ACHIEVEMENT_FACTION_HORDE    && referencePlayer->GetTeam() != HORDE) ||
         (achievement->Faction == ACHIEVEMENT_FACTION_ALLIANCE && referencePlayer->GetTeam() != ALLIANCE))
@@ -547,7 +526,7 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
     //! Since no common attributes were found, (not even in titleRewardFlags field)
     //! we explicitly check by ID. Maybe in the future we could move the achievement_reward
     //! condition fields to the condition system.
-    if (uint32 titleId = reward->TitleId[achievement->ID == 1793 ? _owner->GetByteValue(PLAYER_BYTES_3, PLAYER_BYTES_3_OFFSET_GENDER) : (_owner->GetTeam() == ALLIANCE ? 0 : 1)])
+    if (uint32 titleId = reward->TitleId[achievement->ID == 1793 ? _owner->m_playerData->NativeSex : (_owner->GetTeam() == ALLIANCE ? 0 : 1)])
         if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(titleId))
             _owner->SetTitle(titleEntry);
 
@@ -575,7 +554,7 @@ void PlayerAchievementMgr::CompletedAchievement(AchievementEntry const* achievem
             draft = MailDraft(subject, text);
         }
 
-        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
         Item* item = reward->ItemId ? Item::CreateItem(reward->ItemId, 1, _owner) : NULL;
         if (item)
@@ -705,9 +684,9 @@ void GuildAchievementMgr::Reset()
 
 void GuildAchievementMgr::DeleteFromDB(ObjectGuid const& guid)
 {
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ALL_GUILD_ACHIEVEMENTS);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ALL_GUILD_ACHIEVEMENTS);
     stmt->setUInt64(0, guid.GetCounter());
     trans->Append(stmt);
 
@@ -761,7 +740,7 @@ void GuildAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Prep
                 // we will remove not existed criteria for all guilds
                 TC_LOG_ERROR("criteria.achievement", "Non-existing achievement criteria %u data removed from table `guild_achievement_progress`.", id);
 
-                PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEV_PROGRESS_CRITERIA_GUILD);
+                CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEV_PROGRESS_CRITERIA_GUILD);
                 stmt->setUInt32(0, id);
                 CharacterDatabase.Execute(stmt);
                 continue;
@@ -779,9 +758,9 @@ void GuildAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Prep
     }
 }
 
-void GuildAchievementMgr::SaveToDB(SQLTransaction& trans)
+void GuildAchievementMgr::SaveToDB(CharacterDatabaseTransaction& trans)
 {
-    PreparedStatement* stmt;
+    CharacterDatabasePreparedStatement* stmt;
     std::ostringstream guidstr;
     for (auto itr = _completedAchievements.begin(); itr != _completedAchievements.end(); ++itr)
     {
@@ -1140,7 +1119,7 @@ void AchievementGlobalMgr::LoadCompletedAchievements()
             // Remove non-existing achievements from all characters
             TC_LOG_ERROR("criteria.achievement", "Non-existing achievement %u data has been removed from the table `character_achievement`.", achievementId);
 
-            PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEVMENT);
+            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_INVALID_ACHIEVMENT);
             stmt->setUInt32(0, achievementId);
             CharacterDatabase.Execute(stmt);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -48,10 +48,6 @@ void AddSC_culling_of_stratholme();
 void AddSC_instance_culling_of_stratholme();
 void AddSC_instance_dire_maul();                    //Dire Maul
 void AddSC_instance_ragefire_chasm();               //Ragefire Chasm
-void AddSC_boss_adarogg();
-void AddSC_boss_gordoth();
-void AddSC_boss_koranthal();
-void AddSC_boss_slagmaw();                          //Ragefire Chasm
 void AddSC_boss_celebras_the_cursed();              //Maraudon
 void AddSC_boss_landslide();
 void AddSC_boss_noxxion();
@@ -164,7 +160,6 @@ void AddSC_felwood();
 void AddSC_feralas();
 void AddSC_molten_front();
 void AddSC_moonglade();
-void AddSC_mount_hyjal();
 void AddSC_mulgore();
 void AddSC_orgrimmar();
 void AddSC_silithus();
@@ -175,8 +170,6 @@ void AddSC_thousand_needles();
 void AddSC_thunder_bluff();
 void AddSC_ungoro_crater();
 void AddSC_winterspring();
-
-void AddSC_silithus_legion(); 
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -325,7 +318,6 @@ void AddKalimdorScripts()
     AddSC_felwood();
     AddSC_feralas();
     AddSC_molten_front();
-    AddSC_mount_hyjal();
     AddSC_moonglade();
     AddSC_mulgore();
     AddSC_orgrimmar();
@@ -337,6 +329,4 @@ void AddKalimdorScripts()
     AddSC_thunder_bluff();
     AddSC_ungoro_crater();
     AddSC_winterspring();
-
-    AddSC_silithus_legion(); 
 }

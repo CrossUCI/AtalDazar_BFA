@@ -28,6 +28,7 @@
 #    ARENA CONFIG
 #    NETWORK CONFIG
 #    CONSOLE AND REMOTE ACCESS
+#    REST SERVICE
 #    WORLD TO DISCORD
 #    CHARACTER DELETE OPTIONS
 #    CUSTOM SERVER OPTIONS
@@ -101,7 +102,6 @@ LogsDir = ""
 #                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
 #                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
 #                     "127.0.0.1;3306;trinity;trinity;hotfixes"   - (HotfixDatabaseInfo)
-#                     "127.0.0.1;3306;trinity;trinity;shop"       - (ShopDatabaseInfo)
 #
 #    Don't change hostname unless you are hosting mysql on a different machine, if you need help
 #    with configuration allowing to connect from diferent machine than the one running server
@@ -113,7 +113,6 @@ LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
 WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
 CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
 HotfixDatabaseInfo    = "127.0.0.1;3306;trinity;trinity;hotfixes"
-ShopDatabaseInfo      = "127.0.0.1;3306;trinity;trinity;shop"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -127,13 +126,11 @@ ShopDatabaseInfo      = "127.0.0.1;3306;trinity;trinity;shop"
 #                     1 - (WorldDatabase.WorkerThreads)
 #                     1 - (CharacterDatabase.WorkerThreads)
 #                     1 - (HotfixDatabase.WorkerThreads)
-#                     1 - (ShopDatabase.WorkerThreads)
 
 LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1
 CharacterDatabase.WorkerThreads = 1
 HotfixDatabase.WorkerThreads    = 1
-ShopDatabase.WorkerThreads    = 1
 
 #
 #    LoginDatabase.SynchThreads
@@ -145,13 +142,11 @@ ShopDatabase.WorkerThreads    = 1
 #                     1 - (WorldDatabase.SynchThreads)
 #                     2 - (CharacterDatabase.SynchThreads)
 #                     1 - (HotfixDatabase.SynchThreads)
-#                     1 - (ShopDatabase.SynchThreads)
 
 LoginDatabase.SynchThreads     = 1
 WorldDatabase.SynchThreads     = 1
 CharacterDatabase.SynchThreads = 2
 HotfixDatabase.SynchThreads    = 1
-ShopDatabase.SynchThreads      = 1
 
 #
 #    MaxPingTime
@@ -873,14 +868,6 @@ StartPlayerLevel = 1
 #        Default:     55
 
 StartDeathKnightPlayerLevel = 55
-
-#
-#    StartAlliedRacesPlayerLevel
-#        Description: Staring level for allied races after creation.
-#        Range:       1-MaxPlayerLevel
-#        Default:     20
-
-StartAlliedRacesPlayerLevel = 20
 
 #
 #    StartDemonHunterPlayerLevel
@@ -2554,20 +2541,20 @@ Battleground.Random.ResetHour = 6
 #     Battleground.RewardLoserHonorFirst
 #     Battleground.RewardLoserHonorLast
 #        Description: Random Battlegrounds / call to the arms rewards.
-#        Default:     2 - Battleground.RewardWinnerHonorFirst
-#                     2 - Battleground.RewardWinnerConquestFirst
-#                     1 - Battleground.RewardWinnerHonorLast
-#                     1 - Battleground.RewardWinnerConquestLast
-#                     1 - Battleground.RewardLoserHonorFirst
-#                     1 - Battleground.RewardLoserHonorLast
+#        Default:     30 - Battleground.RewardWinnerHonorFirst
+#                     25 - Battleground.RewardWinnerArenaFirst
+#                     15 - Battleground.RewardWinnerHonorLast
+#                     0  - Battleground.RewardWinnerArenaLast
+#                     5  - Battleground.RewardLoserHonorFirst
+#                     5  - Battleground.RewardLoserHonorLast
 #
 
-Battleground.RewardWinnerHonorFirst     = 2
-Battleground.RewardWinnerConquestFirst  = 2
-Battleground.RewardWinnerHonorLast      = 1
-Battleground.RewardWinnerConquestLast   = 1
-Battleground.RewardLoserHonorFirst      = 1
-Battleground.RewardLoserHonorLast       = 1
+Battleground.RewardWinnerHonorFirst     = 27000
+Battleground.RewardWinnerConquestFirst  = 10000
+Battleground.RewardWinnerHonorLast      = 13500
+Battleground.RewardWinnerConquestLast   = 5000
+Battleground.RewardLoserHonorFirst      = 4500
+Battleground.RewardLoserHonorLast       = 3500
 
 #
 #    Battleground.ReportAFK
@@ -2920,6 +2907,42 @@ SOAP.IP = "127.0.0.1"
 #        Default:     7878
 
 SOAP.Port = 7878
+
+#
+###################################################################################################
+
+###################################################################################################
+# REST SERVICE
+#
+#
+#    WorldREST.Enabled
+#        Description: Enable REST service.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+WorldREST.Enabled = 0
+
+#
+#    WorldREST.BindIP
+#        Description: Bind REST service to IP/hostname.
+#        Default:     "127.0.0.1" - (Bind to localhost)
+
+WorldREST.BindIP = "127.0.0.1"
+
+#
+#    WorldREST.Port
+#        Description: TCP port to reach the REST service.
+#        Default:     8082
+
+WorldREST.Port = 8082
+
+#
+#    WorldREST.AuthToken
+#        Description: Auth Token, user will have to set this in headers to reach REST service
+#                     Minimum length (security reason) : 16 characters
+#        Default:     ""
+
+WorldREST.AuthToken = ""
 
 #
 ###################################################################################################
@@ -4088,11 +4111,3 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
-
-Azerite.Knowledge.Level = 1
-
-InstantMaxServer = 0
-
-IngameShop.Enabled = 0
-IngameShop.Available = 0
-IngameShop.AccountBalance = 0

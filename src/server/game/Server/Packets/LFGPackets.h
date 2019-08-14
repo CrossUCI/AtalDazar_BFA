@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,11 +18,6 @@
 #ifndef LFGPackets_h__
 #define LFGPackets_h__
 
-#include "Battleground.h"
-#include "BattlegroundMgr.h"
-#include "BattlegroundPackets.h"
-#include "BattlegroundScore.h"
-#include "Player.h"
 #include "Packet.h"
 #include "PacketUtilities.h"
 #include "ItemPacketsCommon.h"
@@ -274,7 +269,7 @@ namespace WorldPackets
             uint8 PartyIndex = 0;
             uint8 RoleCheckStatus = 0;
             std::vector<uint32> JoinSlots;
-            uint64 BgQueueID = 0;
+            std::vector<uint64> BgQueueIDs;
             int32 GroupFinderActivityID = 0;
             std::vector<LFGRoleCheckUpdateMember> Members;
             bool IsBeginning = false;
@@ -310,6 +305,7 @@ namespace WorldPackets
             uint8 Result = 0;
             uint8 ResultDetail = 0;
             std::vector<LFGJoinBlackList> BlackList;
+            std::vector<std::string const*> BlackListNames;
         };
 
         class LFGQueueStatus final : public ServerPacket
@@ -446,20 +442,6 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             lfg::LfgTeleportResult Reason;
-        };
-
-        class PvpRewardsResponse final : public ServerPacket
-        {
-        public:
-            PvpRewardsResponse() : ServerPacket(SMSG_REQUEST_PVP_REWARDS_RESPONSE) { }
-
-            WorldPacket const* Write() override;
-
-            LfgPlayerQuestReward Rewards[(uint8)BattlegroundBracketType::Max];
-            bool HasWon10vs10 = false;
-            bool HasWonSkirmish = false;
-            bool HasWon2vs2 = false;
-            bool HasWon3vs3 = false;
         };
     }
 }

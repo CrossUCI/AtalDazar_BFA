@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,7 +21,6 @@
 #include "CreatureAI.h"
 #include "MoveSplineInit.h"
 #include "MoveSpline.h"
-#include "Vehicle.h"
 
 void HomeMovementGenerator<Creature>::DoInitialize(Creature* owner)
 {
@@ -35,8 +34,6 @@ void HomeMovementGenerator<Creature>::DoFinalize(Creature* owner)
         owner->ClearUnitState(UNIT_STATE_EVADE);
         owner->SetWalk(true);
         owner->LoadCreaturesAddon();
-        if (owner->IsVehicle())
-            owner->GetVehicleKit()->Reset(true);
         owner->AI()->JustReachedHome();
         owner->SetSpawnHealth();
     }

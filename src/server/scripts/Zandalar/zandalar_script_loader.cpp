@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -40,10 +40,6 @@ void AddSC_boss_yazma();
 void AddSC_atal_dazar();
 void AddSC_instance_atal_dazar();
 
-void AddSC_boss_dunegorger_kraulok();
-void AddSC_boss_jiarak();
-void AddSC_boss_tzane();
-
 void AddZandalarScripts()
 {
     AddSC_zone_nazmir();
@@ -70,8 +66,4 @@ void AddZandalarScripts()
     AddSC_boss_yazma();
     AddSC_atal_dazar();
     AddSC_instance_atal_dazar();
-    
-    AddSC_boss_dunegorger_kraulok();
-    AddSC_boss_jiarak();
-    AddSC_boss_tzane();
 }

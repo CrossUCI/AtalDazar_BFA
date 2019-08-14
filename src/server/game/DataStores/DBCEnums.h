@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -171,7 +171,7 @@ enum ArtifactPowerFlag : uint8
 
 #define MAX_ARTIFACT_TIER 1
 
-#define BATTLE_PET_SPECIES_MAX_ID 2480
+#define BATTLE_PET_SPECIES_MAX_ID 2775
 
 enum BattlePetSpeciesFlags
 {
@@ -217,18 +217,21 @@ enum CriteriaCondition
 enum CriteriaAdditionalCondition
 {
     CRITERIA_ADDITIONAL_CONDITION_SOURCE_DRUNK_VALUE            = 1, // NYI
-    CRITERIA_ADDITIONAL_CONDITION_UNK2                          = 2,
+    CRITERIA_ADDITIONAL_CONDITION_SOURCE_PLAYER_CONDITION       = 2,
     CRITERIA_ADDITIONAL_CONDITION_ITEM_LEVEL                    = 3, // NYI
     CRITERIA_ADDITIONAL_CONDITION_TARGET_CREATURE_ENTRY         = 4,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_MUST_BE_PLAYER         = 5,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_MUST_BE_DEAD           = 6,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_MUST_BE_ENEMY          = 7,
     CRITERIA_ADDITIONAL_CONDITION_SOURCE_HAS_AURA               = 8,
+    CRITERIA_ADDITIONAL_CONDITION_SOURCE_HAS_AURA_TYPE          = 9,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_HAS_AURA               = 10,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_HAS_AURA_TYPE          = 11,
+    CRITERIA_ADDITIONAL_CONDITION_SOURCE_AURA_STATE             = 12,
+    CRITERIA_ADDITIONAL_CONDITION_TARGET_AURA_STATE             = 13,
     CRITERIA_ADDITIONAL_CONDITION_ITEM_QUALITY_MIN              = 14,
     CRITERIA_ADDITIONAL_CONDITION_ITEM_QUALITY_EQUALS           = 15,
-    CRITERIA_ADDITIONAL_CONDITION_UNK16                         = 16,
+    CRITERIA_ADDITIONAL_CONDITION_SOURCE_IS_ALIVE               = 16,
     CRITERIA_ADDITIONAL_CONDITION_SOURCE_AREA_OR_ZONE           = 17,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_AREA_OR_ZONE           = 18,
     CRITERIA_ADDITIONAL_CONDITION_MAP_DIFFICULTY_OLD            = 20,
@@ -250,7 +253,7 @@ enum CriteriaAdditionalCondition
     CRITERIA_ADDITIONAL_CONDITION_TARGET_LEVEL                  = 40,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_ZONE                   = 41,
     CRITERIA_ADDITIONAL_CONDITION_TARGET_HEALTH_PERCENT_BELOW   = 46,
-    CRITERIA_ADDITIONAL_CONDITION_UNK55                         = 55,
+    CRITERIA_ADDITIONAL_CONDITION_TARGET_PLAYER_CONDITION       = 55,
     CRITERIA_ADDITIONAL_CONDITION_MIN_ACHIEVEMENT_POINTS        = 56, // NYI
     CRITERIA_ADDITIONAL_CONDITION_REQUIRES_LFG_GROUP            = 58, // NYI
     CRITERIA_ADDITIONAL_CONDITION_UNK60                         = 60,
@@ -279,7 +282,9 @@ enum CriteriaAdditionalCondition
     CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_SPECIES            = 91,
     CRITERIA_ADDITIONAL_CONDITION_EXPANSION                     = 92,
     CRITERIA_ADDITIONAL_CONDITION_REPUTATION                    = 95,
-    CRITERIA_ADDITIONAL_CONDITION_QUEST_REWARDED                = 110,
+    CRITERIA_ADDITIONAL_CONDITION_REWARDED_QUEST                = 110,
+    CRITERIA_ADDITIONAL_CONDITION_COMPLETED_QUEST               = 111,
+    CRITERIA_ADDITIONAL_CONDITION_COMPLETED_QUEST_OBJECTIVE     = 112, // NYI, QuestObjectiveID
     CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_ENTRY       = 144,
     CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_QUALITY     = 145,
     CRITERIA_ADDITIONAL_CONDITION_GARRISON_FOLLOWER_LEVEL       = 146,
@@ -531,7 +536,7 @@ enum CriteriaTypes : uint8
     CRITERIA_TREE_HEART_OF_AZEROTH_LEVEL_REACHED        = 215
 };
 
-#define CRITERIA_TYPE_TOTAL 216
+#define CRITERIA_TYPE_TOTAL 217
 
 enum CriteriaTreeFlags : uint16
 {
@@ -576,7 +581,8 @@ enum CharSectionFlags
 {
     SECTION_FLAG_PLAYER = 0x01,
     SECTION_FLAG_DEATH_KNIGHT = 0x04,
-    SECTION_FLAG_DEMON_HUNTER = 0x20
+    SECTION_FLAG_DEMON_HUNTER = 0x20,
+    SECTION_FLAG_CONDITIONAL = 0x400
 };
 
 enum CharSectionType
@@ -642,6 +648,7 @@ enum Difficulty : uint8
     DIFFICULTY_MYTHIC_ISLAND        = 40,
     DIFFICULTY_PVP_ISLAND           = 45,
     DIFFICULTY_NORMAL_WARFRONT      = 147,
+    DIFFICULTY_HEROIC_WARFRONT      = 149,
 
     MAX_DIFFICULTY
 };
@@ -787,9 +794,7 @@ enum MapFlags2
 enum AbilytyLearnType
 {
     SKILL_LINE_ABILITY_LEARNED_ON_SKILL_VALUE  = 1, // Spell state will update depending on skill value
-    SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN  = 2, // Spell will be learned/removed together with entire skill
-    SKILL_LINE_ABILITY_LEARNED_ON_ARTIFACT     = 3, // Only Artifact spells
-    SKILL_LINE_ABILITY_LEARNED_ON_QUEST        = 4  // Learned from class quest rewards
+    SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN  = 2  // Spell will be learned/removed together with entire skill
 };
 
 enum GlyphSlotType
@@ -909,7 +914,6 @@ enum class ItemContext : uint8
     World_Quest_13          = 55,
     PVP_Ranked_Jackpot      = 56,
     Tournament_Realm        = 57,
-    Max                     = 57,
 };
 
 enum ItemLimitCategoryMode
@@ -1098,7 +1102,7 @@ enum SpellShapeshiftFormFlags
     SHAPESHIFT_FORM_PREVENT_EMOTE_SOUNDS        = 0x1000
 };
 
-#define TaxiMaskSize 286
+#define TaxiMaskSize 311
 typedef std::array<uint8, TaxiMaskSize> TaxiMask;
 
 enum TotemCategoryType
@@ -1311,8 +1315,6 @@ enum CurrencyTypes
     CURRENCY_TYPE_SECRET_OF_DRAENOR_BLACKSMITHING   = 1020,
     CURRENCY_TYPE_OIL                               = 1101,
     CURRENCY_TYPE_AZERITE                           = 1553,
-    CURRENCY_TYPE_CONQUEST_BFA                      = 1602,
-    CURRENCY_TYPE_BFA_SEASON_1                      = 1703,
 };
 
 enum WorldMapTransformsFlags

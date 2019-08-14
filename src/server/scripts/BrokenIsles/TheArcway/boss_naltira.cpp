@@ -250,10 +250,10 @@ class npc_arc_vicious_manafang : public CreatureScript
                     
                     me->CastStop();
                     me->RemoveAllAuras();
-                    me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
+                    //me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
                     me->SetDisableGravity(false);
                     me->SetReactState(REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                     me->RemoveUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_DISABLE_GRAVITY);
                     me->RemoveExtraUnitMovementFlag(MOVEMENTFLAG2_JUMP_SPLINE_IN_AIR);
                     _events.ScheduleEvent(EVENT_DEVOUR, Seconds(10));

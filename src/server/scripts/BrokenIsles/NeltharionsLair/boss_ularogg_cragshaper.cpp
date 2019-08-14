@@ -177,7 +177,7 @@ public:
         boss_ularogg_cragshaper_AI(Creature* creature) : BossAI(creature, DATA_ULAROGG_CRAGSHAPER) 
         { 
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         EventMap events;
@@ -339,7 +339,7 @@ public:
             {
                 me->GetMotionMaster()->MoveJump(me->GetPositionX(), me->GetPositionY(), me->GetPositionX(), me->GetOrientation(), 55.0f, 55.0f, EVENT_JUMP, true);
                 me->SetVisible(true);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->RemoveAllAuras();
                 allowUpdateVictim = true;
@@ -374,7 +374,7 @@ public:
                             {
                                 manaRegenerated = true;
                                 events.ScheduleEvent(EVENT_PHASE_2, 3s);
-                                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 me->SetReactState(REACT_PASSIVE);
                                 me->RemoveAllAuras();
                                 me->RemoveAllAttackers();
@@ -425,7 +425,7 @@ public:
                     if (!inSecondPhase)
                     {
                         me->SetReactState(REACT_DEFENSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         allowUpdateVictim = true;
                     }
                     break;
@@ -531,8 +531,8 @@ public:
                         {
                             if (Idol)
                             {
-                                Idol->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                                Idol->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                                Idol->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                                Idol->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 Idol->AddAura(193267, Idol);
                             }
                         }
@@ -570,8 +570,8 @@ public:
         mob_bellowing_idol_mountain_stance_AI(Creature* creature) : ScriptedAI(creature) 
         {
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
             float allSpeed = 3.0f;
             me->SetSpeedRate(MOVE_WALK, allSpeed);
             me->SetSpeedRate(MOVE_RUN, allSpeed);

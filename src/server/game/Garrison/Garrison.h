@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -60,9 +60,9 @@ public:
     Player* GetOwner() const { return _owner; }
 
     virtual bool LoadFromDB();
-    virtual void SaveToDB(SQLTransaction& trans);
-    void DeleteFromDB(SQLTransaction& trans);
-    static void DeleteFromDB(SQLTransaction& trans, ObjectGuid::LowType guid, GarrisonType garrType);
+    virtual void SaveToDB(CharacterDatabaseTransaction& trans);
+    void DeleteFromDB(CharacterDatabaseTransaction& trans);
+    static void DeleteFromDB(CharacterDatabaseTransaction& trans, ObjectGuid::LowType guid, GarrisonType garrType);
 
     virtual bool Create(uint32 garrSiteId);
     void Update(uint32 const diff);

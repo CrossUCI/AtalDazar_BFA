@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -80,7 +80,6 @@ class TC_GAME_API Scenario : public CriteriaHandler
         void SendBootPlayer(Player* player);
 
         void SendScenarioEvent(Player* player, uint32 eventId);
-        void SendScenarioEventToPlayers(uint32 eventId);
 
         inline bool IsInstanceScenarioo() const { return _scenarioType == SCENARIO_INSTANCE_TYPE_INSTANCE_SCENARIO; }
         InstanceScenario* ToInstanceScenario() { if (IsInstanceScenarioo()) return reinterpret_cast<InstanceScenario*>(this); else return nullptr; }

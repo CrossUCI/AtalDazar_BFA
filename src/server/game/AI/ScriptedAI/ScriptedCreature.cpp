@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -16,7 +16,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ObjectMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaBoundary.h"
 #include "DB2Stores.h"
@@ -126,10 +125,7 @@ void SummonList::DoActionImpl(int32 action, StorageType const& summons)
 
 ScriptedAI::ScriptedAI(Creature* creature) : CreatureAI(creature),
     IsFleeing(false),
-    _isCombatMovementAllowed(true),
-	IsLock(false),
-    haseventdata(false),
-    hastalkdata(false)
+    _isCombatMovementAllowed(true)
 {
     _isHeroic = me->GetMap()->IsHeroic();
     _difficulty = me->GetMap()->GetDifficultyID();
@@ -171,139 +167,6 @@ void ScriptedAI::UpdateAI(uint32 diff)
     }
 
     DoMeleeAttackIfReady();
-}
-
-void ScriptedAI::LoadEventData(EventData const * data)
-{
-    if (data)
-    {
-        eventslist = data;
-        haseventdata = true;
-    }        
-}
-
-void ScriptedAI::GetEventData(uint16 group)
-{
-    if (!eventslist)
-        return;
-    if (!haseventdata)
-        return;
-
-    EventData const* list = eventslist;
-    while (list->eventId)
-    {
-        if (list->group == group)
-            events.ScheduleEvent(list->eventId, list->time, list->group, list->phase);
-        ++list;
-    }
-}
-
-void ScriptedAI::LoadTalkData(TalkData const * data)
-{
-    if (data)
-    {
-        talkslist = data;
-        hastalkdata = true;
-    }      
-}
-
-void ScriptedAI::GetTalkData(uint32 eventId)
-{
-    if (!talkslist)
-        return;
-    if (!hastalkdata)
-        return;
-
-    TalkData const* list = talkslist;
-    while (list->eventId)
-    {
-        if (list->eventId == eventId)
-        {
-            switch (list->eventType)
-            {
-            case EVENT_TYPE_TALK:
-                me->AI()->Talk(list->eventData);
-                break;
-            case EVENT_TYPE_CONVERSATION:
-                if (list->eventData > 0)
-                    if (instance)
-                        instance->DoPlayConversation(list->eventData);
-                break;
-            case EVENT_TYPE_ACHIEVEMENT:
-                if (list->eventData > 0)
-                    if (instance)
-                        instance->DoCompleteAchievement(list->eventData);
-                break;
-            case EVENT_TYPE_SPELL:
-                if (list->eventData > 0)
-                    if (instance)
-                        instance->DoCastSpellOnPlayers(list->eventData);
-                break;
-            case EVENT_TYPE_YELL:
-                if (list->eventData > 0)
-                    me->Yell(list->eventData);
-                break;
-            case EVENT_TYPE_SAY:
-                if (list->eventData > 0)
-                    me->Say(list->eventData);
-                break;
-            }
-        }
-        ++list;
-    }
-    
-}
-
-void ScriptedAI::ApplyAllImmunities(bool apply)
-{
-    me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, apply);
-    me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_GRIP, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_STUN, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_FEAR, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_ROOT, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_FREEZE, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_POLYMORPH, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_HORROR, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_SAPPED, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, apply);
-    me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_INTERRUPT, apply);
-    me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, apply);
-}
-
-void ScriptedAI::DespawnCreaturesInArea(uint32 entry, WorldObject* object)
-{
-    std::list<Creature*> creatures;
-    GetCreatureListWithEntryInGrid(creatures, object, entry, 300.0f);
-    if (creatures.empty())
-        return;
-
-    for (std::list<Creature*>::iterator itr = creatures.begin(); itr != creatures.end(); ++itr)
-        (*itr)->DespawnOrUnsummon();
-}
-
-void ScriptedAI::DespawnGameObjectsInArea(uint32 entry, WorldObject* object)
-{
-    std::list<GameObject*> gameobjects;
-    GetGameObjectListWithEntryInGrid(gameobjects, object, entry, 300.0f);
-    if (gameobjects.empty())
-        return;
-
-    for (std::list<GameObject*>::iterator itr = gameobjects.begin(); itr != gameobjects.end();)
-    {
-        (*itr)->SetRespawnTime(0);
-        (*itr)->Delete();
-        itr = gameobjects.erase(itr);
-    }
-}
-
-void ScriptedAI::SetUnlock(uint32 time)
-{
-    me->GetScheduler().Schedule(Milliseconds(time), [this](TaskContext context)
-    {
-        IsLock = false;
-    });
 }
 
 void ScriptedAI::DoStartMovement(Unit* victim, float distance, float angle)
@@ -371,7 +234,7 @@ SpellInfo const* ScriptedAI::SelectSpell(Unit* target, uint32 school, uint32 mec
         return nullptr;
 
     //Silenced so we can't cast
-    if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
+    if (me->HasUnitFlag(UNIT_FLAG_SILENCED))
         return nullptr;
 
     //Using the extended script system we first create a list of viable spells
@@ -596,8 +459,6 @@ BossAI::BossAI(Creature* creature, uint32 bossId) : ScriptedAI(creature),
 {
     if (instance)
         SetBoundary(instance->GetBossBoundary(bossId));
-    _dungeonEncounterId = sObjectMgr->GetDungeonEncounterID(creature->GetEntry());
-    ApplyAllImmunities(true);
 }
 
 void BossAI::_Reset()
@@ -619,18 +480,13 @@ void BossAI::_JustDied()
 {
     events.Reset();
     summons.DespawnAll();
-    me->RemoveAllAreaTriggers();
     me->GetScheduler().CancelAll();
     if (instance)
     {
         instance->SetBossState(_bossId, DONE);
         instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-		if(_dungeonEncounterId>0)
-            instance->SendBossKillCredit(_dungeonEncounterId);
-        instance->SetCheckPointPos(me->GetHomePosition());
     }
     Talk(BOSS_TALK_JUST_DIED);
-    GetTalkData(EVENT_ON_JUSTDIED);
 }
 
 void BossAI::_JustReachedHome()
@@ -645,8 +501,6 @@ void BossAI::_KilledUnit(Unit* victim)
 {
     if (victim->IsPlayer() && urand(0, 1))
         Talk(BOSS_TALK_KILL_PLAYER);
-    if (victim->IsPlayer() && urand(0, 1))
-        GetTalkData(EVENT_ON_KILLEDUNIT);
 }
 
 void BossAI::_DamageTaken(Unit* /*attacker*/, uint32& damage)
@@ -676,7 +530,6 @@ void BossAI::_EnterCombat(bool showFrameEngage /*= true*/)
     DoZoneInCombat();
     ScheduleTasks();
     Talk(BOSS_TALK_ENTER_COMBAT);
-    GetTalkData(EVENT_ON_ENTERCOMBAT);
 }
 
 void BossAI::TeleportCheaters()
@@ -696,7 +549,6 @@ void BossAI::JustSummoned(Creature* summon)
     summons.Summon(summon);
     if (me->IsInCombat())
         DoZoneInCombat(summon);
-    GetTalkData(EVENT_ON_JUSTSUMMON);
 }
 
 void BossAI::SummonedCreatureDespawn(Creature* summon)

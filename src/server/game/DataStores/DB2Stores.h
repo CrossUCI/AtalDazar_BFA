@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -146,8 +146,6 @@ TC_GAME_API extern DB2Storage<ItemExtendedCostEntry>                sItemExtende
 TC_GAME_API extern DB2Storage<ItemLimitCategoryEntry>               sItemLimitCategoryStore;
 TC_GAME_API extern DB2Storage<ItemModifiedAppearanceEntry>          sItemModifiedAppearanceStore;
 TC_GAME_API extern DB2Storage<ItemPriceBaseEntry>                   sItemPriceBaseStore;
-TC_GAME_API extern DB2Storage<ItemRandomPropertiesEntry>            sItemRandomPropertiesStore;
-TC_GAME_API extern DB2Storage<ItemRandomSuffixEntry>                sItemRandomSuffixStore;
 TC_GAME_API extern DB2Storage<ItemSearchNameEntry>                  sItemSearchNameStore;
 TC_GAME_API extern DB2Storage<ItemSetEntry>                         sItemSetStore;
 TC_GAME_API extern DB2Storage<ItemSetSpellEntry>                    sItemSetSpellStore;
@@ -257,8 +255,6 @@ typedef std::map<uint32, TaxiPathSetForSource> TaxiPathSetBySource;
 typedef std::vector<TaxiPathNodeEntry const*> TaxiPathNodeList;
 typedef std::vector<TaxiPathNodeList> TaxiPathNodesByPath;
 
-typedef std::unordered_map<uint32, std::vector<uint32>> PhaseGroupContainer;
-
 TC_GAME_API extern TaxiMask                                         sTaxiNodesMask;
 TC_GAME_API extern TaxiMask                                         sOldContinentsNodesMask;
 TC_GAME_API extern TaxiMask                                         sHordeTaxiNodesMask;
@@ -278,6 +274,8 @@ class TC_GAME_API DB2Manager
 public:
     DEFINE_DB2_SET_COMPARATOR(MountTypeXCapabilityEntry)
 
+    typedef std::map<int32 /*hotfixId*/, std::vector<std::pair<uint32 /*tableHash*/, int32 /*recordId*/>>> HotfixContainer;
+
     typedef std::vector<ItemBonusEntry const*> ItemBonusList;
     typedef std::unordered_map<uint32, std::unordered_map<uint32, MapDifficultyEntry const*>> MapDifficultyContainer;
     typedef std::set<MountTypeXCapabilityEntry const*, MountTypeXCapabilityEntryComparator> MountTypeXCapabilitySet;
@@ -290,7 +288,8 @@ public:
 
     void LoadHotfixData();
     void LoadHotfixBlob();
-    std::map<uint64, int32> const& GetHotfixData() const;
+    uint32 GetHotfixCount() const;
+    HotfixContainer const& GetHotfixData() const;
     std::vector<uint8> const* GetHotfixBlobData(uint32 tableHash, int32 recordId);
 
     std::vector<uint32> GetAreasForGroup(uint32 areaGroupId) const;
@@ -351,7 +350,6 @@ public:
     ResponseCodes ValidateName(std::wstring const& name, LocaleConstant locale) const;
     static int32 GetNumTalentsAtLevel(uint32 level, Classes playerClass);
     std::vector<uint32> const* GetPhasesForGroup(uint32 group) const;
-    PhaseGroupContainer const& GetPhaseGroups();
     PowerTypeEntry const* GetPowerTypeEntry(Powers power) const;
     PowerTypeEntry const* GetPowerTypeByName(std::string const& name) const;
     uint8 GetPvpItemLevelBonus(uint32 itemId) const;
@@ -365,6 +363,7 @@ public:
     std::vector<RewardPackXCurrencyTypeEntry const*> const* GetRewardPackCurrencyTypesByRewardID(uint32 rewardPackID) const;
     std::vector<RewardPackXItemEntry const*> const* GetRewardPackItemsByRewardID(uint32 rewardPackID) const;
     uint32 GetRulesetItemUpgrade(uint32 itemId) const;
+    std::vector<SkillLineEntry const*> const* GetSkillLinesForParentSkill(uint32 parentSkillId) const;
     std::vector<SkillLineAbilityEntry const*> const* GetSkillLineAbilitiesBySkill(uint32 skillId) const;
     SkillRaceClassInfoEntry const* GetSkillRaceClassInfo(uint32 skill, uint8 race, uint8 class_);
     std::vector<SpecializationSpellsEntry const*> const* GetSpecializationSpells(uint32 specId) const;
@@ -389,7 +388,7 @@ public:
 private:
     friend class DB2HotfixGeneratorBase;
     void InsertNewHotfix(uint32 tableHash, uint32 recordId);
-    uint32 _maxHotfixId = 0;
+    int32 _maxHotfixId = 0;
 };
 
 #define sDB2Manager DB2Manager::Instance()

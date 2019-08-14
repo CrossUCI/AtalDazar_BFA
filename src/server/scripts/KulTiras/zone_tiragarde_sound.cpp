@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+* Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -196,7 +196,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     void SetGUID(ObjectGuid guid, int32 /*action*/) override
     {
         m_playerGUID = guid;
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
         me->SetAIAnimKitId(0);
 
         if (Creature* ashvaneJailer = me->SummonCreature(NPC_ASHVANE_JAILER_EVENT, 144.839996f, -2702.790039f, 28.961100f, 0.799371f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000, true))
@@ -218,7 +218,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             .Schedule(5s, [this](TaskContext /*context*/)
         {
             Talk(TALK_HIT_ME, GetPlayer());
-            me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         });
     }
 
@@ -227,7 +227,7 @@ struct npc_flynn_fairwind : public ScriptedAI
         if (spell->Id != SPELL_PUNCH_FLYNN)
             return;
 
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         me->HandleEmoteCommand(EMOTE_ONESHOT_BEG);
         Talk(TALK_YOU_BRUTE);
 
@@ -238,7 +238,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
             {
                 Talk(TALK_GUARD);
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_DEAD);
+                me->SetStandState(UNIT_STAND_STATE_DEAD);
             });
 
             ashvaneJailer->GetScheduler().Schedule(3s, [](TaskContext context)
@@ -272,7 +272,7 @@ struct npc_flynn_fairwind : public ScriptedAI
 
             me->GetScheduler().Schedule(9s, [this, ashvaneJailer](TaskContext /*context*/)
             {
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_STAND);
+                me->SetStandState(UNIT_STAND_STATE_STAND);
                 ashvaneJailer->AI()->Talk(TALK_WHAT);
             })
                 .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
@@ -574,7 +574,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
     void IsSummonedBy(Unit* unit) override
     {
-        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
         if (Player* player = unit->ToPlayer())
         {
@@ -602,7 +602,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
                     if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
                     {
                         player->PlayConversation(9556);
-                        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
                     }
                 }
 
@@ -878,7 +878,7 @@ public:
         players.clear();
         players.push_back(player);
 
-        me->SetFlag64(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+        me->SetUnitFlags(UNIT_FLAG_IMMUNE_TO_NPC);
         me->SummonCreature(129841, me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN);
 
         _ongoing = true;
@@ -887,7 +887,7 @@ public:
     void SummonedCreatureDespawn(Creature* /*creature*/) override
     {
         // killcredit
-        for (auto player : players)
+        for each (auto player in players)
         {
             if (player && player->IsInWorld() && player->IsInRange2d(me->GetPositionX(), me->GetPositionY(), 0, 50))
                 player->KilledMonsterCredit(NPC_DEFEND_FIREBREAKER_KILLCREDIT);
@@ -898,7 +898,7 @@ public:
     void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
     {
         // Fail the quest
-        for (auto player : players)
+        for each (auto player in players)
         {
             if (player && player->IsInWorld())
                 player->FailQuest(QUEST_BACKUP_WILL_I_PACK);
@@ -1126,29 +1126,6 @@ public:
     }
 };
 
-// 142721 - Ralston Karn 
-class npc_ralston_karn  : public ScriptedAI
-{
-public:
-    enum
-    {
-        QUEST_TO_THE_FRONT            = 53194,
-        NPC_YVERA_DAWNWING_KILLCREDIT = 143380,
-        SPELL_TELEPORT_TO_STROMGARDE  = 279518
-    };
-
-    npc_ralston_karn(Creature* creature) : ScriptedAI(creature) { }
-
-    void sQuestAccept(Player* player, Quest const* quest) override
-    {
-        if (quest->ID == QUEST_TO_THE_FRONT)
-		{
-            player->KilledMonsterCredit(NPC_YVERA_DAWNWING_KILLCREDIT);
-            player->CastSpell(player, SPELL_TELEPORT_TO_STROMGARDE);
-        }
-    }
-};
-
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -1180,5 +1157,4 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_penny_hardwick);
     RegisterCreatureAI(npc_penny_hardwick_escort);
     RegisterCreatureAI(npc_riding_macaw_patrol);
-    RegisterCreatureAI(npc_ralston_karn);
 }

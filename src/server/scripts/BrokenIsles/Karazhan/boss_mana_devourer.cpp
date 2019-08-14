@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -70,7 +87,7 @@ class boss_mana_devourer : public CreatureScript
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_UNSTABLE_MANA);
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
                 instance->DoCastSpellOnPlayers(SPELL_FADE_DARKSCREEN);
-                
+
                 for (auto & it : me->GetMap()->GetPlayers())
                 {
                     if (Player* ptr = it.GetSource())
@@ -99,10 +116,10 @@ class boss_mana_devourer : public CreatureScript
                 switch (eventId)
                 {
                     case EVENT_ARCANE_BOMB:
-                    {   
+                    {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                             DoCast(target, SPELL_ARCANE_BOMB);
-                        
+
                         events.ScheduleEvent(EVENT_ARCANE_BOMB, Seconds(15));
                         break;
                     }
@@ -157,14 +174,14 @@ class spell_devourer_coalesce_power : public SpellScriptLoader
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     Unit* && owner = GetUnitOwner();
 
                     if (owner->GetPowerPct(POWER_MANA) >= 5.f)
                     {
                         owner->SetPower(POWER_MANA, owner->GetPower(POWER_MANA) - owner->GetMaxPower(POWER_MANA) * 0.05f);
                         Position pos = owner->GetNearPosition(50.f, frand(0, 2 * float(M_PI)));
-                        
+
                         auto* orb = owner->SummonCreature(NPC_LOOSE_MANA, pos);
 
                         if (orb)
@@ -197,12 +214,12 @@ class spell_devourer_mana_restore : public SpellScriptLoader
         {
             public:
                 PrepareAuraScript(spell_mana_restore_AuraScript);
-                
+
                 void HandlePeriodic(AuraEffect const* /**/)
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_RESTORE_MANA, true);
 
                     if (GetUnitOwner()->GetPower(POWER_MANA) == GetUnitOwner()->GetMaxPower(POWER_MANA))
@@ -231,12 +248,12 @@ class spell_devourer_energy_void : public SpellScriptLoader
         {
             public:
                 PrepareAuraScript(spell_energy_void_AuraScript);
-                
+
                 void HandlePeriodic(AuraEffect const* /**/)
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     Unit* owner = GetUnitOwner();
 
                     Aura* unstable = owner->GetAura(SPELL_UNSTABLE_MANA);
@@ -275,7 +292,7 @@ class at_kara_energy_void : public AreaTriggerEntityScript
             void OnUnitEnter(Unit* target) override
             {
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
-                    target->CastSpell(target, SPELL_ENERGY_VOID_DMG, true); 
+                    target->CastSpell(target, SPELL_ENERGY_VOID_DMG, true);
             }
 
             void OnUnitExit(Unit* target) override
@@ -297,8 +314,8 @@ class at_kara_energy_void : public AreaTriggerEntityScript
                         {
                             if (Aura* mana = ptr->GetAura(SPELL_UNSTABLE_MANA))
                             {
-                                float visualRadius = at->GetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5);
-                                at->SetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5, visualRadius - visualRadius * 0.05f);
+                                /*float visualRadius = at->GetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5);
+                                at->SetFloatValue(AREATRIGGER_EXTRA_SCALE_CURVE + 5, visualRadius - visualRadius * 0.05f);*/
                             }
                         }
                     }

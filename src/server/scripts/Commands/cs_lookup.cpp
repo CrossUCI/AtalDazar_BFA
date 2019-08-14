@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -74,7 +74,6 @@ public:
             { "tele",     rbac::RBAC_PERM_COMMAND_LOOKUP_TELE,     true, &HandleLookupTeleCommand,     "" },
             { "title",    rbac::RBAC_PERM_COMMAND_LOOKUP_TITLE,    true, &HandleLookupTitleCommand,    "" },
             { "map",      rbac::RBAC_PERM_COMMAND_LOOKUP_MAP,      true, &HandleLookupMapCommand,      "" },
-            { "phasegroup",rbac::RBAC_PERM_COMMAND_LOOKUP_PHASEGROUP, true, &HandleLookupPhaseGroupCommand, "" },
         };
 
         static std::vector<ChatCommand> commandTable =
@@ -1175,7 +1174,7 @@ public:
 
                         char const* knownStr = target && target->HasTitle(titleInfo) ? handler->GetTrinityString(LANG_KNOWN) : "";
 
-                        char const* activeStr = target && target->GetInt32Value(PLAYER_CHOSEN_TITLE) == titleInfo->MaskID
+                        char const* activeStr = target && target->m_playerData->PlayerTitle == titleInfo->MaskID
                             ? handler->GetTrinityString(LANG_ACTIVE)
                             : "";
 
@@ -1307,7 +1306,7 @@ public:
             limit = limitStr ? atoi(limitStr) : -1;
         }
 
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BY_IP);
+        LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BY_IP);
         stmt->setString(0, ip);
         PreparedQueryResult result = LoginDatabase.Query(stmt);
 
@@ -1326,7 +1325,7 @@ public:
         if (!Utf8ToUpperOnlyLatin(account))
             return false;
 
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_LIST_BY_NAME);
+        LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_LIST_BY_NAME);
         stmt->setString(0, account);
         PreparedQueryResult result = LoginDatabase.Query(stmt);
 
@@ -1342,7 +1341,7 @@ public:
         char* limitStr = strtok(NULL, " ");
         int32 limit = limitStr ? atoi(limitStr) : -1;
 
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_LIST_BY_EMAIL);
+        LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_LIST_BY_EMAIL);
         stmt->setString(0, email);
         PreparedQueryResult result = LoginDatabase.Query(stmt);
 
@@ -1374,7 +1373,7 @@ public:
             uint32 accountId        = fields[0].GetUInt32();
             std::string accountName = fields[1].GetString();
 
-            PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_GUID_NAME_BY_ACC);
+            CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_GUID_NAME_BY_ACC);
             stmt->setUInt32(0, accountId);
             PreparedQueryResult result2 = CharacterDatabase.Query(stmt);
 
@@ -1402,79 +1401,6 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-
-        return true;
-    }
-
-    static bool HandleLookupPhaseGroupCommand(ChatHandler* handler, char const* args)
-    {
-        if (!*args)
-            return false;
-
-        std::string ids(args);
-
-        Tokenizer tokens(ids, ' ');
-        std::set<uint32>phases;
-        std::set<uint32>phasesNot;
-        for (Tokenizer::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter)
-        {
-            std::string s(*iter);
-            int32 id = atoi(s.c_str());
-            if (id > 0)
-                phases.insert(id);
-            if (id < 0)
-                phasesNot.insert(abs(id));
-        }
-
-        uint32 counter = 0;
-
-        for (PhaseGroupContainer::const_iterator iter = sDB2Manager.GetPhaseGroups().begin(); iter != sDB2Manager.GetPhaseGroups().end(); ++iter)
-        {
-            bool found = false;
-            uint32 pos = 0;
-            for (uint32 a : iter->second)
-            {
-                for (uint32 b : phases)
-                {
-                    if (a == b)
-                        pos++;
-                }
-            }
-            if (!phasesNot.empty())
-            {
-                uint32 neg = 0;
-                for (uint32 a : iter->second)
-                {
-                    for (uint32 b : phasesNot)
-                    {
-                        if (a == b)
-                            neg++;
-                    }
-                }
-                if (neg == 0 && pos == phases.size())
-                {
-                    counter++;
-                    found = true;
-                }
-            }
-            else if (pos == phases.size())
-            {
-                counter++;
-                found = true;
-            }
-            if (found)
-            {
-                std::stringstream ss;
-                for (uint32 i : iter->second)
-                    ss << i << " ";
-                handler->PSendSysMessage("Matched PhaseGroup: %u:: %s", iter->first, ss.str().c_str());
-            }
-        }
-
-        if (!counter)
-            handler->SendSysMessage("Phases not found in any PhaseGroup");
-        else
-            handler->PSendSysMessage("Phases found in %u PhaseGroup", counter);
 
         return true;
     }

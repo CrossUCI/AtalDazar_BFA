@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ void WorldQuestMgr::LoadWorldQuestRewardTemplates()
 void WorldQuestMgr::LoadActiveWorldQuests()
 {
     // not asynch, only at startup
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_WORLD_QUEST);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_WORLD_QUEST);
     PreparedQueryResult result = CharacterDatabase.Query(stmt);
 
     if (!result)
@@ -306,8 +306,7 @@ void WorldQuestMgr::ActivateQuest(WorldQuestTemplate* worldQuestTemplate)
                         player->AddQuest(quest, nullptr);
     }
 
-    PreparedStatement* stmt = nullptr;
-    stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_WORLD_QUEST);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_WORLD_QUEST);
     stmt->setUInt32(0, questId);
     stmt->setUInt32(1, rewardId);
     stmt->setUInt32(2, startTime);
@@ -343,7 +342,7 @@ void WorldQuestMgr::DisableQuest(ActiveWorldQuest* activeWorldQuest)
     for (auto criteria : GetCriteriasForQuest(quest->GetQuestId()))
         CharacterDatabase.PExecute("DELETE FROM character_achievement_progress WHERE criteria = %u", criteria->ID);
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_WORLD_QUEST);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_WORLD_QUEST);
     stmt->setUInt32(0, quest->GetQuestId());
     CharacterDatabase.Execute(stmt);
     CharacterDatabase.PExecute("DELETE FROM character_queststatus WHERE quest = %u", quest->GetQuestId());
@@ -381,7 +380,7 @@ void WorldQuestMgr::RewardQuestForPlayer(Player* player, uint32 questId)
                 if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, worldQuestReward->RewardId, worldQuestReward->RewardCount) == EQUIP_ERR_OK)
                 {
                     std::vector<int32> bonusListIDs = sDB2Manager.GetItemBonusTreeVector(worldQuestReward->RewardId, worldQuestReward->RewardContext);
-                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomPropertyId(worldQuestReward->RewardId), GuidSet(), 0, bonusListIDs);
+                    Item* item = player->StoreNewItem(dest, worldQuestReward->RewardId, true, GenerateItemRandomBonusListId(worldQuestReward->RewardId), GuidSet(), 0, bonusListIDs);
                     player->SendNewItem(item, worldQuestReward->RewardCount, true, false);
                 }
                 break;
@@ -626,7 +625,7 @@ void WorldQuestMgr::AddEmissaryQuestsOnPlayerIfNeeded(Player* player)
                 if (Quest const* quest = worldQuestTemplate->GetQuest())
                     if (quest->IsEmissaryQuest())
                         if (player->GetQuestStatus(itr.first) == QUEST_STATUS_NONE)
-                            player->AddQuestAndCheckCompletion(quest, nullptr);
+                            player->AddQuest(quest, nullptr);
     }
 }
 

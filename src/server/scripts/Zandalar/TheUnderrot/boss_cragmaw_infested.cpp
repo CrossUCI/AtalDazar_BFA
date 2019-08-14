@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -107,7 +107,7 @@ struct npc_cragmaw_larva : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->CastSpell(me, SPELL_LARVA_SUMMON_VISUAL, true);
         me->CastSpell(me, SPELL_LARVA_METAMORPHOSIS, true);
     }

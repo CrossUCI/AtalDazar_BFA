@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -61,7 +61,7 @@ uint32 ChallengeModeMgr::GetRandomChallengeId(uint32 flags/* = 4*/)
     for (uint32 i = 0; i < sMapChallengeModeStore.GetNumRows(); ++i)
         if (MapChallengeModeEntry const* challengeModeEntry = sMapChallengeModeStore.LookupEntry(i))
             if (challengeModeEntry->Flags & flags &&
-                (challengeModeEntry->ID == 197 || challengeModeEntry->ID == 198 || challengeModeEntry->ID == 199 || challengeModeEntry->ID == 200 || challengeModeEntry->ID == 206 || challengeModeEntry->ID == 207 || challengeModeEntry->ID == 208 || challengeModeEntry->ID == 209 || challengeModeEntry->ID == 210 || challengeModeEntry->ID == 227 || challengeModeEntry->ID == 233 || challengeModeEntry->ID == 234 || challengeModeEntry->ID == 239)) // Temp fix, only doable dungeons here
+                (challengeModeEntry->ID == 197 || challengeModeEntry->ID == 198 || challengeModeEntry->ID == 199)) // Temp fix, only doable dungeons here
                 challenges.push_back(challengeModeEntry->ID);
 
     if (challenges.empty())
@@ -147,15 +147,15 @@ void ChallengeModeMgr::Reward(Player* player, uint8 challengeLevel)
     }
 
     std::vector<int32> bonusListIds = GetBonusListIdsForRewards(randomStuffItem->GetBaseItemLevel(), challengeLevel);
-    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId), GuidSet(), 0, bonusListIds);
+    Item* pItem = player->StoreNewItem(dest, itemId, true, GenerateItemRandomBonusListId(itemId), GuidSet(), 0, bonusListIds);
     player->SendNewItem(pItem, 1, true, false, true);
 
     WorldPackets::Loot::DisplayToast displayToast;
     displayToast.EntityId = itemId;
     displayToast.ToastType = TOAST_ITEM;
     displayToast.Quantity = 1;
-    displayToast.RandomPropertiesID = pItem->GetItemRandomPropertyId();
+    displayToast.RandomPropertiesID = pItem->GetItemRandomBonusListId();
     displayToast.ToastMethod = TOAST_METHOD_POPUP;
-    displayToast.bonusListIDs = pItem->GetDynamicValues(ITEM_DYNAMIC_FIELD_BONUSLIST_IDS);
+    displayToast.bonusListIDs = pItem->m_itemData->BonusListIDs;
     player->SendDirectMessage(displayToast.Write());
 }

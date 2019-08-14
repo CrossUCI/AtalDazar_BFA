@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTrigger.h"
@@ -120,7 +137,7 @@ class boss_mind_flayer_kaarhj : public CreatureScript
                 if (unit && unit->GetTypeId() == TYPEID_PLAYER)
                 {
                     Talk(SAY_KILL);
-                    WhisperAll(SAY_KILL_WHISPER);                    
+                    WhisperAll(SAY_KILL_WHISPER);
                 }
             }
 
@@ -196,13 +213,13 @@ class boss_mind_flayer_kaarhj : public CreatureScript
                             DoCast(me, SPELL_SHADOW_CRASH);
                             events.ScheduleEvent(EVENT_SHADOW_CRASH, urand(22,24) * IN_MILLISECONDS);
                             break;
-                        
+
                         case EVENT_DOOM:
                             if (Unit* victim = me->GetVictim())
                                 DoCast(victim, SPELL_DOOM);
                             events.ScheduleEvent(EVENT_DOOM, urand(18, 20) * IN_MILLISECONDS);
                             break;
-                        
+
                         case EVENT_HYSTERIA:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                             {
@@ -218,7 +235,7 @@ class boss_mind_flayer_kaarhj : public CreatureScript
                         break;
                     }
                 }
-                
+
                 DoMeleeAttackIfReady();
             }
 
@@ -254,7 +271,7 @@ class npc_faceless_tendril : public CreatureScript
             {
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 if (Creature* kaarhj = me->FindNearestCreature(101950, 250.0f, true))
                 {
                     if (Unit* target = kaarhj->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
@@ -286,7 +303,7 @@ class spell_shadow_crash : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     for (auto & it : targetsList)
                         GetCaster()->CastSpell(it, SPELL_SHADOW_CRASH_VISUAL, true);
                 }
@@ -295,12 +312,12 @@ class spell_shadow_crash : public SpellScriptLoader
                 {
                     if (targets.empty())
                         return;
-                    
+
                     targets.remove_if([] (WorldObject* target)
                     {
                         if (target && target->ToPlayer())
                             return false;
-                        
+
                         return true;
                     });
 
@@ -336,14 +353,14 @@ class spell_eternal_darkness : public SpellScriptLoader
         class spell_eternal_darkness_AuraScript : public AuraScript
         {
             public:
-            
+
                 PrepareAuraScript(spell_eternal_darkness_AuraScript);
-                
+
                 void HandleSummons(AuraEffect const* aurEff)
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetCaster(), SPELL_SUMMON_TENTACLE, true);
                 }
 
@@ -374,7 +391,7 @@ class spell_eternal_darkness_dmg : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetCaster(), SPELL_ETERNAL_DARKNESS_BUFF, true);
                 }
 
@@ -420,7 +437,7 @@ class at_shadow_crash : public AreaTriggerEntityScript
                 if (Unit* kaahrj = at->FindNearestCreature(101950, 250.0f, true))
                 {
                     if (kaahrj->GetMap()->IsHeroic())
-                    	kaahrj->CastSpell(at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), SPELL_COLLAPSING_SHADOWS, true);
+                        kaahrj->CastSpell(at->GetPositionX(), at->GetPositionY(), at->GetPositionZ(), SPELL_COLLAPSING_SHADOWS, true);
                 }
             }
 

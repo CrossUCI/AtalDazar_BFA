@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -56,7 +73,7 @@ enum Says
     SAY_DEATH           = 10,
 };
 
-Position GuardianImagesPos [] = 
+Position GuardianImagesPos [] =
 {
     { -4599.056f, -2494.145f, 2876.509f, 4.702493f },
     { -4578.388f, -2517.197f, 2876.509f, 3.020952f },
@@ -95,7 +112,7 @@ class boss_shade_of_medivh : public CreatureScript
                 {
                     uint8 order = urand(0, 2);
                     events.Reset();
-                    
+
                     if (order == 0)
                         events.RescheduleEvent(EVENT_FLAME_WREATH, 500);
                     else if (order == 1)
@@ -135,7 +152,7 @@ class boss_shade_of_medivh : public CreatureScript
             {
                 if (!summon)
                     return;
-                
+
                 if (summon->GetEntry() == NPC_GUARDIAN_IMAGE)
                 {
                     _imagesDead++;
@@ -167,11 +184,11 @@ class boss_shade_of_medivh : public CreatureScript
             {
                 if (!spell)
                     return;
-                
+
                 if (spell->HasEffect(SPELL_EFFECT_INTERRUPT_CAST))
                 {
                     Spell* currentSpell = me->GetCurrentSpell(CURRENT_CHANNELED_SPELL);
-                
+
                     if (currentSpell)
                     {
                         if (currentSpell->GetSpellInfo()->Id == SPELL_PIERCING_MISSILES)
@@ -182,12 +199,12 @@ class boss_shade_of_medivh : public CreatureScript
                     else
                     {
                         currentSpell = me->GetCurrentSpell(CURRENT_GENERIC_SPELL);
-                        
+
                         if (currentSpell)
                         {
                             if (currentSpell->GetSpellInfo()->Id == SPELL_PIERCING_MISSILES)
                                 me->CastStop();
-                            
+
                             ScheduleTasks();
                         }
                     }
@@ -339,12 +356,12 @@ class npc_kara_guardian_image : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 if (_events.ExecuteEvent() == EVENT_ARCANE_BOLT)
                 {
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                         DoCast(target, SPELL_ARCANE_BOLT);
-                    
+
                     _events.ScheduleEvent(EVENT_ARCANE_BOLT, Seconds(2));
                 }
             }
@@ -374,7 +391,7 @@ class spell_shade_medivh_flame_wreath : public SpellScriptLoader
                 {
                     if (!GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_FLAME_WREATH_AREA, true);
                 }
 
@@ -405,10 +422,10 @@ class spell_shade_medivh_guardian_image : public SpellScriptLoader
                 {
                     if (!GetHitUnit())
                         return;
-                    
+
                     for (uint8 i = 0; i < 3; ++i)
-                        GetCaster()->CastSpell(GuardianImagesPos[i].GetPositionX(), 
-                        GuardianImagesPos[i].GetPositionY(), GuardianImagesPos[i].GetPositionZ(), 
+                        GetCaster()->CastSpell(GuardianImagesPos[i].GetPositionX(),
+                        GuardianImagesPos[i].GetPositionY(), GuardianImagesPos[i].GetPositionZ(),
                         SPELL_GUARDIAN_IMAGE_TRIGGER, true);
                 }
 
@@ -438,7 +455,7 @@ class spell_shade_medivh_ceaseless_winter : public SpellScriptLoader
             {
                 if (!GetUnitOwner())
                     return;
-                
+
                 _OwnerPos = GetUnitOwner()->GetPosition();
             }
 
@@ -446,7 +463,7 @@ class spell_shade_medivh_ceaseless_winter : public SpellScriptLoader
             {
                 if (!GetUnitOwner())
                     return;
-                
+
                 _OwnerPos.SetOrientation(GetUnitOwner()->GetOrientation());
 
                 if (_OwnerPos != GetUnitOwner()->GetPosition())
@@ -512,7 +529,7 @@ class at_kara_ceaseless_winter : public AreaTriggerEntityScript
 
                         if (!ptr)
                             continue;
-                        
+
                         if (!ptr->HasAura(SPELL_CEASELESS_WINTER_DMG))
                             ptr->CastSpell(ptr, SPELL_CEASELESS_WINTER_DMG, true);
                     }
@@ -551,7 +568,7 @@ class at_kara_flame_wreath : public AreaTriggerEntityScript
                     else if (target->GetGUID() != _targetGuid)
                     {
                         Unit* targetOne = ObjectAccessor::GetUnit(*at, _targetGuid);
-                    
+
                         if (targetOne)
                         {
                             targetOne->CastSpell(targetOne, SPELL_FLAME_WREATH_DMG, true);
@@ -565,14 +582,14 @@ class at_kara_flame_wreath : public AreaTriggerEntityScript
             {
                 if (!target)
                     return;
-                
+
                 if (_targetGuid == ObjectGuid::Empty)
                     return;
-                
+
                 if (_targetGuid == target->GetGUID())
                 {
                     Unit* targetOne = ObjectAccessor::GetUnit(*at, _targetGuid);
-                    
+
                     if (targetOne)
                     {
                         at->GetCaster()->CastSpell(targetOne, SPELL_FLAME_WREATH_DMG, true);

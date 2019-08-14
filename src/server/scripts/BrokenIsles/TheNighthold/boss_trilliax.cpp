@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
 #include "ScriptMgr.h"
@@ -24,7 +41,7 @@
 enum Texts
 {
     SAY_PHASE1_END  = 0,
-    SAY_ACTIVATE    = 1, 
+    SAY_ACTIVATE    = 1,
     SAY_NORTHREND = 2, // not use
     SAY_START     = 3, //new
     SAY_START2    = 4,
@@ -96,7 +113,7 @@ public:
 
             if (!me->FindNearestCreature(112255, 100, true))
             {
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveAurasDueToSpell(SPELL_DEATH_COSMETIC);
             }
             else
@@ -116,7 +133,7 @@ public:
             if (param == 1)
             {
                 events.ScheduleEvent(EVENT_PHASE_1_END, 5000);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->AI()->Talk(SAY_ACTIVATE);
                 me->RemoveAurasDueToSpell(SPELL_DEATH_COSMETIC);
             }
@@ -303,7 +320,7 @@ public:
 
         void EnterCombat(Unit* who) override
         {
-           
+
         }
 
         void Reset() override
@@ -380,7 +397,7 @@ public:
 
         void EnterCombat(Unit* who) override
         {
-           
+
         }
 
         void Reset() override
@@ -452,7 +469,7 @@ public:
                 }
                 case EVENT_ACTIVATE:
                 {
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     me->RemoveAurasDueToSpell(SPELL_DEATH_STATE);
                     break;
                 }

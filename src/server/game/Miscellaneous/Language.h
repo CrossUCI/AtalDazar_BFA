@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,8 +28,6 @@ enum BroadcastTextIds
 
 enum TrinityStrings
 {
-    LANG_NONE                           = 0,
-
     // for chat commands
     LANG_SELECT_CHAR_OR_CREATURE        = 1,
     LANG_SELECT_CREATURE                = 2,
@@ -341,7 +339,7 @@ enum TrinityStrings
     LANG_COMMAND_MODIFY_ARENA           = 306,
     LANG_COMMAND_FACTION_NOTFOUND       = 307,
     LANG_COMMAND_FACTION_UNKNOWN        = 308,
-    LANG_COMMAND_INVALID_PARAM          = 309,
+    LANG_COMMAND_FACTION_INVPARAM       = 309,
     LANG_COMMAND_FACTION_DELTA          = 310,
     LANG_FACTION_LIST                   = 311,
     LANG_FACTION_VISIBLE                = 312,
@@ -1123,33 +1121,31 @@ enum TrinityStrings
     LANG_COMMAND_MUTEMESSAGE_WORLD = 11003,
 
     // Show Ban in world
-    LANG_BAN_CHARACTER_YOUBANNEDMESSAGE_WORLD       = 11004,
-    LANG_BAN_CHARACTER_YOUPERMBANNEDMESSAGE_WORLD   = 11005,
-    LANG_BAN_ACCOUNT_YOUBANNEDMESSAGE_WORLD         = 11006,
-    LANG_BAN_ACCOUNT_YOUPERMBANNEDMESSAGE_WORLD     = 11007,
+    LANG_BAN_CHARACTER_YOUBANNEDMESSAGE_WORLD     = 11004,
+    LANG_BAN_CHARACTER_YOUPERMBANNEDMESSAGE_WORLD = 11005,
+    LANG_BAN_ACCOUNT_YOUBANNEDMESSAGE_WORLD       = 11006,
+    LANG_BAN_ACCOUNT_YOUPERMBANNEDMESSAGE_WORLD   = 11007,
 
-    LANG_NPCINFO_INHABIT_TYPE                       = 11008,
-    LANG_NPCINFO_FLAGS_EXTRA                        = 11009,
-    LANG_INSTANCE_LOGIN_GAMEMASTER_EXCEPTION        = 11010,
+    LANG_NPCINFO_INHABIT_TYPE                     = 11008,
+    LANG_NPCINFO_FLAGS_EXTRA                      = 11009,
+    LANG_INSTANCE_LOGIN_GAMEMASTER_EXCEPTION      = 11010,
 
-    LANG_CREATURE_NO_INTERIOR_POINT_FOUND           = 11011,
-    LANG_CREATURE_MOVEMENT_NOT_BOUNDED              = 11012,
-    LANG_CREATURE_MOVEMENT_MAYBE_UNBOUNDED          = 11013,
-    LANG_INSTANCE_BIND_MISMATCH                     = 11014,
-    LANG_CREATURE_NOT_AI_ENABLED                    = 11015,
-    LANG_SELECT_PLAYER_OR_PET                       = 11016,
-    LANG_SHUTDOWN_DELAYED                           = 11017,
-    LANG_SHUTDOWN_CANCELLED                         = 11018,
-    LANG_YOU_CHANGE_POWER                           = 11019,
-    LANG_YOUR_POWER_CHANGED                         = 11020,
-    LANG_INVALID_POWER_NAME                         = 11021,
+    LANG_CREATURE_NO_INTERIOR_POINT_FOUND         = 11011,
+    LANG_CREATURE_MOVEMENT_NOT_BOUNDED            = 11012,
+    LANG_CREATURE_MOVEMENT_MAYBE_UNBOUNDED        = 11013,
+    LANG_INSTANCE_BIND_MISMATCH                   = 11014,
+    LANG_CREATURE_NOT_AI_ENABLED                  = 11015,
+    LANG_SELECT_PLAYER_OR_PET                     = 11016,
+    LANG_SHUTDOWN_DELAYED                         = 11017,
+    LANG_SHUTDOWN_CANCELLED                       = 11018,
+    LANG_YOU_CHANGE_POWER                         = 11019,
+    LANG_YOUR_POWER_CHANGED                       = 11020,
+    LANG_INVALID_POWER_NAME                       = 11021,
 
-    LANG_LIST_QUESTS                                = 11022,
-    LANG_LIST_QUESTS_DETAIL                         = 11023,
+    LANG_LIST_QUESTS                              = 11022,
+    LANG_LIST_QUESTS_DETAIL                       = 11023,
 
-    LANG_DEBUG_LFG_ON                               = 11024,
-    LANG_DEBUG_LFG_OFF                              = 11025,
-
-    LANG_BATTLE_PAY_ERROR_BAGS_FULL                 = 11500,
+    LANG_DEBUG_LFG_ON                             = 11024,
+    LANG_DEBUG_LFG_OFF                            = 11025,
 };
 #endif

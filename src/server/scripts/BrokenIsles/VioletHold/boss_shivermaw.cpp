@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -38,7 +55,7 @@ enum Events
     EVENT_RELENTLEESS_STORM = 6,
     EVENT_GO_GROUND         = 7,
     EVENT_FRIGID_WINDS      = 8,
-    EVENT_RESTORE_STATE     = 9, 
+    EVENT_RESTORE_STATE     = 9,
 };
 
 enum Adds
@@ -84,7 +101,7 @@ class boss_shivermaw : public CreatureScript
                 {
                     if (id == POINT_AIR)
                     {
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         DoCast(SPELL_ICE_BOMB);
                         events.ScheduleEvent(EVENT_GO_GROUND, Seconds(10));
                     }
@@ -93,7 +110,7 @@ class boss_shivermaw : public CreatureScript
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->SetCanFly(false);
                         me->SetDisableGravity(false);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                         events.ScheduleEvent(EVENT_ICE_BOMB, Seconds(60));
                         events.ScheduleEvent(EVENT_FRIGID_WINDS, Seconds(50));
                     }
@@ -175,7 +192,7 @@ class boss_shivermaw : public CreatureScript
                         events.DelayEvents(Seconds(20));
                         break;
                     }
-                    
+
                     case EVENT_GO_GROUND:
                     {
                         me->GetMotionMaster()->MoveLand(POINT_GROUND, LandPosition);
@@ -191,7 +208,7 @@ class boss_shivermaw : public CreatureScript
         }
 };
 
-class npc_vha_ice_block : public CreatureScript 
+class npc_vha_ice_block : public CreatureScript
 {
     public:
         npc_vha_ice_block() : CreatureScript("npc_vha_ice_block")
@@ -246,7 +263,7 @@ class spell_shivermaw_ice_bomb : public SpellScriptLoader
                     {
                         if (target->GetPositionZ() > 78.5f)
                             return true;
-                        
+
                         return false;
                     });
                 }
@@ -255,7 +272,7 @@ class spell_shivermaw_ice_bomb : public SpellScriptLoader
                 {
                     if (!GetCaster() || !GetHitUnit())
                         return;
-                    
+
                     GetCaster()->CastSpell(GetHitUnit(), SPELL_FROZEN, true);
                     GetHitUnit()->CastSpell(GetHitUnit(), SPELL_ICE_BOMB_SUMMON, true);
 
@@ -291,12 +308,12 @@ class spell_shivermaw_relentless_storm : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     Unit* caster = GetCaster();
 
                     caster->CastSpell(caster, SPELL_RELENTLESS_STORM_AR_1, true);
                     caster->CastSpell(caster, SPELL_RELENTLESS_STORM_AR_2, true);
-                    
+
                     for (uint8 i = 0; i < 25; ++i)
                     {
                         float angle = frand(0, 2 * float(M_PI));
@@ -348,7 +365,7 @@ class spell_shivermaw_relentless_storm_missile : public SpellScriptLoader
                     WorldLocation pos = *GetHitDest();
 
                     caster->CastSpell(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), SPELL_RELENTLESS_STORM_DMG, true);
-                    
+
                     for (auto & it : GetCaster()->GetMap()->GetPlayers())
                     {
                         if (Player* ptr = it.GetSource())
@@ -386,7 +403,7 @@ class at_vha_relentless_storm : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->CastSpell(unit, SPELL_FROSTBITE, true);
             }
@@ -395,7 +412,7 @@ class at_vha_relentless_storm : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->RemoveAurasDueToSpell(SPELL_FROSTBITE);
             }

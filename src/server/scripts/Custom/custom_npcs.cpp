@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+* Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -26,7 +26,7 @@ class npc_rate_xp_modifier : public CreatureScript
     public:
         npc_rate_xp_modifier() : CreatureScript("npc_rate_xp_modifier") { }
 
-#define MAX_RATE uint32(5)
+#define MAX_RATE uint32(10)
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
@@ -39,14 +39,14 @@ class npc_rate_xp_modifier : public CreatureScript
                     continue;
 
                 std::ostringstream gossipText;
-                gossipText << "Experiencia por x" << i;
+                gossipText << "Rate x" << i;
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, i);
             }
 
             if (player->GetPersonnalXpRate())
             {
                 std::ostringstream gossipText;
-                gossipText << "Experiencia por  x" << sWorld->getRate(RATE_XP_KILL);
+                gossipText << "Default Rate - x" << sWorld->getRate(RATE_XP_KILL);
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, 0);
             }
 

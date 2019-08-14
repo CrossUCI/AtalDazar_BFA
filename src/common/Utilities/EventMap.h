@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -329,13 +329,7 @@ public:
     * @brief Cancel events belonging to specified group.
     * @param group Group to cancel.
     */
-
-    void PauseEvent(uint32 eventId);
-
     void CancelEventGroup(uint16 group);
-
-    // Continues event with specified id that has been paused before.
-    void ContinueEvent(uint32 eventId);
 
     /**
     * @name GetNextEventTime
@@ -404,8 +398,6 @@ private:
     * details.
     */
     EventStore _eventMap;
-
-    std::map<uint32 /*eventId*/, uint32 /*timeLeft*/> _pausedEvents;
 
     /**
     * @name _lastEvent

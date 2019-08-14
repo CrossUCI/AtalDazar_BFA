@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 Project SkyFire <http://www.projectskyfire.org/>
  * Copyright (C) 2011 - 2012 ArkCORE <http://www.arkania.net/>
  *
@@ -1012,7 +1012,7 @@ struct npc_shark_gob : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->SetWalk(true);
 
         me->GetScheduler().Schedule(3s, [this](TaskContext /*context*/)

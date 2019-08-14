@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@ EndContentData */
 #include "SpellInfo.h"
 #include "ScriptedGossip.h"
 #include "SpellScript.h"
-#include "PhasingHandler.h"
 
 /*######
 ## npc_professor_phizzlethorpe
@@ -165,7 +164,7 @@ class spell_summon_myzrael : public SpellScript
         {
             myzrael->SetReactState(REACT_AGGRESSIVE);
             myzrael->setFaction(14);
-            myzrael->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
+            myzrael->AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
         }
     }
 
@@ -175,33 +174,8 @@ class spell_summon_myzrael : public SpellScript
     }
 };
 
-enum Spells
-{
-    SPELL_TIME_TRAVELLING_ARATHI = 276950
-};
-
-// Zone 45
-class zone_arathi_highlands : public ZoneScript
-{
-public:
-    zone_arathi_highlands() : ZoneScript("zone_arathi_highlands") { }
-
-    void OnPlayerEnter(Player* player) override
-    {
-        if (player->GetMapId() == MAP_EASTERN_KINGDOMS && player->getLevel() == 120) // TODO: check quest
-            PhasingHandler::AddPhase(player, 11292, true);
-    }
-
-    void OnPlayerExit(Player* player) override
-    {
-        if (player->GetMapId() == MAP_EASTERN_KINGDOMS)
-            PhasingHandler::RemovePhase(player, 11292, true);
-    }
-};
-
 void AddSC_arathi_highlands()
 {
     RegisterCreatureAI(npc_professor_phizzlethorpe);
     RegisterSpellScript(spell_summon_myzrael);
-    new zone_arathi_highlands();
 }

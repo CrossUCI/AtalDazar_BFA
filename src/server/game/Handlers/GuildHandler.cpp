@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,12 +37,13 @@ void WorldSession::HandleGuildQueryOpcode(WorldPackets::Guild::QueryGuildInfo& q
     if (Guild* guild = sGuildMgr->GetGuildByGuid(query.GuildGuid))
         if (guild->IsMember(query.PlayerGuid))
         {
-            guild->SendQueryResponse(this);
+            guild->SendQueryResponse(this, query.PlayerGuid);
             return;
         }
 
     WorldPackets::Guild::QueryGuildInfoResponse response;
     response.GuildGuid = query.GuildGuid;
+    response.PlayerGuid = query.PlayerGuid;
     SendPacket(response.Write());
 
     TC_LOG_DEBUG("guild", "SMSG_GUILD_QUERY_RESPONSE [%s]", GetPlayerInfo().c_str());
@@ -185,7 +186,7 @@ void WorldSession::HandleSaveGuildEmblem(WorldPackets::Guild::SaveGuildEmblem& p
         , emblemInfo.GetColor(), emblemInfo.GetBorderStyle()
         , emblemInfo.GetBorderColor(), emblemInfo.GetBackgroundColor());
 
-    if (GetPlayer()->GetNPCIfCanInteractWith(packet.Vendor, UNIT_NPC_FLAG_TABARDDESIGNER))
+    if (GetPlayer()->GetNPCIfCanInteractWith(packet.Vendor, UNIT_NPC_FLAG_TABARDDESIGNER, UNIT_NPC_FLAG_2_NONE))
     {
         // Remove fake death
         if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
@@ -459,29 +460,31 @@ void WorldSession::HandleGuildChallengeUpdateRequest(WorldPackets::Guild::GuildC
 
 void WorldSession::HandleDeclineGuildInvites(WorldPackets::Guild::DeclineGuildInvites& packet)
 {
-    GetPlayer()->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_AUTO_DECLINE_GUILD, packet.Allow);
+    if (packet.Allow)
+        GetPlayer()->AddPlayerFlag(PLAYER_FLAGS_AUTO_DECLINE_GUILD);
+    else
+        GetPlayer()->RemovePlayerFlag(PLAYER_FLAGS_AUTO_DECLINE_GUILD);
 }
 
 void WorldSession::HandleRequestGuildRewardsList(WorldPackets::Guild::RequestGuildRewardsList& /*packet*/)
 {
     if (sGuildMgr->GetGuildById(_player->GetGuildId()))
     {
-        GuildRewardMap const& rewards = sGuildMgr->GetGuildRewards();
+        std::vector<GuildReward> const& rewards = sGuildMgr->GetGuildRewards();
 
         WorldPackets::Guild::GuildRewardList rewardList;
         rewardList.Version = uint32(time(NULL));
         rewardList.RewardItems.reserve(rewards.size());
 
-        for (auto itr : rewards)
+        for (uint32 i = 0; i < rewards.size(); i++)
         {
-            GuildReward reward = itr.second;
             WorldPackets::Guild::GuildRewardItem rewardItem;
-            rewardItem.ItemID = reward.ItemID;
-            rewardItem.RaceMask = reward.RaceMask;
+            rewardItem.ItemID = rewards[i].ItemID;
+            rewardItem.RaceMask = rewards[i].RaceMask;
             rewardItem.MinGuildLevel = 0;
-            rewardItem.MinGuildRep = reward.MinGuildRep;
-            rewardItem.AchievementsRequired = reward.AchievementsRequired;
-            rewardItem.Cost = reward.Cost;
+            rewardItem.MinGuildRep = rewards[i].MinGuildRep;
+            rewardItem.AchievementsRequired = rewards[i].AchievementsRequired;
+            rewardItem.Cost = rewards[i].Cost;
             rewardList.RewardItems.push_back(rewardItem);
         }
 
@@ -517,8 +520,9 @@ void WorldSession::HandleGuildSetGuildMaster(WorldPackets::Guild::GuildSetGuildM
 void WorldSession::HandleGuildSetAchievementTracking(WorldPackets::Guild::GuildSetAchievementTracking& packet)
 {
     if (Guild* guild = GetPlayer()->GetGuild())
-        guild->HandleSetAchievementTracking(this, packet.AchievementIDs);
+        guild->HandleSetAchievementTracking(this, packet.AchievementIDs.data(), packet.AchievementIDs.data() + packet.AchievementIDs.size());
 }
+
 void WorldSession::HandleGuildGetAchievementMembers(WorldPackets::Achievement::GuildGetAchievementMembers& getAchievementMembers)
 {
     if (Guild* guild = GetPlayer()->GetGuild())

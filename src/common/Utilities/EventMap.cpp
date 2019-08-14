@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -163,31 +163,6 @@ void EventMap::CancelEventGroup(uint16 group)
         else
             ++itr;
     }
-}
-
-void EventMap::PauseEvent(uint32 eventId)
-{
-    for (EventStore::iterator itr = _eventMap.begin(); itr != _eventMap.end();)
-    //for (const_iterator itr = begin(); itr != end(); ++itr)
-    {
-        if (eventId == (itr->second & 0x0000FFFF))
-        {
-            _pausedEvents[eventId] = itr->first - GetTimer();
-            itr = _eventMap.erase(itr);
-            //itr = erase(itr);
-            return;
-        }
-    }
-}
-
-void EventMap::ContinueEvent(uint32 eventId)
-{
-    std::map<uint32 /*eventId*/, uint32 /*timeLeft*/>::iterator itr = _pausedEvents.find(eventId);
-    if (itr == _pausedEvents.end())
-        return;
-
-    RescheduleEvent(eventId, itr->second);
-    _pausedEvents.erase(itr);
 }
 
 uint32 EventMap::GetNextEventTime(uint32 eventId) const

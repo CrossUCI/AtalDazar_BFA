@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -44,9 +44,9 @@ Position const g_ChogallEventsPos[] =
 /*
 @TODO:
 - Ajouter le MM pour les NPCs (les getdata des ePhases)
-- faire des fonctions pour les d?lacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... index? sur l'id de la rune
-- visuel des runes activ?s sur le SLG generic : 
-    d?lacement   : visu : 174026
+- faire des fonctions pour les déplacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... indexés sur l'id de la rune
+- visuel des runes activées sur le SLG generic : 
+    déplacement   : visu : 174026
     reproduction  : visu du socl : 174044
     fortification : visual du socle : 174043
     nullification : visuel du socle : 178559
@@ -349,7 +349,7 @@ class boss_imperator_margok : public CreatureScript
                 ResetRunes();
                 DespawnAdds();
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                me->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
                 me->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
 
                 m_CosmeticEvents.CancelEvent(EventCheckRuneCosmetic);
@@ -439,7 +439,7 @@ class boss_imperator_margok : public CreatureScript
                     {
                         AddTimedDelayedOperation(200, [this]() -> void
                         {
-                            me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                            me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                             me->SetAIAnimKitId(0);
                             //me->SetAnimTier(0);
@@ -683,7 +683,7 @@ class boss_imperator_margok : public CreatureScript
                 me->ClearUnitState(UnitState::UNIT_STATE_DISTRACTED);
                 me->ClearUnitState(UnitState::UNIT_STATE_STUNNED);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                me->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
 
                 m_Phase = IsMythic() ? ePhases::MythicPhase1 : ePhases::MightOfTheCrown;
                 CreatureAI::EnterEvadeMode();
@@ -1442,7 +1442,7 @@ class boss_imperator_margok : public CreatureScript
             {
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 Talk(eTalks::TalkRuneOfDisplacement);
 
@@ -1479,7 +1479,7 @@ class boss_imperator_margok : public CreatureScript
             {
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 me->CastSpell(me, eSpells::EncounterEvent, true);
                 me->CastSpell(me, eSpells::TeleportToFortification, true);
@@ -1557,7 +1557,7 @@ class boss_imperator_margok : public CreatureScript
             {
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 me->CastSpell(me, eSpells::EncounterEvent, true);
                 me->CastSpell(me, eSpells::TeleportToReplication, true);
@@ -1634,7 +1634,7 @@ class boss_imperator_margok : public CreatureScript
                 // activate fortification rune
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                 m_Events.DelayEvents(75 * IN_MILLISECONDS);
 
                 me->CastSpell(me, eSpells::EncounterEvent, true);
@@ -1714,7 +1714,7 @@ class boss_imperator_margok : public CreatureScript
                 m_Events.DelayEvents(75 * IN_MILLISECONDS);
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 me->CastSpell(me, eSpells::EncounterEvent, true);
                 me->CastSpell(me, eSpells::TeleportToReplication, true);
@@ -1893,7 +1893,7 @@ public:
         EventSpawnIntroAdds = 1,    // ~25 npc(78641) join the fight during cosmetic intro (30-40sec) with 2 ability
         EventDrainPower,            // cosmetic one
 
-        EventDarkStar,              // bubulle qui pop ?l'emplac d'un joueur et explose 5sec apr?
+        EventDarkStar,              // bubulle qui pop à l'emplac d'un joueur et explose 5sec après
         EventGlimpseOfMadness,      // Cho'gall uses every 25 seconds. He creates a shadow copy of a random raid member, which persists until the end of the fight. These copies are stationary and they cannot be attacked, but they spam Gaze of the Abyss Icon Gaze of the Abyss on the closest raid member within a certain radius (we are not sure of the size of the radius, but it appears to be around 10 yards).
         EventInfiniteDarkness,      // aura on 1-3 players every 60secs, trigger entropy mechanics
         EventEnvelopingNight,       // explode every shadow copy if they can (the copy had to miss at least one time gaze of the abyss), the explosion deal damage to the whole raid
@@ -1975,8 +1975,8 @@ public:
 
                     me->SetWalk(true);
                     me->SetReactState(ReactStates::REACT_PASSIVE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_NPC);
-                    me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_NPC));
+                    me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                     me->GetMotionMaster()->MovePoint(IntroPos, g_ChogallEventsPos[1]);
                     Talk(eTalks::Intro1);
 
@@ -2022,7 +2022,7 @@ public:
                     if (Creature* margok = m_Instance->instance->GetCreature(m_Instance->GetGuidData(eHighmaulCreatures::ImperatorMargok)))
                     {
                         margok->SetFacingToObject(me);
-                        margok->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                        margok->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
                     }
                 });
 
@@ -2039,14 +2039,14 @@ public:
                     if (Creature* margok = m_Instance->instance->GetCreature(m_Instance->GetGuidData(eHighmaulCreatures::ImperatorMargok)))
                     {
                         margok->RemoveAura(eSpells::SpellVoidBubble);
-                        margok->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                        margok->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                         margok->SetAIAnimKitId(0);
                         //margok->SetAnimTier(0);
                         margok->SetDisableGravity(false);
                         margok->SendSetPlayHoverAnim(false);
 
-                        margok->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                        margok->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
                         margok->CastSpell(margok, eHighmaulSpells::PermanentFeignDeath, true);
                         margok->GetMotionMaster()->MoveFall();
                         margok->AI()->DoAction(2);  ///< Cancel all events
@@ -2061,9 +2061,9 @@ public:
                 {
                     //cho'gall aggro
                     me->SetReactState(ReactStates::REACT_AGGRESSIVE);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_NPC);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
+                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_NPC));
+                    me->RemoveUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
+                    me->AddUnitFlag(UNIT_FLAG_PVP_ATTACKABLE);
                     if (Player* victim = me->SelectNearestPlayer(300))
                     {
                         me->GetMotionMaster()->Clear();
@@ -2630,8 +2630,8 @@ class npc_highmaul_destructive_resonance : public CreatureScript
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 switch (m_Phase)
                 {
@@ -2663,7 +2663,7 @@ class npc_highmaul_destructive_resonance : public CreatureScript
                             me->CastSpell(me, eSpells::DisplacementVisualAura, true);
 
                             me->CastSpell(me, eSpells::DestructiveResonanceGrowScaleAura, true);
-                            me->SetUInt32Value(UNIT_FIELD_SCALE_DURATION, 30 * TimeConstants::IN_MILLISECONDS);
+                            me->SetScaleDuration(30 * TimeConstants::IN_MILLISECONDS);
 
                             m_CanExplode = true;
                         });
@@ -2720,7 +2720,7 @@ class npc_highmaul_destructive_resonance : public CreatureScript
                             me->CastSpell(me, eSpells::FortificationVisualAura, true);
 
                             me->CastSpell(me, eSpells::DestructiveResonanceGrowScaleAura, true);
-                            me->SetUInt32Value(UNIT_FIELD_SCALE_DURATION, 30 * TimeConstants::IN_MILLISECONDS);
+                            me->SetScaleDuration(30 * TimeConstants::IN_MILLISECONDS);
 
                             m_CanExplode = true;
                         });
@@ -2902,8 +2902,8 @@ class npc_highmaul_destructive_resonance_replication : public CreatureScript
 
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
-                me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE));
+                me->AddUnitFlag2(UNIT_FLAG2_DISABLE_TURN);
 
                 me->CastSpell(me, eSpells::DestructiveResonanceReplicationAura, true);
 

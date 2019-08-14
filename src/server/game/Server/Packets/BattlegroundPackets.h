@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -23,6 +23,7 @@
 #include "LFGPacketsCommon.h"
 #include "ObjectGuid.h"
 #include "Optional.h"
+#include "PacketUtilities.h"
 #include "Position.h"
 #include <array>
 
@@ -33,12 +34,14 @@ namespace WorldPackets
         class PVPSeason final : public ServerPacket
         {
         public:
-            PVPSeason() : ServerPacket(SMSG_PVP_SEASON, 8) { }
+            PVPSeason() : ServerPacket(SMSG_PVP_SEASON, 4 + 4 + 4 + 4) { }
 
             WorldPacket const* Write() override;
 
-            uint32 PreviousSeason = 0;
-            uint32 CurrentSeason = 0;
+            int32 MythicPlusSeasonID = 0;
+            int32 PreviousSeason = 0;
+            int32 CurrentSeason = 0;
+            int32 PvpSeasonID = 0;
         };
 
         class AreaSpiritHealerQuery final : public ClientPacket
@@ -109,7 +112,7 @@ namespace WorldPackets
                 uint32 ContributionPoints = 0;
             };
 
-            struct PlayerData
+            struct PVPMatchPlayerStatistics
             {
                 ObjectGuid PlayerGUID;
                 uint32 Kills = 0;
@@ -131,10 +134,9 @@ namespace WorldPackets
                 int32 HonorLevel = 0;
             };
 
-            Optional<uint8> Winner;
-            std::vector<PlayerData> Players;
+            std::vector<PVPMatchPlayerStatistics> Statistics;
             Optional<RatingData> Ratings;
-            int8 PlayerCount[2] = { };
+            std::array<int8, 2> PlayerCount = { };
         };
 
         struct BattlefieldStatusHeader
@@ -222,9 +224,8 @@ namespace WorldPackets
 
             void Read() override;
 
-            bool JoinAsGroup = false;
+            Array<uint64, 1> QueueIDs;
             uint8 Roles = 0;
-            uint64 QueueID = 0;
             int32 BlacklistMap[2] = { };
         };
 
@@ -431,7 +432,6 @@ namespace WorldPackets
             uint32 SeasonWins;
             uint32 SeasonGames;
             uint32 ProjectedConquestCap;
-            uint32 Ranking;
         };
 
         class RatedBattleFieldInfo final : public ServerPacket
@@ -442,45 +442,6 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             std::array<RatedInfo, MAX_PVP_SLOT> Infos;
-        };
-
-        class RequestConquestFormulaConstants final : public ClientPacket
-        {
-        public:
-            RequestConquestFormulaConstants(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS, std::move(packet)) { }
-
-            void Read() override { }
-        };
-
-        class ConquestFormulaContants final : public ServerPacket
-        {
-        public:
-            ConquestFormulaContants() : ServerPacket(SMSG_CONQUEST_FORMULA_CONSTANTS, 20) { }
-
-            WorldPacket const* Write() override;
-
-            uint32 PvpMinCPPerWeek;
-            uint32 PvpMaxCPPerWeek;
-            float PvpCPBaseCoefficient;
-            float PvpCPExpCoefficient;
-            float PvpCPNumerato;
-        };
-
-        class SendPvpBrawlInfo final : public ServerPacket
-        {
-        public:
-            SendPvpBrawlInfo() : ServerPacket(SMSG_REQUEST_PVP_BRAWL_INFO_RESPONSE) { }
-
-            WorldPacket const* Write() override;
-            int32 TimeToBrawl;
-        };
-
-        class RequestPvpBrawlInfo final : public ClientPacket
-        {
-        public:
-            RequestPvpBrawlInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_PVP_BRAWL_INFO, std::move(packet)) { }
-
-            void Read() override { }
         };
     }
 }

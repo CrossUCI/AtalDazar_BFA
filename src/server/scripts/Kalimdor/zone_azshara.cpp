@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -31,7 +31,7 @@ public:
 
 		void Reset() override
 		{
-			me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+			me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 		}
 
         void DamageTaken(Unit* done_by, uint32& damage) override
@@ -44,12 +44,12 @@ public:
 			        {
                         damage = 0;
 				        me->RemoveAllAuras();
-				        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-				        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1);
+				        me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+				        me->AddUnitFlag(UNIT_FLAG_NOT_ATTACKABLE_1);
 				        me->setFaction(35);
 				        me->CombatStop(true);
 				        me->DeleteThreatList();
-				        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+				        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                         Talk(0);
                     }
              //   }

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "AreaTriggerTemplate.h"
@@ -18,7 +35,7 @@ enum Spells
     SPELL_RECONGEALING              = 201495,
 
     // Black Bile
-    SPELL_NECROTIC_AURA             = 201753, 
+    SPELL_NECROTIC_AURA             = 201753,
 };
 
 enum Events
@@ -33,7 +50,7 @@ enum Events
 enum Adds
 {
     NPC_BLACK_BILE      = 102169,
-    NPC_CONGEALING_GOO  = 102158, 
+    NPC_CONGEALING_GOO  = 102158,
 };
 
 enum Says
@@ -78,7 +95,7 @@ class boss_festerface : public CreatureScript
                     events.ScheduleEvent(EVENT_REGEN_ENERGY, Seconds(1));
                 }
             }
-            
+
             void JustDied(Unit* /**/) override
             {
                 Talk(SAY_DEATH);
@@ -95,7 +112,7 @@ class boss_festerface : public CreatureScript
             {
                 if (!summon)
                     return;
-                
+
                 if (summon->GetEntry() == NPC_BLACK_BILE)
                 {
                     instance->DoCastSpellOnPlayers(SPELL_NECROTIC_AURA);
@@ -109,7 +126,7 @@ class boss_festerface : public CreatureScript
             {
                 if (!summon)
                     return;
-                
+
                 BossAI::SummonedCreatureDespawn(summon);
 
                 if (summon->GetEntry() == NPC_CONGEALING_GOO && IsHeroic())
@@ -120,7 +137,7 @@ class boss_festerface : public CreatureScript
             {
                 if (!summon)
                     return;
-                
+
                 if (summon->GetEntry() == NPC_BLACK_BILE)
                     instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_NECROTIC_AURA);
             }
@@ -145,7 +162,7 @@ class boss_festerface : public CreatureScript
                         events.ScheduleEvent(EVENT_REGEN_ENERGY, Seconds(1));
                         break;
                     }
-                    
+
                     case EVENT_CONGEALING_VOMIT:
                     {
                         Talk(SAY_CONGEALING_WARN);
@@ -159,7 +176,7 @@ class boss_festerface : public CreatureScript
                             me->StopMoving();
                             me->SetFacingToObject(portalIntro);
                             DoCast(me, SPELL_CONGEALING_VOMIT);
-                            
+
                         }
 
                         events.ScheduleEvent(EVENT_CONGEALING_VOMIT, Seconds(50));
@@ -215,7 +232,7 @@ class npc_vha_congealing_goo : public CreatureScript
                 {
                     damage = 0;
                     me->RemoveAllAuras();
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     me->SetHealth(1);
                     Talk(SAY_RECONGEALING_WARN);
                     DoCast(me, SPELL_RECONGEALING);
@@ -244,7 +261,7 @@ class at_vha_icky_goo : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                 {
                     unit->CastSpell(unit, SPELL_ICKY_GOO, true);
@@ -255,7 +272,7 @@ class at_vha_icky_goo : public AreaTriggerEntityScript
             {
                 if (!unit)
                     return;
-                
+
                 if (unit->GetTypeId() == TYPEID_PLAYER)
                     unit->RemoveAurasDueToSpell(SPELL_ICKY_GOO);
             }
@@ -282,7 +299,7 @@ class spell_festerface_congealing_vomit : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     uint32 summonCount = GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints;
                     float dist = 5.f;
 
@@ -294,7 +311,7 @@ class spell_festerface_congealing_vomit : public SpellScriptLoader
 
                     GetCaster()->ToCreature()->SetReactState(REACT_AGGRESSIVE);
                 }
-                
+
                 void Register() override
                 {
                     OnEffectHitTarget += SpellEffectFn(spell_congealing_vomit_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
@@ -322,9 +339,9 @@ class spell_vha_recongealing : public SpellScriptLoader
                 {
                     if (!GetUnitOwner())
                         return;
-                    
+
                     GetUnitOwner()->SetFullHealth();
-                    GetUnitOwner()->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                    GetUnitOwner()->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                     GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_FETID_STENCH, true);
                 }
 

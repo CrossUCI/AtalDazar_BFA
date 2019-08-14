@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -192,7 +192,7 @@ void BattlegroundAB::StartingEventOpenDoors()
     {
         SpawnBGObject(banner, RESPAWN_IMMEDIATELY);
         if (GameObject* AB_banner = GetBGObject(banner))
-            AB_banner->SetUInt32Value(GAMEOBJECT_SPELL_VISUAL_ID, SPELL_VISUAL_NEUTRAL);
+            AB_banner->SetSpellVisualID(SPELL_VISUAL_NEUTRAL);
     }
 
     for (int i = 0; i < BG_AB_DYNAMIC_NODES_COUNT; ++i)
@@ -297,9 +297,8 @@ void BattlegroundAB::_ChangeBanner(uint8 node, uint8 type, uint8 teamIndex, bool
     }
 
 
-     // Update the visual of the banner & set faction
-    AB_banner->SetUInt32Value(GAMEOBJECT_SPELL_VISUAL_ID, SpellVisualID);
-    AB_banner->SetFaction(teamIndex == TEAM_ALLIANCE ? 83 : 84);
+    // Update the visual of the banner
+    AB_banner->SetSpellVisualID(SpellVisualID);
 
     // Update the worldstate
     m_BannerWorldState[node] = worldstateValue;

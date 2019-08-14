@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "SpellHistory.h"
@@ -10,7 +27,7 @@ enum Spells
     SPELL_ELEMENTIUM_SQUIRREL_BOMB              = 201240,
     SPELL_THORIUM_ROCKET_CHICKEN                = 201392,
     SPELL_OVERLOADED_ELEMENTIUM_SQUIRREL_BOMB   = 201432,
-    SPELL_REINFORCED_THORIUM_ROCKET_CHICKEN     = 201438, 
+    SPELL_REINFORCED_THORIUM_ROCKET_CHICKEN     = 201438,
     SPELL_DELTA_FINGER_LASER_X                  = 201159,
     SPELL_HYPER_ZAP_ULTIMATE_MARK               = 202310,
     SPELL_MEGA_MINIATURIZATION                  = 201581,
@@ -29,7 +46,7 @@ enum Spells
     SPELL_CHICKEN_SWARN_ROCKETS_TARGETING_2     = 201386,
     SPELL_CHICKEN_SWARN_DMG                     = 201387,
     SPELL_THORIUM_PLATING                       = 201441,
-    
+
     // Mechanical Bomb Squirrel
     SPELL_BOMB_SQUIRREL_BOMB                    = 201302,
 };
@@ -123,7 +140,7 @@ class boss_millificent_manastorm : public CreatureScript
                     me->SetReactState(REACT_PASSIVE);
                     me->AttackStop();
                     me->CastStop();
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_ATTACKABLE_1);
                     Talk(SAY_DEFEAT);
                     DoCast(me, SPELL_HYPER_ZAP_ULTIMATE_MARK);
                     events.ScheduleEvent(EVENT_END_COMBAT, Seconds(2));
@@ -219,7 +236,7 @@ class npc_vha_squirrel_bomb : public CreatureScript
                 {
                     me->CastStop();
                     DoCast(me, SPELL_OVERLOADED);
-                    me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                    me->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
                     me->DespawnOrUnsummon(Seconds(7));
                 }
             }
@@ -230,13 +247,13 @@ class npc_vha_squirrel_bomb : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = _events.ExecuteEvent())
                 {
                     if (eventId == EVENT_OVERLOADED)
                     {
                         DoCast(me, SPELL_OVERLOADED);
-                        me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                        me->AddUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
                         me->DespawnOrUnsummon(Seconds(6));
                     }
                 }
@@ -272,7 +289,7 @@ class npc_vha_mechanical_squirrel_bomb : public CreatureScript
             {
                 if (!spell)
                     return;
-                
+
                 if (spell->Id == SPELL_BOMB_SQUIRREL_BOMB)
                 {
                     _events.Reset();
@@ -286,7 +303,7 @@ class npc_vha_mechanical_squirrel_bomb : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-                
+
                 while (uint32 eventId = _events.ExecuteEvent())
                 {
                     if (eventId == EVENT_BOMB_SQUIRREL_BOMB)
@@ -358,7 +375,7 @@ class npc_vha_rocket_chicken : public CreatureScript
                             me->SetFacingToObject(target, true);
                             DoCast(target, SPELL_ROCKET_CHICKEN_ROCKET);
                         }
-                        
+
                         _events.ScheduleEvent(EVENT_ROCKET_CHICKEN_ROCKET, Seconds(3));
                     }
                 }
@@ -391,12 +408,12 @@ class spell_vha_rocket_chicken_rocket : public SpellScriptLoader
                     _src.x = GetCaster()->GetPositionX();
                     _src.y = GetCaster()->GetPositionY();
                 }
-                
+
                 void FilterTargets(SpellTargets & targets)
                 {
                     if (targets.empty())
                         return;
-                    
+
                     Unit* caster = GetCaster();
 
                     targets.remove_if([&] (WorldObject*& target)
@@ -409,7 +426,7 @@ class spell_vha_rocket_chicken_rocket : public SpellScriptLoader
                 {
                     if (!GetCaster())
                         return;
-                    
+
                     GetCaster()->ClearUnitState(UNIT_STATE_ROOT);
                 }
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -126,8 +126,8 @@ enum ProjectWarlockSpells
     SPELL_WARLOCK_RAIN_OF_FIRE_AFTERMATH_TRIGGERED  = 104233,
     SPELL_WARLOCK_SOUL_LINK_BUFF                    = 108446,
     SPELL_WARLOCK_DEMONIC_FURY_GENERATE             = 104314,
-    SPELL_WARLOCK_DRAIN_LIFE                        = 234153,
-    SPELL_WARLOCK_DRAIN_LIFE_HEAL                   = 133807,
+    SPELL_WARLOCK_DRAIN_LIFE                        = 689,
+    SPELL_WARLOCK_DRAIN_LIFE_HEAL                   = 89653,
     SPELL_WARLOCK_GLYPH_OF_DEMON_TRAINING           = 56249,
     SPELL_WARLOCK_IMMOLATION                        = 19483,
     SPELL_WARLOCK_DEMONIC_REBIRTH_COOLDOWN_MARKER   = 89140,
@@ -645,9 +645,9 @@ class npc_warlock_demonic_gateway : public CreatureScript
                 {
                     me->CastSpell(me, SEPLL_WARLOCK_DEMONIC_GATEWAY_VISUAL, true);
 
-                    me->SetFlag(UNIT_FIELD_INTERACT_SPELLID, SPELL_WARLOCK_DEMONIC_GATEWAY_ACTIVATE);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                    me->SetInteractSpellId(SPELL_WARLOCK_DEMONIC_GATEWAY_ACTIVATE);
+                    me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
+                    me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
                     me->SetReactState(ReactStates::REACT_PASSIVE);
                     me->SetControlled(true, UNIT_STATE_ROOT);
 
@@ -1099,7 +1099,7 @@ class npc_warlock_doomguard : public CreatureScript
 
             void Reset()
             {
-                me->SetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_CLASS, CLASS_ROGUE);
+                me->SetClass(CLASS_ROGUE);
                 me->SetPowerType(POWER_ENERGY);
                 me->SetMaxPower(POWER_ENERGY, 200);
                 me->SetPower(POWER_ENERGY, 200);
@@ -1289,11 +1289,11 @@ class spell_warlock_chaos_bolt : public SpellScriptLoader
 
             void HandleLaunch(SpellEffIndex /*effIndex*/)
             {
-                Player * caster = GetCaster()->ToPlayer();
+                Player* caster = GetCaster()->ToPlayer();
                 if (!caster)
                     return;
                 // snapshot critical strike chance
-                caster->Variables.Set<float>("Spells.ChaosBoltCriticalChance", caster->GetFloatValue(ACTIVE_PLAYER_FIELD_SPELL_CRIT_PERCENTAGE1));
+                caster->Variables.Set<float>("Spells.ChaosBoltCriticalChance", caster->m_activePlayerData->SpellCritPercentage);
             }
 
             void HandleHitTarget(SpellEffIndex /*effIndex*/)
@@ -1741,10 +1741,13 @@ class spell_warlock_seed_of_corruption : public SpellScriptLoader
             void CalculateAmount(AuraEffect const* /*aurEff*/, int32 & amount, bool & /*canBeRecalculated*/)
             {
                 // "When the target takes $SPS * $s1 / 100 damage from your spells"
-                if (Unit * caster = GetCaster())
+                if (Unit* caster = GetCaster())
                 {
-                    uint32 spellPowerForSchool = caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_SHADOW) - caster->GetUInt32Value(ACTIVE_PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_SHADOW);
-                    amount += CalculatePct(spellPowerForSchool, sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SEED_OF_CORRUPTION)->GetEffect(EFFECT_0)->BasePoints);
+                    if (Player* playerCaster = caster->ToPlayer())
+                    {
+                        uint32 spellPowerForSchool = playerCaster->m_activePlayerData->ModDamageDonePos[SPELL_SCHOOL_SHADOW] - playerCaster->m_activePlayerData->ModDamageDoneNeg[SPELL_SCHOOL_SHADOW];
+                        amount += CalculatePct(spellPowerForSchool, sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SEED_OF_CORRUPTION)->GetEffect(EFFECT_0)->BasePoints);
+                    }
                 }
             }
 
@@ -2159,40 +2162,40 @@ class spell_warlock_t15_2p_bonus : public SpellScriptLoader
         }
 };
 
-//234153
+// 689 - Drain Life, 89420 - Drain Life @ Soulburn, 103990 - Drain Life @ Metamorphosis
 class spell_warlock_drain_life : public SpellScriptLoader
 {
-public:
-    spell_warlock_drain_life() : SpellScriptLoader("spell_warlock_drain_life") { }
+    public:
+        spell_warlock_drain_life() : SpellScriptLoader("spell_warlock_drain_life") { }
 
-    class spell_warlock_drain_life_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warlock_drain_life_AuraScript);
-
-        void PeriodicTick(AuraEffect const* aurEff)
+        class spell_warlock_drain_life_AuraScript : public AuraScript
         {
-            Unit * target = GetTarget();
-            Unit * caster = GetCaster();
-            if (!caster)
-                return;
-            if (!target)
-                return;
+            PrepareAuraScript(spell_warlock_drain_life_AuraScript);
 
-            int32 healAmount = aurEff->GetDamage() * 5;
+            void PeriodicTick(AuraEffect const* /*aurEff*/)
+            {
+                Unit * caster = GetCaster();
+                if (!caster)
+                    return;
+                int32 healPct = GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints;
+                int32 healAmount = CalculatePct(caster->GetMaxHealth(), healPct);
+                // Harvest Life
+                if (Aura * harvestLife = caster->GetAura(SPELL_WARLOCK_HARVEST_LIFE))
+                    AddPct(healAmount, harvestLife->GetSpellInfo()->GetEffect(EFFECT_1)->BasePoints);
 
-            caster->CastCustomSpell(caster, SPELL_WARLOCK_DRAIN_LIFE_HEAL, &healAmount, NULL, NULL, true);
-        }
+                caster->CastCustomSpell(caster, SPELL_WARLOCK_DRAIN_LIFE_HEAL, &healAmount, NULL, NULL, true);
+            }
 
-        void Register() override
+            void Register() override
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_warlock_drain_life_AuraScript::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_warlock_drain_life_AuraScript::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_LEECH);
+            return new spell_warlock_drain_life_AuraScript();
         }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_warlock_drain_life_AuraScript();
-    }
 };
 
 // 112891 - Howl of Terror
@@ -2700,8 +2703,9 @@ public:
                 if (Pet* pet = ObjectAccessor::GetPet(*caster, caster->GetPetGUID()))
                 {
                     for (uint8 i = 0; i < 3; ++i)
-                        pet->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + i, 0);
-                    pet->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, itemEntry);
+                        pet->SetVirtualItem(i, 0);
+
+                    pet->SetVirtualItem(0, itemEntry);
                 }
             }
         }
@@ -3452,12 +3456,16 @@ class spell_warlock_conflagrate : public SpellScriptLoader
                 if (!caster || !target)
                     return;
 
+                Player* casterPlayer = caster->ToPlayer();
+                if (!casterPlayer)
+                    return;
+
                 caster->CastSpell(caster, SPELL_WARLOCK_CONFLAGRATE_ENERGIZE, true);
 
                 if (caster->HasAura(SPELL_WARLOCK_CONFLAGRATION_OF_CHAOS))
                 {
                     int32 damage = GetHitDamage();
-                    AddPct(damage, caster->GetFloatValue(ACTIVE_PLAYER_FIELD_SPELL_CRIT_PERCENTAGE1));
+                    AddPct(damage, casterPlayer->m_activePlayerData->SpellCritPercentage);
                     SetHitDamage(damage);
 
                     caster->RemoveAurasDueToSpell(SPELL_WARLOCK_CONFLAGRATION_OF_CHAOS);
@@ -4986,7 +4994,7 @@ class spell_warlock_shadowburn : public SpellScriptLoader
 
             void HandleHit(SpellEffIndex /*effIndex*/)
             {
-                Unit* caster = GetCaster();
+                Player* caster = GetCaster()->ToPlayer();
                 Unit* target = GetHitUnit();
                 if (!caster || !target)
                     return;
@@ -4996,7 +5004,7 @@ class spell_warlock_shadowburn : public SpellScriptLoader
                 if (caster->HasAura(SPELL_WARLOCK_CONFLAGRATION_OF_CHAOS))
                 {
                     int32 damage = GetHitDamage();
-                    AddPct(damage, caster->GetFloatValue(ACTIVE_PLAYER_FIELD_SPELL_CRIT_PERCENTAGE1));
+                    AddPct(damage, caster->m_activePlayerData->SpellCritPercentage);
                     SetHitDamage(damage);
 
                     caster->RemoveAurasDueToSpell(SPELL_WARLOCK_CONFLAGRATION_OF_CHAOS);

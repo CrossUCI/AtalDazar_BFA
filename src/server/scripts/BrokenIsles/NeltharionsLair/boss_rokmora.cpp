@@ -363,7 +363,7 @@ public:
                     me->GetMotionMaster()->MovePoint(0, ularoggAwayPos);
 
                     if (Creature* rokmora = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ROKMORA)))
-                       rokmora->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                       rokmora->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
 
                     events.ScheduleEvent(EVENT_DESPAWN, 7s);
                     break;
