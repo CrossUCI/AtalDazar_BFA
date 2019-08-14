@@ -5,9 +5,9 @@
 ## Download
 
 -- Repack Development
--- Data for 8.0.1 (28153) 
+-- Data for 8.2.0.31429
 
--- Launcher for Client 8.0.1 (28153) https://mega.nz/#!eB1VyKxb!PpSEbhgJPvlBZwcqon2D2trtYvBzjs-xjar7u5mC1BU  thanks to Arctum team
+-- Launcher for Client 8.2.0 (31429) thanks to Arctum team
 
 ## Requirements
 
