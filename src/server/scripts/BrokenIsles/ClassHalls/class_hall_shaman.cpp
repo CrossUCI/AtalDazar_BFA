@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+﻿/*
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -17,6 +17,11 @@
  */
 
 #include "ScriptMgr.h"
+enum
+{
+    NPC_THRALL_91731 = 91731,
+    QUEST_A_RING_UNBROKEN = 39746,
+};
 
 void AddSC_class_hall_shaman()
 {
