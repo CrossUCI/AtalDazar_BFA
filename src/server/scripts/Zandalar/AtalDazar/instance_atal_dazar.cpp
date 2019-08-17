@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -27,6 +27,33 @@ struct instance_atal_dazar : public InstanceScript
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
+
+    void OnCreatureCreate(Creature* creature) override
+    {
+        switch (creature->GetEntry())
+        {
+        case NPC_PRIESTESS_ALUNZA:
+            PriestressGUID = creature->GetGUID();
+            break;
+        default:
+            break;
+        }
+    };
+
+    ObjectGuid GetGuidData(uint32 type) const override
+    {
+        switch (type)
+        {
+        case DATA_PRIESTESS_ALUNZA:
+            return PriestressGUID;
+        default:
+            break;
+        }
+        return ObjectGuid::Empty;
+    }
+
+protected:
+    ObjectGuid PriestressGUID;
 };
 
 void AddSC_instance_atal_dazar()
